@@ -4,6 +4,10 @@ Native Mega Drive / Genesis port of Rolling Thunder, updated October 17, 2026. I
 co-op, the HUD and shirt-colour fixes, increased co-op ammunition, and adaptive
 2P enemy animation. Enemy counts are unchanged.
 
+The v0.8 Alpha door fix restores the arcade's three opening/closing frames for
+each door type in all ten stages. The corrected 7 MiB build is documented in
+[Door animation fix](docs/DOOR_ANIMATION_FIX.md).
+
 In lighter 2P scenes, enemies use their full banked poses. Crowds, rendering lag
 or sprite-memory pressure select compact poses; full detail returns after 30
 light simulation updates. 1P keeps its existing animation policy.

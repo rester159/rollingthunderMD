@@ -1,5 +1,9 @@
 # 7 MiB candidate — October 17, 2026
 
+The initial candidate documented below is retained as a reference. The current
+v0.8 Alpha includes the [arcade door-animation correction](DOOR_ANIMATION_FIX.md),
+with a new ROM hash and fresh validation results.
+
 **A complete, software-validated 7 MiB candidate is available.** Audio streaming
 is integrated and preserves every original sample at its original cadence.
 The earlier Campaign slowdown has recovered to the accepted build's range in
