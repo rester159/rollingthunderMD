@@ -1,5 +1,11 @@
 # Hardware compatibility — October 17, 2026
 
+**Capacity correction, October 18:** the current target is **32 Mbit = 4 MiB
+(4,194,304 bytes)**. The 7 MiB builds below are **56 Mbit**, and exceed that target
+by 3 MiB. Earlier references to meeting the smaller target refer to the previous
+7 MiB development goal, not support for a 32 Mbit cartridge. No 32 Mbit playable
+build is available yet. The local v0.81 changes remain unreleased.
+
 The default compact ROM is **15.5 MiB (16,252,928 bytes)**, down from 32 MiB. Two
 profiles are built from the same assets and gameplay code:
 
@@ -29,8 +35,8 @@ See [the software validation and measured performance](SEVEN_MIB_PROGRESS.md).
 | Target | Status |
 | --- | --- |
 | Mega EverDrive Pro | Fits its published 16 MB memory capacity. Dedicated extended-SSF profile; ROM stops before bank 31, which the published mapper assigns to battery RAM. Physical launch, menu backup and power-cycle persistence remain unverified. |
-| Mega EverDrive Core | Accepted 15.5 MiB builds exceed capacity. The separate 7 MiB candidate meets the smaller size target; physical mapper, launch and save behavior remain unverified. |
-| Mega EverDrive X3 / X5 | The separate 7 MiB candidate fits the published size target. Physical mapper, launch and save behavior remain unverified; the accepted 15.5 MiB builds still exceed capacity. |
+| Mega EverDrive Core | Physical mapper, launch and save behavior remain unverified. The 7 MiB candidate is 56 Mbit; it does not meet the current 32 Mbit development target. |
+| Mega EverDrive X3 / X5 | Physical mapper, launch and save behavior remain unverified. The 7 MiB candidate is 56 Mbit; it does not meet the current 32 Mbit development target. |
 | Mega EverDrive v2 / X7 family | Experimental 15 MiB shared-layout profile reserves OS banks 30–31 and uses the documented upper bank-31 SRAM area. The default 15.5 MiB profiles still use bank 30. Physical compatibility remains unverified. |
 | Original Mega EverDrive v1; legacy EverDrive-MD v1/v2/v3 | Unverified and not supported by the supplied profiles; exact revision/firmware limits need separate evidence. |
 | Model 1 with/without TMSS, Model 2, Model 3, Nomad; NTSC/PAL | CPU/VDP startup measures and emulator region checks are covered. No physical console tested. |
@@ -132,8 +138,9 @@ Record cartridge model/revision and OS, console revision/region and attached
 hardware. Check cold power-on, launch from the cart menu, held buttons, reset to
 game/menu, 1P/2P, all stage transitions, long audio playback, and saves after menu
 return and full power cycling. Confirm the Pro OS actually backs up the banked
-battery data. The 7 MiB candidate addresses the smaller capacity target; each
-cartridge revision still needs mapping, save and physical playback validation.
+battery data. The 7 MiB candidate meets only the former 7 MiB development goal;
+the current 32 Mbit target remains unmet. Each cartridge revision still needs
+mapping, save and physical playback validation.
 
 Exact software results and artifact hashes are in [VALIDATION.md](VALIDATION.md)
 and [validation.json](validation.json). The earlier 32 MiB audit is preserved in

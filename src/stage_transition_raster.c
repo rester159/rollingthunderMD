@@ -112,3 +112,9 @@ const volatile RT_StageTransitionRasterStats *RT_getStageTransitionRasterStats(v
 {
     return &stats;
 }
+
+u16 RT_acknowledgeStageTransitionRasterFault(void)
+{
+    SYS_disableInts();u16 fault=stats.fault;stats.fault=0;SYS_enableInts();
+    return fault;
+}

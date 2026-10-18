@@ -3,7 +3,7 @@ u8 RT_campaignObjectsStep(RT_CampaignScene *scene,u8 tick,RT_CampaignObjectPass 
 {
     if(!scene || !scene->ready || !result)return 0;
     result->count=result->spawned=0;result->unservicedKinds=0;
-    if(RT_stagePoolRefreshVisibility(&scene->objects,&scene->camera)==255)return 0;
+    if(RT_stagePoolRefreshStaticVisibility(&scene->objects,&scene->camera)==255)return 0;
     u8 remaining=scene->objects.count;
     for(u8 i=0;i<RT_NATIVE_STAGE_CAPACITY && remaining;i++){
         RT_Anchor *object=scene->objects.objects+i;

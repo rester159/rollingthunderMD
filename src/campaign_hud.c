@@ -1,16 +1,10 @@
 #include "rt_campaign_hud.h"
-static void digits(RT_HudCell *cells,u32 value,u8 count,u8 group)
-{
-    for(u8 i=count;i;i--){cells[i-1]=(RT_HudCell){value%10,group};value/=10;}
-    for(u8 i=0;i+1<count && !cells[i].glyph;i++)cells[i].glyph=255;
-}
-/* Co-op HUD inputs are already range-checked: at most six decimal digits.
- * Bounded subtraction avoids the 68000's software 32-bit divide/modulo loops.
- * Keep this out of line so each field does not duplicate the conversion loop. */
+/* All callers bound their fields to at most six decimal digits. Bounded
+ * subtraction avoids 68000 software divide/modulo without changing glyphs. */
 #ifdef __m68k__
 __attribute__((noinline))
 #endif
-static void digitsCoop(RT_HudCell *cells,u32 value,u8 count,u8 group)
+static void digits(RT_HudCell *cells,u32 value,u8 count,u8 group)
 {
     static const u32 places[6]={100000,10000,1000,100,10,1};
     const u32 *place=places+6-count;
@@ -24,8 +18,7 @@ static void digitsCoop(RT_HudCell *cells,u32 value,u8 count,u8 group)
 }
 static inline void digitsUpdate(const RT_CampaignHudState *s,RT_HudCell *cells,u32 value,u8 count,u8 group)
 {
-    if(s->players==2)digitsCoop(cells,value,count,group);
-    else digits(cells,value,count,group);
+    (void)s;digits(cells,value,count,group);
 }
 u8 RT_campaignHudScores(RT_CampaignHud *hud,const RT_CampaignScore *score,
     u8 lives0,u8 lives1)

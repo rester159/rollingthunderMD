@@ -1,6 +1,7 @@
 #include "rt_stage_bank.h"
 #include "rt_rom_layout.h"
 #include "rt_campaign_completion_monitor.h"
+#include "rt_rescue.h"
 void RT_completionMonitorFormat(u32 high,u32 player0,u32 player1,u16 timer,u8 digits[24])
 {
  const u32 scores[3]={player0,high,player1};
@@ -41,6 +42,30 @@ void RT_completionMonitorUpdate(u32 high,u32 player0,u32 player1,u16 timer)
 {RT_completionMonitorPrepare(high,player0,player1,timer);RT_completionMonitorCommit();}
 #include "rt_stage_raster.h"
 #include "rt_stage_transition_raster.h"
+#include "rt_title_menu.h"
+/* Home's objective occupies only the empty interior of the monitor. Compose
+ * at a nine-pixel advance and ten-pixel line pitch, as in the menu; adjacent
+ * eight-pixel font cells would join the bold glyphs into unreadable blocks. */
+static void showRescueText(u8 completed)
+{
+ if(rtSession.mode!=RT_MODE_HOME)return;
+ const char *message=RT_rescueMessage(&rtSession,completed);
+ const char *sister="LEILA'S SISTER";
+ RT_MenuText lines[2]={
+  {message,(320-RT_menuTextWidth(message))/2,0},
+  {sister,(320-RT_menuTextWidth(sister))/2,1}
+ };
+ u8 count=RT_rescueIsMargo(&rtSession)?2:1;
+ /* Five 4x3 chunks fit the shared 16-tile composition buffer. The 60 new
+  * patterns start beyond the monitor atlas and stay below the sprite region. */
+ for(u8 chunk=0;chunk<5;chunk++){
+  RT_menuComposeOutline(rtMenuChunk,80+chunk*32,4,3,0,lines,count,15,1,10);
+  VDP_loadTileData(rtMenuChunk,1152+chunk*12,12,CPU);
+  for(u8 y=0;y<3;y++)for(u8 x=0;x<4;x++)
+   VDP_setTileMapXY(BG_A,TILE_ATTR_FULL(PAL0,TRUE,FALSE,FALSE,
+       1152+chunk*12+y*4+x),10+chunk*4+x,13+y);
+ }
+}
 static u8 show(u8 labelIndex)
 {
  RT_stopStageRaster();RT_stopStageTransitionRaster();VDP_setEnable(FALSE);
@@ -56,6 +81,7 @@ static u8 show(u8 labelIndex)
   VDP_setTileMapXY(BG_A,p->planeA,p->cell%36+2,p->cell/36);
   VDP_setTileMapXY(BG_B,p->planeB,p->cell%36+2,p->cell/36);
  }
+ showRescueText(labelIndex>=9);
  /* Display-disable forces the VDP blank status bit. Wait on real VInt. */
  u32 refresh=vtimer;while(vtimer==refresh);
  VDP_setEnable(TRUE);return 1;

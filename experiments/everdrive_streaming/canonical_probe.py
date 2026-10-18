@@ -14,12 +14,13 @@ p.add_argument('--baseline',required=True,type=Path)
 p.add_argument('--sdk',required=True,type=Path)
 p.add_argument('--core',required=True,type=Path)
 p.add_argument('--output',required=True,type=Path)
-p.add_argument('--format',choices=['canonical','fast'],default='canonical')
+p.add_argument('--format',choices=['canonical','fast','refined'],default='canonical')
+p.add_argument('--cache',type=Path,help='Reuse verified build-time encoded sources')
 a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
 source=Path(__file__).parent
-if a.format=='fast':
+if a.format in ('fast','refined'):
  from fast_codec import normalize,encode,decode
-decoder=source/('fast_decode.s' if a.format=='fast' else 'canonical_decode.s')
+decoder=source.parent/'32mbit/refined_decode.s' if a.format=='refined' else source/('fast_decode.s' if a.format=='fast' else 'canonical_decode.s')
 for command in [
  [a.sdk/'bin/m68k-elf-as','-m68000',decoder,'-o',a.output/'decode.o'],
  [a.sdk/'bin/m68k-elf-ld','-Ttext=0x220','-e','decode',a.output/'decode.o','-o',a.output/'decode.elf'],
@@ -34,10 +35,14 @@ a.rom=a.output/'diagnostic.bin';a.rom.write_bytes(rom)
 a.symbols=a.output/'diagnostic.symbols.txt';a.symbols.write_text('00ff0000 B rtAppFault\n')
 m=Diagnostic(a);m.setup(0x220)
 records,pool_size=poses(a.baseline,a.sdk)
-cache=a.output/'encoded';cache.mkdir(exist_ok=True)
+cache=a.cache or a.output/'encoded';cache.mkdir(parents=True,exist_ok=True)
+refined={}
+if a.format=='refined':
+ from refined_poses import sources
+ refined=sources(records,cache)
 unique={};rows=[];blob=bytearray()
 for i,(name,raw) in enumerate(records.items()):
- canonical,palette=normalize(raw)
+ canonical,palette=refined[name] if refined else normalize(raw)
  identity=hashlib.sha256(canonical).hexdigest()
  if identity not in unique:
   cached=cache/identity

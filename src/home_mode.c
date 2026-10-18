@@ -3,8 +3,6 @@
 #include "rt_home_mode.h"
 #include "rt_banked_tiles.h"
 #include "home_portraits.h"
-#include "home_logo.h"
-#include "area1_title.h"
 #include "rt_title_menu.h"
 #define PORTRAIT_BASE 512
 #define BORDER_BASE 1130
@@ -17,7 +15,8 @@ extern const u32 rtMenuFont[768],rtMenuMd[48];
 #define MENU_FONT_BASE 1152
 static u8 page, cursor, ready[2];
 static u16 previous[2];
-static bool dirty;
+static bool dirty,agentScreenReady;
+u8 rtControlLayout;
 static u16 fontBase=MENU_FONT_BASE;
 static u8 fontPalette=PAL3;
 void RT_resetSession(void)
@@ -46,7 +45,7 @@ void RT_beginModeSelect(void)
        Drain old gameplay transfers before changing their destinations. */
     DMA_flushQueue();
     VDP_init();
-    page = MODE; cursor = 0;
+    page = MODE; cursor = 0;agentScreenReady=FALSE;
     ready[0] = ready[1] = 0;
     previous[0] = previous[1] = 0xFFFF;
     dirty = TRUE;
@@ -62,20 +61,6 @@ static void textAt(const char *text, u16 x, u16 y) {
         u8 c=*text++;if(c>='a' && c<='z')c-=32;
         if(c<32 || c>127)c=' ';
         VDP_setTileMapXY(BG_A,TILE_ATTR_FULL(fontPalette,TRUE,FALSE,FALSE,fontBase+c-32),x++,y);
-    }
-}
-/* White glyphs (pen15) with a one-pixel red drop shadow (shadowPen) to the
- * lower right; everything else transparent so text sits on the background. */
-static void loadShadowFont(u16 base,u32 shadowPen)
-{
-    for(u16 t=0;t<96;t++){
-        u32 tile[8],above=0;
-        for(u16 r=0;r<8;r++){
-            u32 white=rtMenuFont[t*8+r];
-            tile[r]=white|((above>>4)&~white&(0x11111111UL*shadowPen));
-            above=white;
-        }
-        VDP_loadTileData(tile,base+t,1,CPU);
     }
 }
 /* White P1 and red P2 outlines and labels. */
@@ -124,23 +109,55 @@ static void frame(u16 x, u16 y, u16 w, u16 h, u16 color, const char *label)
         textAt(label,x+w/2-2,y);fontBase=saved;
     }
 }
-static void panel(u16 x, u16 y, u16 w, u16 h, const char *label)
+/* Portrait patterns stay resident. Selection changes publish only tilemap
+ * rows in VBlank; switching/joining must never blank or reload the screen. */
+static void agentFrameRow(u16 row[40],u16 y,u16 x,u16 top,u16 w,u16 h,u8 player)
 {
-    VDP_clearTextArea(x,y,w,h);
-    frame(x,y,w,h,0,label);
+    if(y<top || y>=top+h)return;
+    u16 base=BORDER_BASE+player*8;
+    if(y==top || y==top+h-1){
+        u8 bottom=y!=top;
+        for(u16 i=0;i<w;i++)row[x+i]=TILE_ATTR_FULL(PAL3,TRUE,FALSE,FALSE,
+            base+(i==0?(bottom?5:0):i==w-1?(bottom?7:2):(bottom?6:1)));
+    }else{
+        row[x]=TILE_ATTR_FULL(PAL3,TRUE,FALSE,FALSE,base+3);
+        row[x+w-1]=TILE_ATTR_FULL(PAL3,TRUE,FALSE,FALSE,base+4);
+    }
+    if(y==top){
+        const char *label=player?" P2 ":" P1 ";
+        for(u8 i=0;i<4;i++)row[x+w/2-2+i]=TILE_ATTR_FULL(PAL3,TRUE,FALSE,FALSE,
+            (player?P2_FONT_BASE:MENU_FONT_BASE)+label[i]-32);
+    }
 }
-static void homeBackdrop(void)
+static void updateAgentSelection(void)
 {
-    const u16 *map = (const u16 *)rtArea1TitleMap;
-    u16 i;
-    RT_loadBankedTiles(rtArea1TitleTiles,PORTRAIT_BASE,sizeof(rtArea1TitleTiles)/32);
-    PAL_setColors(0, (const u16 *)rtArea1TitlePalette, 64, CPU);
-    /* Backdrop on plane B so menu text on plane A sits over intact art. */
-    for (i=0;i<64*28;i++)
-        VDP_setTileMapXY(BG_B, (map[i]&0xE000) | (PORTRAIT_BASE+(map[i]&0x7FF)), i%64,i/64);
-    /* Front-end screens do not display the arcade score or credit HUD. */
-    VDP_clearTileMapRect(BG_B,0,0,40,4);
-    VDP_clearTileMapRect(BG_B,0,25,40,3);
+    const u16 *map=(const u16 *)rtHomePortraitMap;
+    for(u16 y=0;y<26;y++){
+        u16 row[40]={0};
+        if(y<2){
+            for(u16 x=0;x<40;x++)if(x<23 || rtSession.players==RT_HOME_SOLO)
+                row[x]=TILE_ATTR_FULL(PAL3,TRUE,FALSE,FALSE,16+(x/8)*16+y*8+x%8);
+        }else{
+            if(y>=3 && y<25)for(u8 p=0;p<2;p++)for(u16 x=0;x<14;x++)
+                row[(p?22:4)+x]=map[p*308+(y-3)*14+x]+PORTRAIT_BASE;
+            agentFrameRow(row,y,rtSession.agent[0]?21:3,2,16,24,0);
+            if(rtSession.players==RT_HOME_TWO_PLAYERS){
+                bool same=rtSession.agent[0]==rtSession.agent[1];
+                agentFrameRow(row,y,(rtSession.agent[1]?21:3)+(same?1:0),same?3:2,same?14:16,same?22:24,1);
+            }
+        }
+        DMA_transfer(DMA_QUEUE_COPY,DMA_VRAM,row,VDP_getBGAAddress()+y*128,40,2);
+    }
+}
+u16 RT_jumpButtons(u8 player)
+{
+    u8 layout=(rtControlLayout>>(player*2))&3;
+    return layout==2?BUTTON_B:layout==1?BUTTON_A:(BUTTON_A|BUTTON_C);
+}
+u16 RT_fireButtons(u8 player)
+{
+    u8 layout=(rtControlLayout>>(player*2))&3;
+    return layout==2?(BUTTON_A|BUTTON_C):layout==1?(BUTTON_B|BUTTON_C):BUTTON_B;
 }
 void RT_drawModeSelect(void)
 {
@@ -151,6 +168,7 @@ void RT_drawModeSelect(void)
         if(playing!=soundShown){soundShown=playing;dirty=TRUE;}
     }
     if(page!=AGENTS){
+        agentScreenReady=FALSE;
         if(!RT_titleMenuActive()){
             if(!RT_titleMenuBegin())return;
             /* Opaque title font: transparent pen0 becomes pen1 (black in the
@@ -161,11 +179,15 @@ void RT_drawModeSelect(void)
         }
         fontBase=16;fontPalette=PAL1;
         if(dirty){
+            /* Restore plane cells before the title palette split begins.
+             * A live ROM-reading sound driver changes DMA/bus timing. */
+            VDP_waitVBlank(TRUE);
             /* Menu text is drawn as sprites on rows17..18, above the walking
              * cast (sprite tops at y153); the background stays untouched. */
             RT_titleMenuRestoreText();RT_titleMenuSetHome(page!=MODE);
             RT_titleMenuTextClear();
             if(page==MODE){
+                RT_titleMenuFooter();
                 RT_titleMenuTextAt(cursor==0?"> ARCADE":"  ARCADE",15,16);
                 RT_titleMenuTextAt(cursor==1?"> HOME":"  HOME",15,18);
             }else if(page==HOME){
@@ -192,9 +214,10 @@ void RT_drawModeSelect(void)
                 RT_titleMenuTextAt(track,14,17);
                 RT_titleMenuTextAt(RT_gameMusicPsgMuted()?"C PSG OFF  B BACK":"C PSG ON   B BACK",12,18);
             }else if(page==CONTROLS){
-                RT_titleMenuTextAt("D-PAD MOVE/CROUCH",11,16);
-                RT_titleMenuTextAt("A JUMP    B FIRE",11,17);
-                RT_titleMenuTextAt("UP DOOR   B BACK",11,18);
+                static const char *layouts[3]={"A/C JUMP  B FIRE","A JUMP  B/C FIRE","B JUMP  A/C FIRE"};
+                RT_titleMenuTextAt(cursor?"UP/DOWN: PLAYER 2":"UP/DOWN: PLAYER 1",12,16);
+                RT_titleMenuTextAt(layouts[(rtControlLayout>>(cursor*2))&3],12,17);
+                RT_titleMenuTextAt("LEFT/RIGHT  B BACK",12,18);
             }else if(page==GAME_OVER){
                 RT_titleMenuTextAt("GAME OVER",15,16);
                 RT_titleMenuTextAt(rtSession.players==RT_HOME_SOLO?"NO LIVES LEFT":"NO CREDITS LEFT",12,17);
@@ -215,6 +238,7 @@ void RT_drawModeSelect(void)
     fontBase=MENU_FONT_BASE;fontPalette=PAL3;
     if (!dirty) return;
     dirty = FALSE;
+    if(agentScreenReady){updateAgentSelection();return;}
     VDP_setEnable(FALSE);
     VDP_setHorizontalScroll(BG_A,0); VDP_setHorizontalScroll(BG_B,0);
     VDP_setVerticalScroll(BG_A,0); VDP_setVerticalScroll(BG_B,0);
@@ -239,7 +263,7 @@ void RT_drawModeSelect(void)
             /* Red text (PAL3 pen2 = color50), centred over each portrait.
              * It sits on black, so the drop shadow uses transparent pen0. */
             const char *head[2]={"SELECT YOUR AGENT","P2: START"};
-            const char *name[2]={"ALBATROSS","LEILA BLITZ"};
+            const char *name[2]={"ALBATROSS","LEILA"};
             RT_MenuText header[2],names[2];
             for(u8 p=0;p<2;p++){
                 s16 centre=p?232:88;
@@ -267,40 +291,9 @@ void RT_drawModeSelect(void)
                 " P2 ");
         }
     }
-    else {
-        homeBackdrop(); loadBorders(); VDP_setTextPalette(PAL3);
-        VDP_loadTileData(rtMenuMd,1248,6,CPU);
-        for(i=0;i<6;i++)VDP_setTileMapXY(BG_A,1248+i,28+i%3,14+i/3);
-        if(page==SETTINGS){
-            panel(6,17,28,9,"SETTINGS");
-            char value[2]={'0'+rtHomeStartingCredits,0};
-            textAt(cursor==0?">":" ",8,19);textAt("STARTING CREDITS",10,19);textAt(value,29,19);
-            textAt(cursor==1?"> CONTROLS":"  CONTROLS",8,22);
-            textAt("LEFT/RIGHT CHANGE   B BACK",7,27);
-        }
-        else if(page==CONTROLS){
-            panel(5,17,30,9,"CONTROLS");
-            textAt("D-PAD  MOVE / CROUCH",8,19);
-            textAt("A  JUMP    B  FIRE",8,21);
-            textAt("UP  DOOR   START  PAUSE",8,23);
-            textAt("B BACK",17,27);
-        }
-        else if (page==GAME_OVER) {
-            panel(7,14,26,11,NULL);
-            textAt("GAME OVER",15,17);
-            textAt(rtSession.players==RT_HOME_SOLO?"NO LIVES LEFT":"NO CREDITS LEFT",13,20);
-            textAt("A/START: HOME",14,23);
-        }
-        else {
-            panel(5,14,30,11,NULL);
-            textAt(rtSession.game==RT_HOME_SURVIVAL?"SURVIVAL":"CAMPAIGN",15,16);
-            textAt("STILL IN DEVELOPMENT",10,20);
-            textAt("B: BACK",16,27);
-        }
-    }
     /* Publish the completed menu at VBlank, never midway down the screen. */
     VDP_waitVSync();
-    VDP_setEnable(TRUE);
+    VDP_setEnable(TRUE);agentScreenReady=TRUE;
 }
 bool RT_stepModeSelect(u16 pad1, u16 pad2)
 {
@@ -350,17 +343,31 @@ bool RT_stepModeSelect(u16 pad1, u16 pad2)
             else if(!cursor){
                 if(edge & BUTTON_LEFT)rtHomeStartingCredits=rtHomeStartingCredits==1?9:rtHomeStartingCredits-1;
                 if(edge & (BUTTON_RIGHT|CONFIRM))rtHomeStartingCredits=rtHomeStartingCredits==9?1:rtHomeStartingCredits+1;
-            }else if(edge & CONFIRM){page=CONTROLS;}
+            }else if(edge & CONFIRM){page=CONTROLS;cursor=0;}
         }
     }
-    else if(page==CONTROLS){if(edge & (BUTTON_B|CONFIRM)){page=SETTINGS;cursor=1;}}
+    else if(page==CONTROLS){
+        if(edge & BUTTON_B){page=SETTINGS;cursor=1;}
+        else{
+            if(edge & (BUTTON_UP|BUTTON_DOWN))cursor^=1;
+            u8 shift=cursor*2,value=(rtControlLayout>>shift)&3;
+            if(edge & BUTTON_LEFT)value=(value+2)%3;
+            if(edge & (BUTTON_RIGHT|CONFIRM))value=(value+1)%3;
+            rtControlLayout=(rtControlLayout&~(3<<shift))|(value<<shift);
+        }
+    }
     else if(page==SOUND){
         /* Tracks 1..13 of the arcade's music, played live on the YM2612/PSG. */
         if(edge & BUTTON_B){RT_gameMusicStop();soundShown=0;page=SETTINGS;cursor=2;}
         else{
             if(edge & BUTTON_LEFT)soundTrack=soundTrack==1?13:soundTrack-1;
             if(edge & BUTTON_RIGHT)soundTrack=soundTrack==13?1:soundTrack+1;
-            if(edge & CONFIRM){RT_gameMusicStart(soundTrack);soundShown=1;}
+            if(edge & CONFIRM){
+                /* Loading the Z80 driver masks interrupts. Start just after
+                 * VBlank so it cannot suppress the title's palette split. */
+                if(RT_titleMenuActive())SYS_doVBlankProcess();
+                RT_gameMusicStart(soundTrack);soundShown=1;
+            }
             if(edge & BUTTON_C)RT_gameMusicSetPsgMuted(!RT_gameMusicPsgMuted());
         }
     }

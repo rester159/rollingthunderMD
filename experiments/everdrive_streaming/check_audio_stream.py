@@ -74,11 +74,11 @@ zram=(C.c_ubyte*8192).in_dll(m.core,'zram')
 ending_scene=a.scene and a.clip in ('ending','victory')
 if ending_scene:
  m.patch('joyBeforeVBlankCallback',b'\x01')
- assert call('begin.part.0',symbols['completion'],10,1,symbols['finalLoadBegin'],symbols['RT_endExclusivePcmSceneFrame'])==1
+ assert call('begin.part.0',symbols.get('completion',symbols.get('screenWorkspace')),10,1,symbols['finalLoadBegin'],symbols['RT_endExclusivePcmSceneFrame'])==1
 scene_steps=0
 for _ in range(6000):
  if ending_scene:
-  result=call('RT_completionSceneStepIO.part.0',symbols['completion'],symbols['finalFrameBegin'],symbols['RT_endExclusivePcmSceneFrame'])
+  result=call('RT_completionSceneStepIO.part.0',symbols.get('completion',symbols.get('screenWorkspace')),symbols['finalFrameBegin'],symbols['RT_endExclusivePcmSceneFrame'])
   assert result in (1,2), 'Ending scene fault'
   scene_steps+=1
   if result==2:ending_scene=False

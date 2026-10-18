@@ -50,6 +50,10 @@ static s16 streamStageId(const RT_Anchor *a)
 static u8 fail(RT_CampaignSprites *s,u8 code){s->fault=code;return 0;}
 static inline u8 playerVisible(const RT_CampaignScene *scene,u8 p)
 {
+    const RT_Agent *a=scene->players.agents+p;
+    /* The door state machine clears the actor layer once fully inside and
+     * restores it when emerging. Apply this to full and retained-pose draws. */
+    if(!a->body.layer && (a->action==RT_AGENT_DOOR_ENTER || a->action==RT_AGENT_DOOR_EXIT))return 0;
     const RT_AgentCombat *c=scene->players.combat+p;
     return RT_homeAgentVisible(c) || (!c->hidden && !c->removed &&
         ((scene->exiting&(1<<p)) || (scene->players.selection.mode==RT_MODE_ARCADE &&
@@ -63,7 +67,7 @@ static inline u8 submitPacked(RT_SpriteBatch *b,RT_SpriteSlot *slot,const RT_Spr
     u16 n=pose->pieceCount,count=b->count;
     if(!pieces || !pose->patterns || !n || !pose->tileCount || pose->tileCount>slot->capacity ||
        n>80-b->reserved-count){b->failed=1;return 0;}
-    if(slot->pose!=pose && !RT_spriteUpload(b,slot,pose))return 0;
+    if(!RT_spritePixelsMatch(slot->pose,pose) && !RT_spriteUpload(b,slot,pose))return 0;
     u8 key=(priority<<2)|RT_SPRITE_POOL_ACTOR;
     u16 start=count;
     const RT_PackedSpritePiece *piece=pieces+(facingLeft?n:0);
@@ -241,10 +245,7 @@ u8 RT_campaignSpritesReproject(RT_CampaignSprites *s,const RT_CampaignScene *sce
      * silently omit a newly drawable actor just because its last full draw
      * submitted no pose. Fall back before preparing or publishing any SAT. */
     for(u8 p=0;p<scene->players.home.players;p++)if(!heldPlayers[p]){
-        const RT_AgentCombat *c=scene->players.combat+p;
-        if(RT_homeAgentVisible(c) || (!c->hidden && !c->removed &&
-           ((scene->exiting&(1<<p)) || (scene->players.selection.mode==RT_MODE_ARCADE &&
-            RT_agentHasFatalAnimation(scene->players.agents+p,c)))))return 0;
+        if(playerVisible(scene,p))return 0;
     }
     u8 remaining=scene->enemies.count;
     for(u8 i=0;i<RT_ENEMY_CAPACITY && remaining;i++){
@@ -310,9 +311,7 @@ u8 RT_campaignSpritesReproject(RT_CampaignSprites *s,const RT_CampaignScene *sce
         RT_SpriteInstance instance={h->pose,0,0,0,0,0,RT_SPRITE_POOL_ACTOR};
         if(h->type==0){
             const RT_Agent *a=scene->players.agents+h->slot;
-            const RT_AgentCombat *c=scene->players.combat+h->slot;
-            instance.visible=RT_homeAgentVisible(c) || (!c->hidden && !c->removed &&
-                ((scene->exiting&(1<<h->slot)) || (scene->players.selection.mode==RT_MODE_ARCADE && RT_agentHasFatalAnimation(a,c))));
+            instance.visible=playerVisible(scene,h->slot);
             instance.x=a->body.x>>4;instance.y=(a->body.y+15)>>4;
             instance.facingLeft=a->direction==2;instance.priority=a->body.layer;
         }else if(h->type==1){
@@ -345,3 +344,45 @@ u8 RT_campaignSpritesReproject(RT_CampaignSprites *s,const RT_CampaignScene *sce
     if(!RT_spritesDeferred())view->display.queuedBytes+=s->batch.queuedBytes;
     return 1;
 }
+
+#include "rt_rom_layout.h"
+#ifdef RT_LINEAR_ROM
+#include "rt_packed_cache.h"
+void RT_campaignSpritesPreload(const RT_CampaignSprites *s,const RT_CampaignScene *scene)
+{
+    if(scene->players.home.players==1)RT_packedExtraEnable();
+    static const u8 priority[]={1,2,3,4,5,6,0,18,19,10,11,12,13,65,66,70};
+    const RT_CampaignGraphics *g=s->graphics;
+    if(scene->players.home.players==1){
+        u8 identity=scene->players.selection.agent[0],costume=scene->players.selection.costume[0];
+        const RT_SpritePose *poses=g->agents[identity?1+costume:(costume?3:0)];
+        RT_packedPreload(poses[0].patterns,poses[0].tileCount*16);
+        RT_packedPreload(poses[18].patterns,poses[18].tileCount*16);
+    }
+    for(u8 i=0;i<sizeof priority;i++){
+        if(i==6){
+            if(scene->players.home.players==2)break;
+            /* Only stage-authored guard variants resolve. Cache complete walk
+             * cycles before less frequent player poses; raw ROM poses need no RAM. */
+            u16 colors[2]={256,256};
+            for(u16 color=0;color<256;color+=2)for(u8 bank=0;bank<2;bank++)
+                if(colors[bank]==256 && g->enemy(bank?8:4,(u8)color,91))colors[bank]=color;
+            static const u16 guardPriority[]={91,92,93,94,95,96,
+                69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,
+                204,205,206,207,0,1,2,3,4,5};
+            for(u8 pass=0;pass<3;pass++)for(u8 f=pass?6:0;f<(pass?sizeof guardPriority/sizeof guardPriority[0]:6);f++)
+            for(u8 bank=pass?pass-1:0;bank<(pass?pass:2);bank++){
+                if(colors[bank]==256)continue;
+                const RT_PackedSpritePose *graphic=g->enemy(bank?8:4,(u8)colors[bank],guardPriority[f]);
+                if(graphic && graphic->pose)
+                    RT_packedPreload(graphic->pose->patterns,graphic->pose->tileCount*16);
+            }
+        }
+        for(u8 p=0;p<scene->players.home.players;p++){
+        u8 identity=scene->players.selection.agent[p],costume=scene->players.selection.costume[p];
+        const RT_SpritePose *pose=g->agents[identity?1+costume:(costume?3:0)]+priority[i];
+        RT_packedPreload(pose->patterns,pose->tileCount*16);
+        }
+    }
+}
+#endif

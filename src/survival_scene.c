@@ -85,7 +85,7 @@ u8 RT_survivalSceneScrollPrepared(RT_CampaignScene *scene,const RT_SurvivalWorld
     if(count)for(u8 i=0;i<RT_ENEMY_CAPACITY;i++)if(scene->enemies.slots[i].state.kind==RT_ENEMY_FREE)scene->attackPhases[i]=0;
     for(u8 i=0;i<count;i++)if(!RT_survivalSpawnEnemies(world,&scene->enemies,scene->spawnLevel,requests+i,
         &scene->faultEvent,scene->players.home.players==2?&scene->population:0,scene->effects,15))return 0;
-    if(!visibilityReady && RT_stagePoolRefreshVisibility(&scene->objects,&scene->camera)==255)return 0;
+    if(!visibilityReady && RT_stagePoolRefreshStaticVisibility(&scene->objects,&scene->camera)==255)return 0;
     count=RT_eventWindowMove(&scene->objectWindow,scene->stage,previous,&scene->camera,requests);
     if(count==255)return 0;
     boundaries=0;for(u8 i=0;i<count;i++)boundaries|=1u<<(requests[i].edge-1);

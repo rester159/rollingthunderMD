@@ -1,5 +1,9 @@
 # 7 MiB candidate — October 17, 2026
 
+**October 18 update:** this is a historical size milestone. The corrected target
+is **32 Mbit (4 MiB / 4,194,304 bytes)**. A 7 MiB ROM is **56 Mbit** and does not
+fit that target. No content cuts are authorized; further storage work is needed.
+
 The initial candidate documented below is retained as a reference. The current
 v0.8 Alpha includes the [arcade door-animation correction](DOOR_ANIMATION_FIX.md),
 with a new ROM hash and fresh validation results.

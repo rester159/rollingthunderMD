@@ -62,9 +62,16 @@ u8 RT_campaignSpritesInitializeGenerated(RT_CampaignSprites *s,const RT_Campaign
        view->display.stage->patternCount>terrainTiles)return 0;
     return initialize(s,view,g,terrainTiles);
 }
-u8 RT_campaignSpritesUseHud(RT_CampaignSprites *s)
+u8 RT_campaignSpritesUseHud(RT_CampaignSprites *s,u8 players)
 {
     if(!s || !s->ready || !s->streamStages || !s->graphics)return 0;
+    if(players<1 || players>2)return 0;
+    if(players==1){
+        /* Solo sessions cannot join a second player until returning to the
+         * menu. Give that unused 64-tile reservation to the exact-pose arena. */
+        s->bulletTile-=64;
+        VDP_loadTileData(s->graphics->bulletPatterns,s->bulletTile,s->graphics->bulletTiles,CPU);
+    }
     u16 first=s->bulletTile+s->graphics->bulletTiles;
     if(first>=1440 || !RT_spriteArenaInitialize(&s->arena,first,(1440-first)/16))return 0;
     s->hud=1;return 1;

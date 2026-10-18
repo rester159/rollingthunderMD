@@ -1,0 +1,6 @@
+Tool: built-in image generation (imagegen).
+Final revision prompt:
+
+Edit this Leila portrait: she has LONG PURPLE HAIR, not a bob. Preserve her face, eyes, expression, red outfit, pose, dark navy background, exact tall 7:11 composition and retro Genesis pixel style. Extend the same deep violet hair with lavender highlights well past both shoulders, flowing down behind her to the lower edge, with long swept strands around her face. Keep the top bangs and face consistent. Output one portrait, no text, no borders. Crisp limited palette 16-bit pixel art intended for 112x176 logical pixels. Only hairstyle length changes: clearly LONG PURPLE HAIR.
+
+The preceding portrait used the user-provided cover as the face reference and the current selection screen as the pixel-art style reference. The saved source is compiled by tools/build_leila_portrait.py to the existing 112x176 tile allocation.

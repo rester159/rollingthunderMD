@@ -11,6 +11,10 @@ typedef struct {
     u8 game, costume[2];
 } RT_SessionConfig;
 extern RT_SessionConfig rtSession;
+/* Two bits per controller; default B fire, A/C jump. */
+extern u8 rtControlLayout;
+u16 RT_jumpButtons(u8 player);
+u16 RT_fireButtons(u8 player);
 void RT_resetSession(void);
 bool RT_isCoop(void);
 /* Fixed-point 8.8 multipliers: base 1.0, Home co-op 1.5. */

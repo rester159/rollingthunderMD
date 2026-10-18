@@ -1,5 +1,8 @@
 #include "rt_save.h"
+#include "rt_cart_probe.h"
+#include "rt_attract.h"
 #include "rt_rom_layout.h"
+#include "rt_packed_cache.h"
 #include "rt_coop_resident_art.h"
 #include "rt_coop_resident_art.h"
 extern unsigned char rtHomeStartingCredits;
@@ -69,7 +72,14 @@ volatile u32 rtAppSkippedPresentations,rtAppMaxUpdateLag;
 static RT_ArcadeSession arcade;
 static RT_CampaignScore score;
 static RT_CampaignBonus bonus;
+#ifdef RT_LINEAR_ROM
+static union {RT_CompletionScene scene;RT_PackedWorkspace prefetch;} screenWorkspace;
+_Static_assert(sizeof(RT_PackedWorkspace)<=sizeof(RT_CompletionScene),"Pose workspace shares the inactive completion scene");
+#define completion screenWorkspace.scene
+extern void RT_campaignSpritesPreload(const RT_CampaignSprites*,const RT_CampaignScene*);
+#else
 static RT_CompletionScene completion;
+#endif
 RT_CompletionScene *RT_titleMenuStorage(void){return &completion;}
 /* Published source events await the native HUD/audio consumers. Static clear
  * text is implemented; bonus timer/score HUD and sound remain unimplemented. */
@@ -83,6 +93,33 @@ static u8 tick;
 volatile u8 rtAppPaused;
 static u16 pausePrevious[2],pausePalette[64];
 static void saveProgress(void);
+static u8 beginAttract(void);
+static u8 attractScores(void);
+static u32 attractStarted;
+static u16 attractPrevious;
+static volatile u16 attractEdges;
+static JoyEventCallback *attractSavedJoy;
+extern VoidCallback *vintCB;
+static VoidCallback *attractLoadPrevious;
+static u8 attractLoadHook;
+static void attractLoadVInt(void)
+{
+    if(attractLoadPrevious)attractLoadPrevious();
+    /* Stage preparation spans several refreshes without a VBlank process.
+     * Poll while the screen is disabled; normal rendering owns input later. */
+    if(!(VDP_getReg(1)&0x40))JOY_update();
+}
+static void endAttractLoad(void)
+{
+    if(attractLoadHook){SYS_setVIntCallback(attractLoadPrevious);attractLoadHook=0;}
+}
+static void attractJoy(u16 joy,u16 changed,u16 state)
+{
+    if(joy==JOY_1)attractEdges|=changed&state&(BUTTON_START|BUTTON_A|BUTTON_B);
+    if(attractSavedJoy)attractSavedJoy(joy,changed,state);
+}
+static void releaseAttractInput(void)
+{JOY_setEventHandler(attractSavedJoy);attractEdges=0;}
 static u16 held;
 static RT_MusicPlayback highMusic;
 static RT_MusicSequence highSequence;
@@ -132,7 +169,7 @@ volatile u16 rtHighStarted,rtHighDone,rtHighPlayer,rtHighPhase,rtHighMusicReques
 volatile u32 rtHighSteps;
 static u8 beginHighEntry(void);
 static void endHighClock(void);
-enum {APP_MENU,APP_PLAY,APP_CONTINUE,APP_UNFINISHED,APP_READY,APP_BONUS,APP_TRANSITION,APP_FINAL_WAIT,APP_ENDING,APP_HIGH_ENTRY};
+enum {APP_MENU,APP_PLAY,APP_CONTINUE,APP_UNFINISHED,APP_READY,APP_BONUS,APP_TRANSITION,APP_FINAL_WAIT,APP_ENDING,APP_HIGH_ENTRY,APP_ATTRACT};
 
 /* Campaign publication owner. Once armed, the DMA queue and display descriptor
  * are immutable until finishPipeline; only the next logical update overlaps. */
@@ -206,6 +243,9 @@ static void endHud(void){
     RT_spritesDiscardPrepared();
     endPipeline();
     DMA_flushQueue();saveProgress();
+#ifdef RT_LINEAR_ROM
+    RT_packedWorkspaceEnd();
+#endif
 #ifdef RT_GAMEPLAY_HUD
     RT_campaignHudDisplayEnd(&hudDisplay);
 #endif
@@ -287,12 +327,25 @@ static u8 video(void){
 #endif
     if(!displayReady || !(survival?RT_campaignSpritesInitializeGenerated(&sprites,&view,graphics,640):
         RT_campaignSpritesInitializeBank(&sprites,&view,graphics)))return 0;
+#ifdef RT_LINEAR_ROM
+    RT_packedWorkspaceBegin(&screenWorkspace.prefetch,sizeof screenWorkspace.prefetch);
+    /* A resident background never reads the streaming cell ring or tile
+     * lookup arrays. Their control fields remain intact; endHud drains all
+     * sprite transfers before the next stage initializes these arrays. */
+    if(scene.players.home.players==1 && !survival && terrainStream.resident){
+        RT_packedBorrow(0,terrainStream.cells,4096);
+        RT_packedStaging(terrainStream.cells+2048,4096);
+        RT_packedBorrow(1,terrainStream.tiles.mapping,
+            (u8*)&terrainStream.tiles.patternCount-(u8*)terrainStream.tiles.mapping);
+    }
+    RT_campaignSpritesPreload(&sprites,&scene);
+#endif
 #ifdef RT_GAMEPLAY_HUD
     if(scene.stage->story>1 || scene.stage->area>=5)return 0;
     const RT_CampaignHudArt *art=rtCampaignHudBanks[scene.stage->story*5+scene.stage->area];
     if(!art)return 0;
     VDP_setEnable(FALSE);DMA_flushQueue();
-    if(!RT_campaignSpritesUseHud(&sprites) ||
+    if(!RT_campaignSpritesUseHud(&sprites,scene.players.home.players) ||
        !RT_coopResidentBegin(&sprites,scene.players.home.players) ||
        !RT_campaignHudBegin(&hudState,art->initial,rtSession.mode==RT_MODE_HOME,scene.players.home.players) ||
        !updateHud() || !RT_campaignHudDisplayBegin(&hudDisplay,art,1440) ||
@@ -372,8 +425,8 @@ static u8 highRecords[50],highPanel[672],highScores[8],highPlayer,highRemaining,
 static void saveProgress(void)
 {
     /* Entry IRQ owns the table until its current initials are complete. */
-    if(highRecords[0x2d])return;
-    RT_saveStore(highRecords,score.high,rtHomeStartingCredits,RT_gameMusicPsgMuted());
+    if(rtArcadeAttract || highRecords[0x2d])return;
+    RT_saveStore(highRecords,score.high,rtHomeStartingCredits,RT_gameMusicPsgMuted(),rtControlLayout);
 }
 static RT_HighScoreInput highInput;
 static RT_GameOverPanelUpload highUpload;
@@ -469,7 +522,9 @@ static u8 chooseHighPlayer(void)
         RT_initHighScoreInput(&highInput);rtHighPlayer=highPlayer;
         if(!publishHighPanel())return 0;beginHighClock();return 1;
     }
-    rtHighDone=1;menu();return 1;
+    rtHighDone=1;
+    if(rtSession.mode==RT_MODE_ARCADE)return beginAttract();
+    menu();return 1;
 }
 static u8 beginHighEntry(void)
 {
@@ -536,22 +591,94 @@ static u8 start(void){
         rtAppFault=1;notice("NATIVE BUILD ERROR","STAGE INITIALIZATION",APP_UNFINISHED);return 0;
     }
     score=(RT_CampaignScore){.high=score.high};
+    if(rtArcadeAttract==RT_ATTRACT_DEMO)RT_attractDemoInitialize(&scene);
     if(rtSession.mode==RT_MODE_ARCADE && !RT_arcadeSessionInitialize(&arcade,&scene,0)){rtAppFault=4;return 0;}
     if(!video()){rtAppFault=1;notice("NATIVE BUILD ERROR","STAGE INITIALIZATION",APP_UNFINISHED);return 0;}
     transitionSelector=1;transitionEffect=0;rtAppBonusEvents=0;
     tick=0;rtAppState=APP_PLAY;
-    if(rtSession.mode==RT_MODE_ARCADE){
+    if(rtSession.mode==RT_MODE_ARCADE && !rtArcadeAttract){
         readyStarted=vtimer;rtAppState=APP_READY;
     }
     return 1;
+}
+/* Arcade attract owns no credits, score entry or save transaction. All demo
+ * gameplay is discarded before a real Start. B returns to the mode selector. */
+static u8 attractTitle(void)
+{
+    endHighClock();endHud();RT_titleMenuEnd();RT_completionSceneEnd(&completion);
+    if(!RT_titleMenuBegin())return 0;
+    RT_titleMenuTextClear();RT_titleMenuTextAt("PRESS START",14,16);
+    RT_titleMenuTextCommit();
+    rtArcadeAttract=RT_ATTRACT_TITLE;attractStarted=vtimer;rtAppState=APP_ATTRACT;
+    return 1;
+}
+static u8 beginAttract(void)
+{
+    rtArcadeAttract=RT_ATTRACT_TITLE;attractPrevious=0xffff;attractEdges=0;
+    attractSavedJoy=JOY_getEventHandler();JOY_setEventHandler(attractJoy);
+    return attractTitle();
+}
+static u8 attractScores(void)
+{
+    endHud();endAttractLoad();RT_titleMenuEnd();VDP_setEnable(FALSE);DMA_flushQueue();
+    if(!RT_stageBankSelect(RT_HIGH_SCORE_PAGE))return 0;
+    static const RT_SceneBackground background={
+        (const u32 *)(RT_HIGH_SCORE_BASE+4176),
+        (const u16 (*)[1008])RT_HIGH_MAPS_ADDRESS,
+        (const u16 (*)[64])(RT_HIGH_SCORE_BASE+16),610,0,0};
+    if(!RT_sceneBackgroundUpload(&background))return 0;
+    highUpload=(RT_GameOverPanelUpload){0};
+    if(!RT_beginGameOverPanelUpload(&highUpload,(const u8 *)RT_HIGH_SCORE_BASE,RT_HIGH_SCENE_BYTES,
+        (const u8 *)RT_HIGH_PANEL_ADDRESS,RT_HIGH_PANEL_BYTES,0))return 0;
+    while(!highUpload.ready){
+        if(!RT_queueGameOverPanelPatterns(&highUpload,2048))return 0;
+        SYS_doVBlankProcess();
+    }
+    if(!RT_drawHighScorePanel(highRecords,RT_writeHighScorePanelByte,highPanel) || !publishHighPanel())return 0;
+    VDP_setEnable(TRUE);rtArcadeAttract=RT_ATTRACT_SCORES;
+    attractStarted=vtimer;rtAppState=APP_ATTRACT;return 1;
+}
+static u8 stepAttract(void)
+{
+    u32 age=vtimer-attractStarted;
+    /* Original visible holds: title 512, TOP 5 256, Maboo 192 services.
+     * PAL uses the same real-time holds as the arcade's 60 Hz presentation. */
+    u16 rate=SYS_isPAL()?50:60;
+    if(rtArcadeAttract==RT_ATTRACT_TITLE){
+        if(age<(512UL*rate)/60)return RT_titleMenuStep();
+        RT_titleMenuEnd();rtArcadeAttract=RT_ATTRACT_DEMO;
+        attractLoadPrevious=vintCB;attractLoadHook=1;SYS_setVIntCallback(attractLoadVInt);
+        if(!start())return 0;
+        attractStarted=vtimer;return 1;
+    }
+    if(rtArcadeAttract==RT_ATTRACT_SCORES){
+        if(age<(256UL*rate)/60){SYS_doVBlankProcess();return 1;}
+        VDP_setEnable(FALSE);DMA_flushQueue();
+        if(!RT_stageBankSelect(RT_COMPLETION_PAGE) || !RT_completionEndingBegin(&completion,5))return 0;
+        rtArcadeAttract=RT_ATTRACT_MABOO;attractStarted=vtimer;return 1;
+    }
+    if(rtArcadeAttract==RT_ATTRACT_MABOO){
+        if(age<(192UL*rate)/60)return RT_completionSceneStep(&completion)==1;
+        RT_completionSceneEnd(&completion);rtAttractLoops++;return attractTitle();
+    }
+    return 0;
 }
 int main(bool hardReset){
     (void)hardReset;rtAppUpdates=rtAppPresentations=rtAppRefreshes=0;rtAppFault=0;
     rtAppSkippedPresentations=rtAppMaxUpdateLag=0;
     u8 initialHigh[3];if(!RT_initializeHighScores(highRecords,initialHigh))return 0;score.high=3000;
     RT_resetSession();
+    if(!RT_cartridgeBankingAvailable()){
+        VDP_init();PAL_setColor(15,RGB24_TO_VDPCOLOR(0xFFFFFF));VDP_setTextPalette(PAL0);
+        VDP_drawText("THIS EMULATOR OR CARTRIDGE",7,9);
+        VDP_drawText("DOES NOT SUPPORT THIS ROM",8,11);
+        VDP_drawText("TRY PICODRIVE OR GENESIS PLUS GX",5,15);
+        VDP_drawText("7 MB SSF2 BANKING REQUIRED",7,18);
+        VDP_setEnable(TRUE);
+        while(TRUE)SYS_doVBlankProcess();
+    }
     u8 muted=0;
-    RT_saveLoad(highRecords,&score.high,&rtHomeStartingCredits,&muted);
+    RT_saveLoad(highRecords,&score.high,&rtHomeStartingCredits,&muted,&rtControlLayout);
     RT_resetMarkReady();
     RT_gameMusicSetPsgMuted(muted);menu();
     while(TRUE){
@@ -568,6 +695,28 @@ int main(bool hardReset){
             continue;
         }
         u16 pads[2]={JOY_readJoypad(JOY_1),JOY_readJoypad(JOY_2)};
+        if(rtArcadeAttract){
+            /* Preserve brief Start/Back presses sampled during bank/video loads. */
+            SYS_disableInts();u16 edge=attractEdges;attractEdges=0;SYS_enableInts();
+            edge|=pads[0]&~attractPrevious;attractPrevious=pads[0];
+            if(edge&(BUTTON_START|BUTTON_A|BUTTON_B)){
+                endHud();endAttractLoad();RT_titleMenuEnd();RT_completionSceneEnd(&completion);
+                releaseAttractInput();rtArcadeAttract=RT_ATTRACT_OFF;
+                if(edge&BUTTON_B)menu();
+                else if(!start()){rtAppFault=100;continue;}
+                pausePrevious[0]=pads[0];pausePrevious[1]=pads[1];continue;
+            }
+            if(rtAppState==APP_ATTRACT){
+                if(!stepAttract()){rtAppFault=101;releaseAttractInput();rtArcadeAttract=0;notice("ATTRACT ERROR","SCENE",APP_UNFINISHED);}
+                continue;
+            }
+            /* No live input, pausing or credit use during demonstration. */
+            pads[0]=pads[1]=0;
+            if(rtAttractDemoUpdates>=1536){
+                if(!attractScores())rtAppFault=102;
+                continue;
+            }
+        }
         u16 startEdge=(pads[0]&~pausePrevious[0]) |
             (RT_isCoop()?(pads[1]&~pausePrevious[1]):0);
         pausePrevious[0]=pads[0];pausePrevious[1]=pads[1];
@@ -590,7 +739,9 @@ int main(bool hardReset){
         }
         if(rtAppState==APP_HIGH_ENTRY){if(!stepHighEntry(pads)){rtAppFault=97;notice("HIGH SCORE ERROR","ENTRY",APP_UNFINISHED);}continue;}
         if(rtAppState==APP_MENU){
-            if(RT_stepModeSelect(pads[0],pads[1])){saveProgress();RT_titleMenuEnd();start();}
+            if(RT_stepModeSelect(pads[0],pads[1])){saveProgress();RT_titleMenuEnd();
+                if(rtSession.mode==RT_MODE_ARCADE){if(!beginAttract())rtAppFault=103;}
+                else start();}
             else saveProgress();
             if(rtAppState==APP_MENU){RT_drawModeSelect();if(!RT_titleMenuActive())SYS_doVBlankProcess();}
             continue;
@@ -602,6 +753,13 @@ int main(bool hardReset){
             u8 *reserves=rtSession.mode==RT_MODE_ARCADE?&arcade.reserves:&earned;
             RT_BonusResult result=RT_campaignBonusStep(&bonus,&score,scene.exitPlayer,0,reserves,&events);
             rtAppBonusEvents=events;scene.timer.remaining=bonus.remaining;
+            /* CPU1 bonus queues 0A, followed by 10 on an extra life. */
+            if(events&(RT_BONUS_SOUND|RT_BONUS_EXTRA_LIFE_SOUND)){
+                u8 sounds[2],count=0;
+                if(events&RT_BONUS_SOUND)sounds[count++]=0x0a;
+                if(events&RT_BONUS_EXTRA_LIFE_SOUND)sounds[count++]=0x10;
+                RT_gameSoundPost(sounds,count);
+            }
             if(earned && scene.players.home.credits<65535)scene.players.home.credits++;
             if(result==RT_BONUS_INVALID){rtAppFault=40;notice("NATIVE BUILD ERROR","TIME BONUS",APP_UNFINISHED);continue;}
             if(events&(RT_BONUS_SCORE_HUD|RT_BONUS_TIMER_HUD))
@@ -612,6 +770,9 @@ int main(bool hardReset){
                     RT_completionSceneEnd(&completion);rtAppFault=41;
                     notice("NATIVE BUILD ERROR","TRANSITION LOAD",APP_UNFINISHED);continue;
                 }
+                /* Ordinary A466 transitions select music effect 5. The
+                 * selector-5 scene deliberately preserves the prior effect. */
+                if(transitionEffect==5)RT_gameMusicStart(5);
                 rtAppState=APP_TRANSITION;
             }
             continue;
@@ -619,6 +780,7 @@ int main(bool hardReset){
         if(rtAppState==APP_TRANSITION){
             u8 result=RT_completionSceneStep(&completion);
             if(result==1)continue;
+            RT_gameMusicStop();
             RT_completionSceneEnd(&completion);
             if(!result){rtAppFault=42+completion.fault;notice("NATIVE BUILD ERROR","TRANSITION FRAME",APP_UNFINISHED);continue;}
             if(!RT_transitionCommandsEnd(&transitionSelector,&transitionEffect,&rtAppTransitionCommands) ||
@@ -749,7 +911,7 @@ int main(bool hardReset){
         }
         /* A completed battle can also end a life. Publish its awards before
          * handling that terminal state, once, even on a skipped presentation. */
-        if(update.worldUpdated){
+        if(update.worldUpdated && !rtArcadeAttract){
             u8 earned=0;
             u8 *reserves=rtSession.mode==RT_MODE_ARCADE?&arcade.reserves:&earned;
             if(!RT_campaignScoreEnemies(&score,&update.battle.enemies,
@@ -761,6 +923,10 @@ int main(bool hardReset){
                 scene.players.home.credits=credits>65535?65535:(u16)credits;
                 if(state==RT_CAMPAIGN_GAME_OVER)state=RT_CAMPAIGN_CONTINUE;
             }
+        }
+        if(rtArcadeAttract && state!=RT_CAMPAIGN_RUNNING){
+            if(!attractScores())rtAppFault=104;
+            continue;
         }
         if(state==RT_CAMPAIGN_ARCADE_DEATH){
             if(!RT_arcadeClaimRestart(&arcade)){

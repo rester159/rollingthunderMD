@@ -34,10 +34,13 @@ for name,raw in reference.items():
   assert rom[address&0x1ffffff:(address&0x1ffffff)+len(raw)]==raw
   raw_count+=1;continue
  at=shared['physical']+(address&0xffffff)-shared['cpu']
- stream,index=struct.unpack_from('>IH',rom,at)
+ if 'stream_table_cpu' in packed:
+  stream_index,index=struct.unpack_from('>HH',rom,at)
+  stream=struct.unpack_from('>I',rom,shared['physical']+packed['stream_table_cpu']+stream_index-shared['cpu'])[0]
+ else:stream,index=struct.unpack_from('>IH',rom,at)
  colors=stream>>24;stream&=0xffffff
  assert 1<=colors<=16
- palette_at=shared['physical']+packed['palette_cpu']+index-shared['cpu']
+ palette_at=shared['physical']+packed['palette_cpu']+index*packed.get('palette_stride',1)-shared['cpu']
  palette=rom[palette_at:palette_at+8]
  length=packed['stream_lengths'][str(stream)];payload=palette+rom[stream:stream+length]
  cycles.append(m.native(payload+bytes(len(payload)&1),raw,len(payload),colors=colors))

@@ -16,7 +16,7 @@ u8 RT_campaignScrollPrepared(RT_CampaignScene *scene,const RT_WorldCamera *previ
         if(!RT_enemiesSpawnWindowWithFamilies(&scene->enemies,scene->spawnLevel,requests+i,
             &scene->faultEvent,scene->players.home.players==2?&scene->population:NULL,
             scene->effects,15))return 0;
-    if(!visibilityReady && RT_stagePoolRefreshVisibility(&scene->objects,&scene->camera)==255)return 0;
+    if(!visibilityReady && RT_stagePoolRefreshStaticVisibility(&scene->objects,&scene->camera)==255)return 0;
     return RT_stagePoolAdvanceWindow(&scene->objects,&scene->objectWindow,
         scene->stage,previous,&scene->camera);
 }

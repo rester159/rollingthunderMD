@@ -1,7 +1,12 @@
 #ifndef RT_NATIVE_STAGE_BANK_H
 #define RT_NATIVE_STAGE_BANK_H
 #include "rt_world.h"
+#include "rt_rom_layout.h"
+#ifdef RT_LINEAR_ROM
+#define RT_STAGE_BANK_BASE 0UL
+#else
 #define RT_STAGE_BANK_BASE 0x100000UL
+#endif
 #define RT_STAGE_BANK_BYTES 0x300000UL
 /* Six consecutive512KiB pages replace only CPU windows2..7. The builder must
  * prove code, interrupts, stack initializer and persistent data stay below1MiB,

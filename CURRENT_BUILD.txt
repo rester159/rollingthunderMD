@@ -1,12 +1,15 @@
-Rolling Thunder MD v0.8 Alpha — current build
+Rolling Thunder MD v0.81 Alpha — current build
 
-ROM: dist/Rolling_Thunder_MD_v0.8._Alpha.bin
-Size: 7,340,032 bytes (7 MiB)
-SHA-256: e30b81671e1277b2ad586be717fb4420085d9971e37813c97a4cef2668b7e7ed
-Includes the arcade door-animation correction (commit c761862).
-Build metadata and matching symbols: dist/door-fix-candidate/
-Validation report: docs/DOOR_ANIMATION_FIX.md
+ROM: dist/Rolling_Thunder_MD_v0.81_Alpha.bin
+Size: 4,194,304 bytes (4 MiB / 32 Mbit)
+SHA-256: 54eba2215c07860b6644426bf82d97fcbea3070dbe893e0edfab3fbedca9156d
+Exact tested feedback candidate; versioned filename, unchanged ROM bytes.
+Build metadata and matching symbols: dist/feedback-fixes-candidate/
+Release notes: docs/RELEASE_0_81.md
+Benchmark: docs/releases/0.81/benchmark.md
 
-This folder is the sole active checkout. Older local research, comparison
-builds and publishing material are retained under .local/ and excluded from Git.
-ROMs, the Sega chant and Namcot logo assets are also excluded from Git.
+Includes current Albatross and Leila portraits, linear 4 MiB packaging,
+Arcade attract, frontend/controls fixes, door visibility, sound-menu recovery,
+transition audio and PAL startup fixes. Performance limitations remain.
+
+ROMs and owner-supplied audio/boot assets remain excluded from Git.

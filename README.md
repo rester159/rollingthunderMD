@@ -1,17 +1,18 @@
 # Rolling Thunder MD
 
-Native Mega Drive / Genesis port of Rolling Thunder, updated October 17, 2026. Includes Arcade, Home Campaign and Survival, two-player
-co-op, the HUD and shirt-colour fixes, increased co-op ammunition, and adaptive
-2P enemy animation. Enemy counts are unchanged.
+Native Mega Drive / Genesis port of Rolling Thunder, updated October 18, 2026.
+The current version is **v0.81 Alpha**, packaged as a **4 MiB / 32 Mbit** linear ROM.
+Includes Arcade, Home Campaign and Survival, two-player co-op, updated Albatross
+and Leila portraits, Arcade attract, controller settings, and the feedback fixes.
 
-The v0.8 Alpha door fix restores the arcade's three opening/closing frames for
-each door type in all ten stages. The corrected 7 MiB build is documented in
-[Door animation fix](docs/DOOR_ANIMATION_FIX.md).
+The local ROM is `dist/Rolling_Thunder_MD_v0.81_Alpha.bin`; see
+[CURRENT_BUILD.txt](CURRENT_BUILD.txt) and [v0.81 release notes](docs/RELEASE_0_81.md).
+The tested binary is unchanged from the feedback candidate. ROM binaries remain
+local and excluded from Git. Older local builds are retained for comparison.
 
-The local project is consolidated in `/Users/rester159/genesis ports/rolling thunder`.
-The current ROM is `dist/Rolling_Thunder_MD_v0.8._Alpha.bin`; see
-[CURRENT_BUILD.txt](CURRENT_BUILD.txt). Older local research, comparison builds
-and the itch.io package are retained under the Git-ignored `.local/` directory.
+The [paired benchmark](docs/releases/0.81/benchmark.md) found small later-stage
+solo Leila regressions and approximately 38 changed-video FPS in the final-stage
+co-op sample on both versions. This release is not a 60 FPS guarantee.
 
 In lighter 2P scenes, enemies use their full banked poses. Crowds, rendering lag
 or sprite-memory pressure select compact poses; full detail returns after 30
@@ -120,7 +121,7 @@ This is a candidate, not physical-hardware certification or support for
 `--layout shared --cart standard` for emulator comparisons.
 See the [candidate results and remaining hardware checks](docs/COMPATIBILITY_CANDIDATE.md).
 
-A separate **7 MiB candidate** now combines lossless graphics storage with
+A **7 MiB (56 Mbit) candidate** combines lossless graphics storage with
 sample-exact Z80 audio streaming. It uses 7,337,646 bytes before cartridge-bank
 padding (7,340,032 bytes on disk), preserving every mode, character and asset.
 Campaign opening performance has recovered to the accepted build's range;
@@ -128,6 +129,13 @@ measurements include a separate jumping workload and both protagonists.
 Build it with `--layout packed --pose-codec fast --cart standard --output-dir dist/seven-mib-candidate`. It has not replaced the accepted releases,
 and its physical cartridge/console compatibility is still unverified.
 See [the size, timing measurements and validation report](docs/SEVEN_MIB_PROGRESS.md).
+
+Version 0.81 meets the **32 Mbit = 4 MiB = 4,194,304 byte** target using the
+refined pose codec and compressed audio. Build with `--layout packed --pose-codec
+refined --cart standard`. The older 7 MiB and extended-mapper measurements above
+are historical. See [feedback validation](docs/ITCH_FEEDBACK_FIXES.md) and
+[Arcade attract mode](docs/ARCADE_ATTRACT.md). Physical hardware, KFusion and
+Mednafen remain unverified.
 
 Standard Genesis controller inputs are used; Home's setup lets
 player two join before choosing the characters.

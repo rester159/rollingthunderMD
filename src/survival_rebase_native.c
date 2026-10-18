@@ -32,6 +32,7 @@ u8 RT_survivalSceneShift512(RT_CampaignScene *s)
         if(s->players.home.players==1 || !s->players.combat[p].removed)s->players.agents[p].body.x-=8192;
         s->players.home.spawn[p].body.x-=8192;
     }
+    RT_stagePoolInvalidateVisibility(&s->objects);
     for(u8 i=0;i<RT_NATIVE_STAGE_CAPACITY;i++)if(s->objects.objects[i].kind!=255)s->objects.objects[i].x-=8192;
     for(u8 i=0;i<RT_ENEMY_CAPACITY;i++)if(s->enemies.slots[i].state.kind!=RT_ENEMY_FREE)s->enemies.slots[i].state.x-=8192;
     for(u8 i=0;i<RT_PROJECTILE_CAPACITY;i++)if(s->projectiles.slots[i].kind)s->projectiles.slots[i].x-=8192;

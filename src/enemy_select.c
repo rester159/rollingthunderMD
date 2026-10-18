@@ -1,6 +1,11 @@
 #include "rt_enemies.h"
+#ifdef __m68k__
+_Static_assert(sizeof(RT_Enemy)==36 && __builtin_offsetof(RT_Enemy,velocityX)==24 &&
+    __builtin_offsetof(RT_Enemy,variation)==29 && __builtin_offsetof(RT_Enemy,byte12)==32 &&
+    __builtin_offsetof(RT_Enemy,delay)==35 && sizeof(RT_EnemyEntry)==4,"grid admission ABI");
+#else
 /* Rare per-actor service: keep it out of the hot pool traversal. */
-__attribute__((noinline))
+__attribute__((noinline,optimize("Os")))
 u8 RT_enemyActivateGrid(RT_Enemy *enemy,const RT_WorldCamera *camera)
 {
     if(!enemy || !camera || (enemy->state.action&0xfc)!=0x80)return 0;
@@ -30,6 +35,8 @@ u8 RT_enemyActivateGrid(RT_Enemy *enemy,const RT_WorldCamera *camera)
     }else a->spawnAction=selector;
     return 1;
 }
+
+#endif
 
 static u8 selectEntry(RT_Enemy *enemy,u8 selector)
 {

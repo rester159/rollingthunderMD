@@ -7,7 +7,7 @@ def verify(root, sdk, run, rows, stages, rom, shared=None, packed=None):
  out=root/'.build/compact'
  count=packed_count=map_cells=0
  for row,(physical,size) in zip(rows,stages):
-  old=(root/f'.build/stages/{row["stage"]}/bank.bin').read_bytes();new=rom[physical:physical+size];base=0x100000+(physical&0x7ffff)
+  old=(root/f'.build/stages/{row["stage"]}/bank.bin').read_bytes();new=rom[physical:physical+size];base=physical if shared and shared.get("linear_rom") else 0x100000+(physical&0x7ffff)
   def syms(p):
    result={}
    for line in run([sdk/'bin/m68k-elf-nm','-S',p]).splitlines():
@@ -91,12 +91,14 @@ def verify(root, sdk, run, rows, stages, rom, shared=None, packed=None):
      expected=read(old,op,ot*32,0x100000)
      if (np&0xfe000000)==0x84000000:
       assert packed
-      if packed['codec']=='canonical_palette_byte_lz_fast':
+      if packed['codec'].endswith('_byte_lz_fast'):
        from pose_codec_fast import decode
       else:
        from pose_codec import decode
       descriptor=read(new,np&0x00ffffff,packed.get('descriptor_stride',12),base)
-      stream=struct.unpack_from('>I',descriptor)[0]
+      if 'stream_table_cpu' in packed:
+       stream=struct.unpack('>I',read(new,packed['stream_table_cpu']+struct.unpack_from('>H',descriptor)[0],4,base))[0]
+      else:stream=struct.unpack_from('>I',descriptor)[0]
       if stream&0x80000000:
        physical=stream&0x1ffffff
        assert packed['raw_pose_streams'][str(physical)]==nt*32
@@ -107,7 +109,7 @@ def verify(root, sdk, run, rows, stages, rom, shared=None, packed=None):
        assert 1<=colors<=16
        length=packed['stream_lengths'][str(stream)]
        assert (stream&0x7ffff)+length<=0x80000
-       palette=read(new,packed['palette_cpu']+struct.unpack_from('>H',descriptor,4)[0],8,base) if 'palette_cpu' in packed else descriptor[4:]
+       palette=read(new,packed['palette_cpu']+struct.unpack_from('>H',descriptor,2 if 'stream_table_cpu' in packed else 4)[0]*packed.get('palette_stride',1),8,base) if 'palette_cpu' in packed else descriptor[4:]
        canonical=decode(rom[stream:stream+length],nt*32)
        assert all(max(byte>>4,byte&15)<colors for byte in canonical)
        actual=decode(rom[stream:stream+length],nt*32,palette)

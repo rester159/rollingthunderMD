@@ -490,6 +490,12 @@ dp_pw
             OR      A
             JR      NZ, dp_pw
             LD      (PROTACK), A
+            ; A new DMA can raise PROTECT after the zero read above but
+            ; before ACK clears. Recheck before leaving RAM-only playback:
+            ; the 68000 may have accepted that still-high ACK for its DMA.
+            LD      A, (PROTECT)
+            OR      A
+            JR      NZ, dp_park
             JR      dp_ret
 dp_sample
             LD      A, (YM_A0)

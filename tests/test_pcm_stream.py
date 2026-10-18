@@ -5,7 +5,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from pcm_stream import pack,unpack
+from pcm_stream import pack,unpack,pack_phrases
 
 class PcmStream(unittest.TestCase):
     def test_boundaries(self):
@@ -20,6 +20,16 @@ class PcmStream(unittest.TestCase):
         raw=bytes(range(256))*513
 
         for delta in (False,True):self.assertEqual(unpack(pack(raw,delta=delta),len(raw),delta=delta),raw)
+    def test_phrase_boundaries(self):
+        randomizer=random.Random(0x50485241)
+        for size in (257,259,260,511,32768,131324):
+            for alphabet in ((128,), (127,128,129), tuple(range(256))):
+                raw=bytes(randomizer.choice(alphabet) for _ in range(size))
+                for delta in (False,True):
+                    packed,dictionary=pack_phrases(raw,delta=delta)
+                    self.assertEqual(unpack(packed,size,delta=delta,phrases=dictionary),raw)
+                    self.assertLessEqual(sum(4*(len(row)-1)+2 for row in dictionary[:-1])+4,1536)
+
     def test_owner_clips(self):
         folder=Path(__file__).resolve().parents[1]/'.build/audio'
         for name in ('victory','ending','high_cold','high_warm'):
@@ -27,5 +37,8 @@ class PcmStream(unittest.TestCase):
             if path.exists():
                 raw=path.read_bytes()
                 for delta in (False,True):self.assertEqual(unpack(pack(raw,delta=delta),len(raw),delta=delta),raw)
+                for delta in (False,True):
+                    packed,dictionary=pack_phrases(raw,delta=delta)
+                    self.assertEqual(unpack(packed,len(raw),delta=delta,phrases=dictionary),raw)
 
 if __name__=='__main__':unittest.main()

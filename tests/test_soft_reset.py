@@ -114,6 +114,8 @@ class Machine:
     def start(self, case, agent=0):
         if case == 'arcade':
             self.press(3)
+            if 'rtArcadeAttract' in self.symbols and self.number('rtArcadeAttract'):
+                self.press(3)  # Start from the Arcade attract screen.
         else:
             self.press(5); self.press(3)  # Home
             if case.startswith('survival'):

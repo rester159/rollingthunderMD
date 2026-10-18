@@ -134,10 +134,44 @@ void RT_titleMenuTextCommit(void)
   textSprites[textCount++]=(RT_SpriteCommand){TEXT_TOP+128,SPRITE_SIZE(4,4),0,
    TILE_ATTR_FULL(PAL3,TRUE,FALSE,FALSE,16+k*16),screenX+k*32+128};
 }
+/* Tiles 320..415 are free between the logo (112..300) and scene (512+).
+ * Row 27 is below the footer palette split, so use its brightest pen. */
+#define FOOTER_FONT 320
+static u8 footerPalette;
+static void loadFooterFont(const RT_SceneBackground *b)
+{
+ u8 pen=1;u16 brightest=0;
+ for(u8 i=1;i<64;i++){
+  if(!(i&15))continue;
+  u16 color=b->palettes[2][i];
+  u16 brightness=(color&14)+((color>>4)&14)+((color>>8)&14);
+  if(brightness>brightest){brightest=brightness;pen=i;}
+ }
+ footerPalette=pen>>4;pen&=15;
+ for(u16 c=0;c<96;c++){
+  u32 tile[8];
+  for(u8 r=0;r<8;r++)tile[r]=rtMenuFont[c*8+r]&(0x11111111UL*pen);
+  /* The arcade font has no lowercase glyphs. Keep the version's small v. */
+  if(c=='v'-32){
+   static const u32 smallV[8]={0,0,0,0x0f000f00,0x0f000f00,0x00f0f000,0x000f0000,0};
+   for(u8 r=0;r<8;r++)tile[r]=smallV[r]&(0x11111111UL*pen);
+  }
+  VDP_loadTileData(tile,FOOTER_FONT+c,1,CPU);
+ }
+}
+void RT_titleMenuFooter(void)
+{
+ const char *credit="PORTED BY RESTER159, 2026",*version="v0.81";
+ for(u16 x=2;*credit;x++,credit++)VDP_setTileMapXY(BG_A,
+  TILE_ATTR_FULL(footerPalette,TRUE,FALSE,FALSE,FOOTER_FONT+*credit-32),x,27);
+ for(u16 x=33;*version;x++,version++)VDP_setTileMapXY(BG_A,
+  TILE_ATTR_FULL(footerPalette,TRUE,FALSE,FALSE,FOOTER_FONT+*version-32),x,27);
+}
 /* Plane A row16 (console bezel) as drawn by the cast scene, restored with
  * the menu rows. */
 static u16 bezelRow[36];
 volatile u16 rtTitleMenuFault;
+volatile u32 rtTitleMenuRasterRecoveries;
 volatile u32 rtTitleMenuFrames;
 u8 RT_titleMenuActive(void){return active;}
 u8 RT_titleMenuBegin(void)
@@ -149,6 +183,7 @@ u8 RT_titleMenuBegin(void)
  if(!RT_completionEndingBegin(s,0)){RT_completionSceneEnd(s);rtTitleMenuFault=10+s->fault;return 0;}
  /* Selector0 is the original console cast, with no upper scene portraits.
   * Reuse its background, native scripts, collision and split palettes. */
+ loadFooterFont(s->background);
  VDP_loadTileData(rtTitleLogoPatterns,112,rtTitleLogoCount,CPU);
  for(u16 y=0;y<12;y++)for(u16 x=0;x<36;x++)
   VDP_setTileMapXY(BG_A,rtTitleLogoMap[y*36+x],x+2,y+4);

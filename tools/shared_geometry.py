@@ -10,7 +10,7 @@ import struct
 
 
 class SharedGeometry:
-    def __init__(self, probes, share_world=False):
+    def __init__(self, probes, share_world=False, linear=False):
         geometry = {}
         groups = defaultdict(list)
         raw_groups = defaultdict(list)
@@ -98,7 +98,7 @@ class SharedGeometry:
                 self.aliases[stage][name]=cursor
             cursor+=len(raw)
         self.size=cursor
-        assert self.size<0x80000, 'Shared metadata needs more than two CPU windows'
+        assert linear or self.size<0x80000, 'Shared metadata needs more than two CPU windows'
 
     def exports(self, stage, cpu_base):
         return {name:cpu_base+offset for name,offset in

@@ -1,11 +1,12 @@
 #include "rt_save.h"
 #ifdef __m68k__
 #include "rt_rom_layout.h"
+#include "rt_title_menu.h"
 #endif
 #define SLOT_SIZE 64
 #define PAYLOAD 10
 #define CHECKSUM 60
-static u8 previous[41],havePrevious,activeSlot;
+static u8 previous[42],havePrevious,activeSlot;
 static u32 generation;
 static u8 cached[2][SLOT_SIZE],warmReset;
 volatile u8 rtSaveAvailable;
@@ -21,7 +22,8 @@ static u32 crc(const u8 *p)
 }
 static bool valid(const u8 *p)
 {
-    if(p[0]!='R'||p[1]!='T'||p[2]!='M'||p[3]!='D'||p[4]!=1||p[5]!=41||
+    if(p[0]!='R'||p[1]!='T'||p[2]!='M'||p[3]!='D'||!((p[4]==1&&p[5]==41)||(p[4]==2&&p[5]==42))||
+       (p[4]==2 && ((p[51]&0xf0)||(p[51]&3)>2||((p[51]>>2)&3)>2))||
        get32(p+CHECKSUM)!=crc(p)||p[10]<1||p[10]>9||p[11]>1||get32(p+12)>999999)return FALSE;
     u32 last=999999;
     for(u8 r=0;r<5;r++){
@@ -66,7 +68,7 @@ static u8 readByte(u16 offset){return SRAM_readByte(offset);}
 static void writeByte(u16 offset,u8 value){SRAM_writeByte(offset,value);}
 #endif
 static void readSlot(u8 slot,u8 *p){for(u8 i=0;i<SLOT_SIZE;i++)p[i]=readByte(slot*SLOT_SIZE+i);}
-bool RT_saveLoad(u8 records[35],u32 *best,u8 *credits,u8 *psgMuted)
+bool RT_saveLoad(u8 records[35],u32 *best,u8 *credits,u8 *psgMuted,u8 *controls)
 {
     u8 *a=cached[0],*b=cached[1];havePrevious=0;generation=0;activeSlot=1;
     if(warmReset){
@@ -85,17 +87,23 @@ bool RT_saveLoad(u8 records[35],u32 *best,u8 *credits,u8 *psgMuted)
     activeSlot=vb&&(!va||(s32)(get32(b+6)-get32(a+6))>0)?1:0;
     const u8 *p=activeSlot?b:a;generation=get32(p+6);
     memcpy(previous,p+PAYLOAD,sizeof previous);havePrevious=1;
-    *credits=p[10];*psgMuted=p[11];*best=get32(p+12);memcpy(records,p+16,35);return TRUE;
+    *controls=p[4]==2?p[51]:0;*credits=p[10];*psgMuted=p[11];*best=get32(p+12);memcpy(records,p+16,35);return TRUE;
 }
-bool RT_saveStore(const u8 records[35],u32 best,u8 credits,u8 psgMuted)
+bool RT_saveStore(const u8 records[35],u32 best,u8 credits,u8 psgMuted,u8 controls)
 {
     if(!rtSaveAvailable)return FALSE;
     u8 data[SLOT_SIZE]={0};
-    data[0]='R';data[1]='T';data[2]='M';data[3]='D';data[4]=1;data[5]=41;
+    data[0]='R';data[1]='T';data[2]='M';data[3]='D';data[4]=2;data[5]=42;data[51]=controls;
     put32(data+6,generation+1);data[10]=credits;data[11]=psgMuted;put32(data+12,best);memcpy(data+16,records,35);
     put32(data+CHECKSUM,crc(data));if(!valid(data))return FALSE;
     if(havePrevious&&!memcmp(previous,data+PAYLOAD,sizeof previous))return TRUE;
     u8 target=activeSlot^1;u16 base=target*SLOT_SIZE;
+#ifdef __m68k__
+    /* A settings commit masks interrupts while SRAM replaces ROM. Start at
+     * VBlank so the title's mid-screen palette IRQ cannot miss its deadline.
+     * Unchanged saves return above without waiting or touching SRAM. */
+    if(RT_titleMenuActive())VDP_waitVBlank(TRUE);
+#endif
     bool bus=enter();
     writeByte(base,0); /* invalidate first; commit magic last */
     for(u8 i=1;i<SLOT_SIZE;i++)writeByte(base+i,data[i]);

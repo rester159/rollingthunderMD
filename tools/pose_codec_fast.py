@@ -7,8 +7,8 @@ Each stream is independent, with a maximum 1024-byte backward distance.
 from collections import defaultdict,deque
 from pose_codec import normalize,mapping
 
-def encode(raw):
- """Minimize bytes, then native decoder work among equally small parses."""
+def encode(raw,byte_weight=None):
+ """Choose byte-first parses, or balance byte cost against native decode work."""
  if not raw:raise ValueError('Empty pose')
  positions=defaultdict(list);matches=[]
  for i in range(len(raw)):
@@ -27,11 +27,14 @@ def encode(raw):
   matches.append(best)
  costs=[(0,0)]*(len(raw)+1);steps=[None]*len(raw);literals=deque()
  for i in range(len(raw)-1,-1,-1):
-  j=i+1;key=(j+costs[j][0],32*j+costs[j][1])
+  j=i+1
+  key=(j+costs[j][0],32*j+costs[j][1]) if byte_weight is None else ((byte_weight+24)*j+costs[j][0],j+costs[j][1])
   while literals and literals[-1][1]>key:literals.pop()
   literals.append((j,key))
   while literals[0][0]>i+128:literals.popleft()
-  end,key=literals[0];cost=(1-i+key[0],54-32*i+key[1]);count=end-i;distance=0
+  end,key=literals[0]
+  cost=(1-i+key[0],54-32*i+key[1]) if byte_weight is None else (byte_weight+80-(byte_weight+24)*i+key[0],1-i+key[1])
+  count=end-i;distance=0
   for longest,back in matches[i]:
    if not back:continue
    price=2 if back<=255 else 4
@@ -43,7 +46,7 @@ def encode(raw):
      aligned=n-(i&1)
      cycles=206+(18 if i&1 else 0)+30*(aligned//4)+22*(aligned%4)
     if back>255:cycles+=36
-    candidate=(price+costs[i+n][0],cycles+costs[i+n][1])
+    candidate=(price+costs[i+n][0],cycles+costs[i+n][1]) if byte_weight is None else (byte_weight*price+cycles+costs[i+n][0],price+costs[i+n][1])
     if candidate<cost:cost,count,distance=candidate,n,back
   costs[i]=cost;steps[i]=count,distance
  result=bytearray();i=0
@@ -55,7 +58,7 @@ def encode(raw):
    else:result.extend((0,distance>>8,distance&255))
   else:result.append(count-1);result+=raw[i:i+count]
   i+=count
- assert len(result)==costs[0][0]
+ assert len(result)==costs[0][0 if byte_weight is None else 1]
  return bytes(result)
 
 def decode(packed,size,palette=bytes.fromhex('0123456789abcdef')):

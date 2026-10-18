@@ -37,7 +37,9 @@ void __wrap__reset_entry(void)
     if(warm)while(GET_VDP_STATUS(VDP_DMABUSY_FLAG));
     /* The prior PCM owner may have replaced window 1. Restore fixed ROM data
      * before copying the .data image; this function executes in window 0. */
+#ifndef RT_LINEAR_ROM
     *(vu8 *)0xa130f3=1;
+#endif
     volatile u8 *dst=&_start;
     while(dst<&_bend)*dst++=0;
     const u8 *src=(const u8 *)&_stext;

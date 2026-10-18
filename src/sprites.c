@@ -1,6 +1,7 @@
 #include <genesis.h>
 #include "rt_sprites.h"
 #include "rt_rom_layout.h"
+#include "rt_packed_cache.h"
 #ifdef RT_PACKED_PATTERNS
 extern u16 RT_queueCanonicalPose(const void*,u16,u16);
 #endif
@@ -15,7 +16,12 @@ typedef struct {void *source;u16 dest,len;u8 method;} RT_PreparedTransfer;
 static RT_PreparedTransfer preparedTransfers[83];
 static u8 prepareTransfers,preparedCount;
 u8 RT_spritesDeferred(void){return prepareTransfers;}
-void RT_spritesDefer(void){preparedCount=0;prepareTransfers=1;}
+void RT_spritesDefer(void){
+    preparedCount=0;prepareTransfers=1;
+#ifdef RT_LINEAR_ROM
+    RT_packedPrepareBegin();
+#endif
+}
 static u16 publishTransfer(u8 method,u8 location,void *source,u16 dest,u16 len,s16 step)
 {
 #ifdef RT_PACKED_PATTERNS
@@ -30,6 +36,12 @@ static u16 prepareTransfer(u8 method,u8 location,void *source,u16 dest,u16 len,s
 {
     if(!prepareTransfers)return publishTransfer(method,location,source,dest,len,step);
     if(location!=DMA_VRAM || step!=2 || preparedCount>=83)return 0;
+#ifdef RT_LINEAR_ROM
+    if(method==DMA_QUEUE && ((u32)source&0xfe000000UL)==0x84000000UL){
+        void *decoded=RT_prepareCanonicalPose(source,len);
+        if(decoded)source=decoded;
+    }
+#endif
     preparedTransfers[preparedCount++]=(RT_PreparedTransfer){source,dest,len,method};return 1;
 }
 u8 RT_spritesPublishPrepared(void)
@@ -39,6 +51,9 @@ u8 RT_spritesPublishPrepared(void)
         RT_PreparedTransfer *p=preparedTransfers+i;
         if(!publishTransfer(p->method,DMA_VRAM,p->source,p->dest,p->len,2))return 0;
     }
+#ifdef RT_LINEAR_ROM
+    RT_packedPreparePublish();
+#endif
     preparedCount=0;return 1;
 }
 void RT_spritesDiscardPrepared(void){prepareTransfers=0;preparedCount=0;}
@@ -89,7 +104,7 @@ u8 RT_spriteSubmit(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
        !pose->tileCount || pose->tileCount>slot->capacity ||
        pose->pieceCount>80-batch->reserved-batch->count || instance->facingLeft>1 ||
        instance->priority>7 || instance->poolRank>RT_SPRITE_POOL_RELATED){batch->failed=1;return 0;}
-    if(slot->pose!=pose){
+    if(!RT_spritePixelsMatch(slot->pose,pose)){
         if(!prepareTransfer(DMA_QUEUE,DMA_VRAM,(void *)pose->patterns,slot->firstTile*32,
             pose->tileCount*16,2)){batch->failed=1;return 0;}
         slot->pose=pose;batch->queuedBytes+=pose->tileCount*32;
@@ -264,7 +279,7 @@ u8 RT_spriteSubmitPacked(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
     if(!pose || !pose->patterns || !pose->pieceCount || !pose->tileCount ||
        pose->tileCount>slot->capacity || pose->pieceCount>80-batch->reserved-batch->count ||
        instance->facingLeft>1 || instance->priority>7 || instance->poolRank>3){batch->failed=1;return 0;}
-    if(slot->pose!=pose){
+    if(!RT_spritePixelsMatch(slot->pose,pose)){
         if(!prepareTransfer(DMA_QUEUE,DMA_VRAM,(void*)pose->patterns,slot->firstTile*32,
             pose->tileCount*16,2)){batch->failed=1;return 0;}
         slot->pose=pose;batch->queuedBytes+=pose->tileCount*32;
@@ -302,7 +317,7 @@ u8 RT_spriteSubmitStageCached(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
        !pose->tileCount || pose->tileCount>slot->capacity ||
        pose->pieceCount>80-batch->reserved-batch->count || instance->facingLeft>1 ||
        instance->priority>7 || instance->poolRank>3){batch->failed=1;return 0;}
-    if(slot->pose!=pose){
+    if(!RT_spritePixelsMatch(slot->pose,pose)){
         if(!prepareTransfer(DMA_QUEUE,DMA_VRAM,(void*)pose->patterns,slot->firstTile*32,
             pose->tileCount*16,2)){batch->failed=1;return 0;}
         slot->pose=pose;batch->queuedBytes+=pose->tileCount*32;

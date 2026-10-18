@@ -11,6 +11,7 @@
 #include "memory.h"
 #include "z80_ctrl.h"
 #include "rt_z80_bus_policy.h"
+#include "rt_rom_layout.h"
 #include "mapper.h"
 
 #include "kdebug.h"
@@ -175,11 +176,12 @@ void DMA_setBufferSize(u16 value)
 
 void DMA_setBufferSizeToDefault()
 {
-    /* The NTSC transfer budget is7200 bytes per VBlank. Match its copy
-       staging allocation to that budget instead of reserving8192 bytes;
-       later Campaign maps need the remaining992 bytes for pattern storage.
+    /* Both regions share the same scene and heap budgets. Match staging to
+       the 7200-byte NTSC transfer budget instead of reserving8192 on PAL;
+       the extra992 bytes otherwise exhaust the boot font's allocation.
+       Later Campaign maps also need that space for pattern storage.
        The copy allocator still rejects requests exceeding its capacity. */
-    DMA_setBufferSize(IS_PAL_SYSTEM ? DMA_BUFFER_SIZE_PAL_LOW : DMA_TRANSFER_CAPACITY_NTSC);
+    DMA_setBufferSize(DMA_TRANSFER_CAPACITY_NTSC);
 }
 
 bool DMA_getIgnoreOverCapacity()
@@ -489,9 +491,13 @@ NO_INLINE bool DMA_queueDmaFast(u8 location, void* from, u16 to, u16 len, u16 st
     u8 physicalPage = 0;
     if ((fromAddr & 0xFE000000UL) == 0x80000000UL)
     {
+#ifdef RT_LINEAR_ROM
+        fromAddr &= 0x00FFFFFFUL;
+#else
         physicalPage = 0x40 | ((fromAddr >> 19) & 63);
         fromAddr = 0x380000UL | (fromAddr & 0x7FFFFUL);
         queueBanked = 1;
+#endif
     }
 
     // get DMA info structure and pass to next one

@@ -36,7 +36,7 @@ u8 RT_campaignSpritesInitializeGenerated(RT_CampaignSprites *sprites,
     const RT_CampaignDisplay *view,const RT_CampaignGraphics *graphics,u16 terrainTiles);
 u8 RT_campaignSpritesInitializeBank(RT_CampaignSprites *sprites,
     const RT_CampaignDisplay *view,const RT_CampaignGraphics *graphics);
-u8 RT_campaignSpritesUseHud(RT_CampaignSprites *sprites);
+u8 RT_campaignSpritesUseHud(RT_CampaignSprites *sprites,u8 players);
 /* Once per presented frame only. No simulation mutations; respects chosen
  * identity/costume and protection flicker. Unsupported art fails explicitly.
  * Caller commits SAT/scroll/terrain together, then acknowledges display DMA. */

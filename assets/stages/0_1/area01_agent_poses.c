@@ -1,5 +1,148 @@
 /* Generated native sprite commands; all decoding/palette work is offline. */
 #include "area01_rt_agent_poses.h"
+/* Leila violet hair uses palette-safe ordered pixel pairs. */
+extern const u32 rtSharedPose_70956a25b6eb22d55ee2e9b939ba3b35150961bef215f220cb35bd8a32fdfaa3[];
+extern const u32 rtSharedPose_3c394836fab9b5565191218cd8bb49dc585c72b06d6e965013494e09585dcfcc[];
+extern const u32 rtSharedPose_d3d9ec7803a224d9e0e22ec22600f47dff1ceb26b719cc0ec0274fc9714b044a[];
+extern const u32 rtSharedPose_2759679903f6b8b6454ed9971b42a771965a2e0ead5c59194293cc1b1998d67f[];
+extern const u32 rtSharedPose_0cadca977a9927c6e45f0db09d2e5498f30537619b472be8bf7f907030e38051[];
+extern const u32 rtSharedPose_0c904b45b656bc3bad2b7baa706b2eb2f5fc99f95f6a88373a8dc20a19a42941[];
+extern const u32 rtSharedPose_591dcf81731dfda7e2f58b99ad1f37235fc21e3e56aa8919ab64105d5c2eb4dc[];
+extern const u32 rtSharedPose_00732dc8aa9f3646f4c13ceea4bdb6e651809127fda1afde90b632d91bdad0cb[];
+extern const u32 rtSharedPose_8495336a0d8b5b1246cfd2d50f046deded65684e36d21667769f1798b0c03de3[];
+extern const u32 rtSharedPose_f2da06aa41c9f9a6f52fa599052729f919941d16c8a5e41898ffe4920e2208cd[];
+extern const u32 rtSharedPose_bc7587c7158cb17d9cff71ae6ab4e89bca3ac6801205189ce23be13a286b19a9[];
+extern const u32 rtSharedPose_ab1bcf970a226121d4c71ed14ba42a46e65c41c4d7b609f52acc97b770818227[];
+extern const u32 rtSharedPose_c60e8d6eff3a16c82584b1e20577a7b57d44563e9011769f5ddebb7a7d4f69e5[];
+extern const u32 rtSharedPose_4f0f6cf26d9d6179a6c78e25f52ba1625ac0654eeb0dd85759c311a135ef8f3f[];
+extern const u32 rtSharedPose_a2f797a7758ccfc3bc4178a775e709b0efa3b567897d7213d916e9948c7c516b[];
+extern const u32 rtSharedPose_ddb8da29d4b368ce7982dc32829198b16bb1b0564f417b09b957b9fbe08b46bc[];
+extern const u32 rtSharedPose_682579837bacf769dc9c4d441b9f62364f6aa342ece7eb80ec4780bad4191c20[];
+extern const u32 rtSharedPose_aca48fad8a4d3073cd1a6b77837aed329d18a3b3cb6f5b6d76a1dc0e07280d38[];
+extern const u32 rtSharedPose_d84363371229c30693b8ba13790fb0bbf346b28bad3d64d22c85f84cb222ee2b[];
+extern const u32 rtSharedPose_2e80993619509a3cf915309a5316a2232710618070e63fd62fcdd0469df88db7[];
+extern const u32 rtSharedPose_680dcb438ec1750bd54f0faa1490102397f3a4ac80154f6ed4cd462cf6521756[];
+extern const u32 rtSharedPose_a0e4ada125eab213583bd7791349d9e95b8fcb400b7515a063bad53c72e2b4d5[];
+extern const u32 rtSharedPose_280a6fa82a0a76a499a829fa4200508fe893f674dbb131cdf5a5b51f3ff74b4d[];
+extern const u32 rtSharedPose_da923dad872d4c57e093f325c41a6c7345a6f7b47def734c600edcc8729ef428[];
+extern const u32 rtSharedPose_4604f55f48e265fc40ffaf60bf2bd12089388c69488e8009e08bcc100389ea85[];
+extern const u32 rtSharedPose_5bfe8343bbcd8c237e250bcd7791fa91450a15167d524a11548fcc74fd6eff73[];
+extern const u32 rtSharedPose_0a3e762adae472bebf65cfe336599218901197f489072cb46bb4c0f852c90783[];
+extern const u32 rtSharedPose_c749929c05f020e58fdacad64db5958515314df857dc171bf74625ccd77b04b0[];
+extern const u32 rtSharedPose_c3f71c8683bc78f4b0ad6e1f077758bc16ec1713e0ac097da812a18d439c8678[];
+extern const u32 rtSharedPose_61b30827c5344ab90d1a5516db74a9aec06fc8981d1d26dea27e2260260836cd[];
+extern const u32 rtSharedPose_d83355054df88f912852d9a8a2e4503a792d303318252ab6ff7c1f1902d62ef1[];
+extern const u32 rtSharedPose_c4b649abb7b8a8a0a3d28a6cf46d04e61aad4b25d4eb0eb7a654e5a396e65703[];
+extern const u32 rtSharedPose_b12c8ca932e3a6ca51bde0f12ce5c2203cc7b8658b4f0c1115af990bba0e09ba[];
+extern const u32 rtSharedPose_40b2438c8ac2a8a47e48a69b2099014cdbcb5ee0b2204591d03c6f3eecd6db70[];
+extern const u32 rtSharedPose_b94d114c3143b0aa5c1f6e088a963102a9b7566aa01378b58271a42961301cf0[];
+extern const u32 rtSharedPose_e214762f606e6313fc4d7bb14048a9a279ee71d9746a2c5b658b4a17ea16ca14[];
+extern const u32 rtSharedPose_e134896af26cee389afbba6c00f8d0bae6c696c960053060b781731da3cec2a2[];
+extern const u32 rtSharedPose_5f71ee4743d45e1697242e89a28c714491268432de92782631e7aeb19774b7ea[];
+extern const u32 rtSharedPose_cb5c1605ebe7e115adc0c3182e873a906803236fff500b59a439eae21021dab8[];
+extern const u32 rtSharedPose_e463d30ecf529b6e68acd980120588b402c991b1563ed37f3ced71a02086cbff[];
+extern const u32 rtSharedPose_e765f5f42b2338a377096cfdd70613701ce5f3ae71dd558bd4a98bf9c3f17e92[];
+extern const u32 rtSharedPose_edb4e25d960080869f71335a3f8c7a3d62c6d03946b55fa4b2014f38dcb266f8[];
+extern const u32 rtSharedPose_e727b8533d5e3d6fdbde9e5ec69557591c3b7a2155e4acd326bebb6c4785fb9c[];
+extern const u32 rtSharedPose_38fbc56e3102bad63d9a5fb336f825bebab04c85d1b410cfbf31f754315acb11[];
+extern const u32 rtSharedPose_8c08496c7896911ad44b6888a3b7c541633a2f92da27d09cddbf57c11433e0c7[];
+extern const u32 rtSharedPose_2437e059251a59a8e4a1a27075cd44b24737ba272d9a6b6b2efed9a86a83afa7[];
+extern const u32 rtSharedPose_c301e86112d840730dbaa73a1e001bd2b1010263901aea5f4c9c91759de0284e[];
+extern const u32 rtSharedPose_05aa7d40099876458984e52b774f491321fc8219a7c7926a72d8a86e5e5c5e72[];
+extern const u32 rtSharedPose_667b50e154958d7068e2c6479fb4dbeed1f2d09ac7dc7d11fb9d47dd4c80fe0b[];
+extern const u32 rtSharedPose_35f2be1c01f1c713b0bbf2b540e768670201c21b5725a531c4e47ddd8b67417d[];
+extern const u32 rtSharedPose_6308e6bda6f5f5b2331502626200fcf36f1b6291c2ee64b26d236dfbba0b6a97[];
+extern const u32 rtSharedPose_1e850e80104c02fb8b999631623439d18c10bf5ebdc52d7ead2dd7b93cb658cb[];
+extern const u32 rtSharedPose_eb31bbafc4b2393e40ebbe7ccad01dd37c989461faf216af285f214242a1ff9c[];
+extern const u32 rtSharedPose_b6a97ede63fc6457b52d7473382afd441a0d71f965faa5482af2ed55a152dc8a[];
+extern const u32 rtSharedPose_b0706f8967953b848cdee5f2565149ea213fb3e91715f33611b2053f6d76db2c[];
+extern const u32 rtSharedPose_629dbba00c89e4fb846aec11a646a610ef19f3682fa21c63a85dabdfa7b4062e[];
+extern const u32 rtSharedPose_35d1d1b2be242425e7934ae73f0ed15f0c23b4f3522cbc74561a75ab291d595b[];
+extern const u32 rtSharedPose_c6cf9ffae7c8823e70951d51c7d915337ba39db462177e27229a47e1bc44557f[];
+extern const u32 rtSharedPose_4ac9c69e73236fdb3198a89cf414f02f2a0d70e59426ea8a3a1faf42ae42237c[];
+extern const u32 rtSharedPose_c6fde81e98549587095a7fd50dc5245fdf9d017d2b1b3a8885902611084574d2[];
+extern const u32 rtSharedPose_ef7ef55e93dcb29cf8e20b73a976eead4247380bf3ad6d82949b6e865b4255d0[];
+extern const u32 rtSharedPose_48214faf1f54c7d2cb5d107fea0bd481683765bcd101faf9b88eda7bb5b86c6b[];
+extern const u32 rtSharedPose_10bb781c66eeebf23a6d0b8d645c9f1588656ef7336a3474ff80245aeab9eed7[];
+extern const u32 rtSharedPose_df8ff8576283f9598fa981f51174dff4985caf84bf9f93d4b85ada55396780c6[];
+extern const u32 rtSharedPose_45b1231d2f9d52fc8034f1f2317dc2e4b5be1a0bf8e0094459c3d25dd761cad9[];
+extern const u32 rtSharedPose_e97c43b68777ffe77b16a2051e84995c5cf82562d9255503e067cee73c8a8bf2[];
+extern const u32 rtSharedPose_a69933f7777903cf2ed6b9ba35407b58d9361d4a4c695639b0583d27d82cf6cb[];
+extern const u32 rtSharedPose_fc69aa3c9abdc45e368cb6087525337053449ab313451416d7b56d43dc93a74d[];
+extern const u32 rtSharedPose_6490bab53fe11a2faae74dd7a2aa579c2670453abe6389d9c84d52d04339afc2[];
+extern const u32 rtSharedPose_7b1fe33856bcc9865d0849c269f85854217bb8717a24ce6dc99b2d9d3d89c96a[];
+extern const u32 rtSharedPose_c461edf062e195fdafd15e500c4e5b27f1071296cb0c3f2c856f89bbc87d41f2[];
+extern const u32 rtSharedPose_b6a4b325baa436e5ae22fcee662d221f541733c2aee53cbea39e540aae0d4e86[];
+extern const u32 rtSharedPose_67a0976e9266b96ed19bdb62be735bc5c07fdd6b3fbae65c6cdc093aa0fa5ba1[];
+extern const u32 rtSharedPose_76692d205a112964b95ba47b4eac6f71958fdb9a9ec55a1a4bae0873b654036e[];
+extern const u32 rtSharedPose_4628f3e45ca148e8cbb97eb859606df16321dd18bb8c2ba8d25502f6c06fcb8d[];
+extern const u32 rtSharedPose_8158162dc826b7155ab0ebed0be1a8251cfb348688d109140f5cf211c1e4abb4[];
+extern const u32 rtSharedPose_6d9881aad29a23c8ced193bc50f8bfef06815aaff3c91298fe5662b2daa7d877[];
+extern const u32 rtSharedPose_9d0271998d5eab0fd57c1db796f66671fa81e3876671926ff39fb9ec5a0c2667[];
+extern const u32 rtSharedPose_676052e01aa97ddfd3a7d54a80be7dcfe34de625c68ccaa4aae12c96cf7b151b[];
+extern const u32 rtSharedPose_3bce4f23ba72e939d0a5872f3a3120bce127fd2d291220e0ae3730b5c6953870[];
+extern const u32 rtSharedPose_d75ad474ee3db31330cecf512ea83ca56551aa14848d47c0c831f08c3bfb6d21[];
+extern const u32 rtSharedPose_f83a88f06882ceebca6ce29a514d10772e51985c3fc2243487badf5c97223e2d[];
+extern const u32 rtSharedPose_186d6b5bfa5e3b68ada119fd934adfe790517b608d82f8afeb685dd9737c8434[];
+extern const u32 rtSharedPose_82d92f539bc45b80edbe587cdd05313711ddcd830008cffe05398715d5618dba[];
+extern const u32 rtSharedPose_641aae4b9fc0facb1807ff43b8daa726dbc20ef43ada3a7c1993f6a60b3a7425[];
+extern const u32 rtSharedPose_bb173356dbf245340c69ed80750d0d37c65a06239515db4fb5acfcfb4156a39d[];
+extern const u32 rtSharedPose_34cd5c1c4418efdcdafdf187afb667383569ad5c5361388625137ace9a1504b8[];
+extern const u32 rtSharedPose_39e07b8dc3606e60d0767d846cb9e816f0f23056a53167013a05bc0d6cde9c0e[];
+extern const u32 rtSharedPose_01725915a2148fd1dc43f3386564bfa0eb5bf5b3ed5ad75c1d7d8875d35643e2[];
+extern const u32 rtSharedPose_1198862a6f9f143b4d352e8e279dbad9a9b6d418593687448cac0673e148a8b7[];
+extern const u32 rtSharedPose_0a09f2dce1a36cffe12464aab33c1bfcb05deee05564711596ef41305bb88397[];
+extern const u32 rtSharedPose_70bd48284f6a0400d422dcad4132eec53554bbee63fe19a246a95e338ad08af6[];
+extern const u32 rtSharedPose_c72a6d52a279a25d9d916bf6298207fb6d47f2e60e82bf14cc33b794fa7ba0ac[];
+extern const u32 rtSharedPose_8858f4364e4dfd3ecb922ef14e13364e4a34a59f6ccc62f250de1aa3b51577cf[];
+extern const u32 rtSharedPose_53dce385ffbb6d4e7e3289e4421e8c6f0677d00dfba2ebf68ef2e5f0e59c9a51[];
+extern const u32 rtSharedPose_cbda603d577fdf7fd7073a87516ea611589b484e9936deaba4cc0ac4a95fdbae[];
+extern const u32 rtSharedPose_d42e8bef719b86a2c5c8acdcd994672001667c586583d35bf3adaeebca73e81d[];
+extern const u32 rtSharedPose_e0b51d16d61eabe3552e4cb4f42a12cfe8ed5274d94474770bf3eb14910478b2[];
+extern const u32 rtSharedPose_1d7455d8b772f01c30224e82e5297c114bffd2a15673e1d254dbe9c4d8f413d0[];
+extern const u32 rtSharedPose_7b69ad2589c7bc115762efec8766e7ff5cc1d5392dd2de20728be044b6abfc8b[];
+extern const u32 rtSharedPose_9f16b5c56aee0411b71b5649f2d81670d25b222fcea26b28c293dc5e8273ec4c[];
+extern const u32 rtSharedPose_437ea9fcb39a74e1f3b56730a8b6f482a2f2727956c2f449bc83f12f40b9ec11[];
+extern const u32 rtSharedPose_5b393f299e1484384237a63da326967d75214eaa927cabd22a9546c2b7c96a98[];
+extern const u32 rtSharedPose_dc9b80a68c629f3ce3e10223b281883540123e88160f7aba9c7bb1aa9f2f9a1b[];
+extern const u32 rtSharedPose_4fe04539c5c76d31b4ffad5535a8b371f92e731b401bc33a562e4e4750bb6ebd[];
+extern const u32 rtSharedPose_f9c51a032616de0a2ddf0240bd337d38377ad708813419dbd4bc6444fbeadc2c[];
+extern const u32 rtSharedPose_1aaff0ec29607869780c15e58e794bcf6a1bba7404a0998f250b6ca514850f2d[];
+extern const u32 rtSharedPose_fb0f256ed4f02d1dadbf869a714a04f2e1cde25187375f946fb7c1f8c24fc993[];
+extern const u32 rtSharedPose_e74a3024059e45cc49dc02ce26b7cc3ed9602fc22ec154fb05e6bf18021f4cd2[];
+extern const u32 rtSharedPose_0dd3fd8764cf66800aa756ecf69e483e6c4080fd6879786a59e78a6d28a683f0[];
+extern const u32 rtSharedPose_cd4a9405d9d473cf58be17091c8bf302e5ab0cca5d10ae798f4216a58af1eb72[];
+extern const u32 rtSharedPose_97b55ecb46f44e6d1310cd26953ebaccd2ba269774876b3908f66fcf370fbb4f[];
+extern const u32 rtSharedPose_eca7b428d736097ec606c1b4a17e66bf2b3a0a37b884278c2c20eeacce628e39[];
+extern const u32 rtSharedPose_5c0424b13a16390b1736cba152e047db70d8f82f8275cae058aa5eaa58f809b4[];
+extern const u32 rtSharedPose_2b58593e819a001638f41680e4eff5bd0dcd6581e8289bc38e8394e58632a577[];
+extern const u32 rtSharedPose_b8842ecf00b479785f0a2b56c6eeacbb16e6652dbe9c5b54dc568454eeb5999d[];
+extern const u32 rtSharedPose_5b383727671385c203e1d9434ca11e8565f3859c8224a93890649d54b6cdffe9[];
+extern const u32 rtSharedPose_8e1de18beb36d0429bc632cbeb57d75a8baef4abc674543f96af0c3f2315868c[];
+extern const u32 rtSharedPose_0ac79fe0fdab0607c118323be0be14a83768e73c59d04d8801b10c0815c9ec2b[];
+extern const u32 rtSharedPose_280eb8cc64142e96a3e650c06f5e8007dff65619cdcc6d42fd10b65d47552cff[];
+extern const u32 rtSharedPose_9dd0a0beb5c0a75431ecb9f8e7dc5c7d068d45fb06d05616711f20d913b8a54c[];
+extern const u32 rtSharedPose_18dee7fcfbb35b158d25845d3c636efd772be8bac68c67d30aeed1ada3ab585c[];
+extern const u32 rtSharedPose_6d9c61a46bbf6fab4c466456a6710f5b4bee3f4f60a84909d055062aa426aa68[];
+extern const u32 rtSharedPose_20fe5af00ab568ac371283ed7e46f6d65562a971dc2af7416cff25030a6d1062[];
+extern const u32 rtSharedPose_9d4e726b09854e5de2a09d9a156c910efdaf05027f9ed4f9c903521dfeb92e43[];
+extern const u32 rtSharedPose_91ae538cf44e265d3809923288ee5768d9807aeab42847cb4efe225418602f62[];
+extern const u32 rtSharedPose_988884eb4159db38731f26bf204c1c64798331541df884f6d4bda40d83e7c70c[];
+extern const u32 rtSharedPose_61938dc2819448bf4f37901f67aee1094fc4cf150351c9f961b6467788ce1d36[];
+extern const u32 rtSharedPose_a56d18b98017c4a8bfb529ce23d427c9ca06a12f5aea90603a05f2dd6b641f8e[];
+extern const u32 rtSharedPose_93f64592026826f930f9bdd1920fd060223962619f06347b9787540ed24fe8d1[];
+extern const u32 rtSharedPose_03534f2eca875f179fa73f20ea99aab127fd68aa3d1cad05702b4a28c90e12c6[];
+extern const u32 rtSharedPose_31f55b11ff2bc47b390de58ff0d38d47696b9fd42d4b3d46a3bf07d6e0571541[];
+extern const u32 rtSharedPose_fbb5aaa94ec1648d907be509d742281402308f25dd2f90fe687174dc6bd5d408[];
+extern const u32 rtSharedPose_03cbdd54f1ea2d564827e16929d591059868af7b8c1404cb6b6b2b3c4bd5ec6e[];
+extern const u32 rtSharedPose_a06290daee552a6678bd40a0d3585c0cdde379011d3c124fc9239fa0d1355c82[];
+extern const u32 rtSharedPose_0782d00c728be146514a8d400fa19c178ecfcee2230107c2134b828631de730d[];
+extern const u32 rtSharedPose_aa6a8c0cc0633a75722f3e05d7bed58671683c7732f4cbaf136835cfd4c5a617[];
+extern const u32 rtSharedPose_653575da133a3f331f15f840a2d619aa3b3704663260d87e089504a73b23c408[];
+extern const u32 rtSharedPose_efef91e817f697e41a13a2f25830e0bfbd8a26e7e857568382f6812c8f4a9c97[];
+extern const u32 rtSharedPose_1fb7cd5f2923864feb18c6b495e2c08d12facc7a8cfcb05142fb323644250118[];
+extern const u32 rtSharedPose_da1219728e6f7dd0f70b8229f8773017d5960174b0effe91002afdf46bdf216a[];
+extern const u32 rtSharedPose_c2297f94db4e72aa793b9e38c3f030ccc8f6e6e3f11959df40f1fd614ec4b846[];
 /* Shared immutable pose patterns; regenerate before interning again. */
 extern const u32 rtSharedPose_009a05e4e4b37570e618ea52efd671dbbdb9ffa06cdb9c18df25560ee951c208[280];
 extern const u32 rtSharedPose_01c8b9f5e16af447e0eae1602edccf9d496b0b9d7058cd7f4dc97eabf1a347e7[224];
@@ -1173,166 +1316,166 @@ const RT_SpritePose area01_rtAgentPoses[4][area01_RT_AGENT_POSE_COUNT]={
     {rtSharedPose_ee9fa1c87d6d1d06326072269db142b9492da17040ab741a30eec8e4a0bf5551,pieces+776,24,2,0},
  },
  {
-    {rtSharedPose_60fbc624bd09881c79f2776b1db9dfc5a996f7eb6132bfe27a55fbc9e15487ff,pieces+4,14,2,0},
-    {rtSharedPose_54f4998657158eee10c20a382e8c731b71feaf5ecabadd3e2ae78fa5f007db26,pieces+12,21,2,0},
-    {rtSharedPose_d36a93bfac0cbd5fae6026b856bd120dce2d1aa8dea56188067d5d8481a4f2ab,pieces+20,21,2,0},
-    {rtSharedPose_988786cfc826ab73b5d365469fd0e81ec0a30a3831b2ae6f639fa5377722f9e5,pieces+28,14,2,0},
-    {rtSharedPose_a2332888209256a19155a06b1c05970f1af12ee4768ffadbfd44dcdbdd9726af,pieces+36,21,2,0},
-    {rtSharedPose_5c705e978862464efb0d9d1381d44dd9af6762b8f3b66aab13ab09c3dadb7f29,pieces+44,21,2,0},
-    {rtSharedPose_da116471be913c65ea15dab457844fbaa968fe2cdda7e02f8d83aea86e8a12aa,pieces+52,21,2,0},
-    {rtSharedPose_46535a265b0efafbe5d8ec29d6de71ded7dafcc91770a748db60cf6e2ae9ce96,pieces+60,14,2,0},
-    {rtSharedPose_5457e57111b85791d4dd5360821c81440a7000bd9310a25052a8783160148fea,pieces+70,24,2,0},
-    {rtSharedPose_6828e8a4e075c27be434c0c5b07304e2edf4e20f74fa3090867ea1f79d76c401,pieces+78,30,4,0},
-    {rtSharedPose_6f23450230d715506f68ee47404916cc793f169b46b98d28f54b60f688daaec5,pieces+92,30,4,0},
-    {rtSharedPose_ab3e8b5fa019c23490cd1f0367be700b7c5d133cbe9036ec2c09007540d32e72,pieces+106,28,2,0},
-    {rtSharedPose_ee9aa35aa80346a5aaf4bd732010b32c4d404374d45fdbfb0af2dd83c7655cf8,pieces+114,28,2,0},
-    {rtSharedPose_65917511e0c75ee4f56a4f19d32a45ca39a61b0c1d6cd385d8db0dc856957abc,pieces+124,21,2,0},
-    {rtSharedPose_f0c83daef5b454142927a84f18d4aa39b4d6a65f7ef10ec7c375d4797d95d52b,pieces+134,30,4,0},
-    {rtSharedPose_6e59d77ff27d8daddce1ecc85380b30587d3dcebd21141d48411125b846596c9,pieces+146,30,4,0},
-    {rtSharedPose_4c89ead9ea5b582af2caafb9fe214b13cda63568bc6a840c79bd1c9e21506e43,pieces+158,25,4,0},
-    {rtSharedPose_cb72a3c4a968382d06d7491ae5a160e1b2bd69ad3c6e3f569575c155c97546dd,pieces+170,20,2,0},
-    {rtSharedPose_af66f4b561b9b6797cc4ed7ac08c71eb0e15b7fe636e1f2826025050b583a702,pieces+178,20,2,0},
-    {rtSharedPose_197ad971cc915cb68ec83132541c1f4b8c48911e0abf225e4ab56acbe89b8d7a,pieces+186,16,1,0},
+    {rtSharedPose_70956a25b6eb22d55ee2e9b939ba3b35150961bef215f220cb35bd8a32fdfaa3,pieces+4,14,2,0},
+    {rtSharedPose_3c394836fab9b5565191218cd8bb49dc585c72b06d6e965013494e09585dcfcc,pieces+12,21,2,0},
+    {rtSharedPose_d3d9ec7803a224d9e0e22ec22600f47dff1ceb26b719cc0ec0274fc9714b044a,pieces+20,21,2,0},
+    {rtSharedPose_2759679903f6b8b6454ed9971b42a771965a2e0ead5c59194293cc1b1998d67f,pieces+28,14,2,0},
+    {rtSharedPose_0cadca977a9927c6e45f0db09d2e5498f30537619b472be8bf7f907030e38051,pieces+36,21,2,0},
+    {rtSharedPose_0c904b45b656bc3bad2b7baa706b2eb2f5fc99f95f6a88373a8dc20a19a42941,pieces+44,21,2,0},
+    {rtSharedPose_591dcf81731dfda7e2f58b99ad1f37235fc21e3e56aa8919ab64105d5c2eb4dc,pieces+52,21,2,0},
+    {rtSharedPose_00732dc8aa9f3646f4c13ceea4bdb6e651809127fda1afde90b632d91bdad0cb,pieces+60,14,2,0},
+    {rtSharedPose_8495336a0d8b5b1246cfd2d50f046deded65684e36d21667769f1798b0c03de3,pieces+70,24,2,0},
+    {rtSharedPose_f2da06aa41c9f9a6f52fa599052729f919941d16c8a5e41898ffe4920e2208cd,pieces+78,30,4,0},
+    {rtSharedPose_bc7587c7158cb17d9cff71ae6ab4e89bca3ac6801205189ce23be13a286b19a9,pieces+92,30,4,0},
+    {rtSharedPose_ab1bcf970a226121d4c71ed14ba42a46e65c41c4d7b609f52acc97b770818227,pieces+106,28,2,0},
+    {rtSharedPose_c60e8d6eff3a16c82584b1e20577a7b57d44563e9011769f5ddebb7a7d4f69e5,pieces+114,28,2,0},
+    {rtSharedPose_4f0f6cf26d9d6179a6c78e25f52ba1625ac0654eeb0dd85759c311a135ef8f3f,pieces+124,21,2,0},
+    {rtSharedPose_a2f797a7758ccfc3bc4178a775e709b0efa3b567897d7213d916e9948c7c516b,pieces+134,30,4,0},
+    {rtSharedPose_ddb8da29d4b368ce7982dc32829198b16bb1b0564f417b09b957b9fbe08b46bc,pieces+146,30,4,0},
+    {rtSharedPose_682579837bacf769dc9c4d441b9f62364f6aa342ece7eb80ec4780bad4191c20,pieces+158,25,4,0},
+    {rtSharedPose_aca48fad8a4d3073cd1a6b77837aed329d18a3b3cb6f5b6d76a1dc0e07280d38,pieces+170,20,2,0},
+    {rtSharedPose_d84363371229c30693b8ba13790fb0bbf346b28bad3d64d22c85f84cb222ee2b,pieces+178,20,2,0},
+    {rtSharedPose_2e80993619509a3cf915309a5316a2232710618070e63fd62fcdd0469df88db7,pieces+186,16,1,0},
     {0,0,0,0,0},
-    {rtSharedPose_5457e57111b85791d4dd5360821c81440a7000bd9310a25052a8783160148fea,pieces+198,24,2,0},
-    {rtSharedPose_b4acd4b8e3d1b7cd74ffb8843a260d4e48c95b923bf976e2e5e03518fd6868ad,pieces+208,32,2,0},
-    {rtSharedPose_4f8717380c9d3de5dcb80425be54d0c8c2a99b9a86e1534d38e33f05adfa0cf2,pieces+218,36,3,0},
-    {rtSharedPose_079698266e0a1f6e6944bc24acae312ecdb5550291eff942e23836b1f78c0e43,pieces+230,35,4,0},
-    {rtSharedPose_39c4b1f33443477c9073a975795aaad615095c0ebf82237a4149a986be1371cc,pieces+242,28,2,0},
-    {rtSharedPose_ac0edd9188d54da2b8a63c3549f9553d1d9f2d775b314026b7ee2dcd5b74e7d5,pieces+250,28,2,0},
-    {rtSharedPose_e9070d30a0dabb9a089f43e50b3233182ac792f9cb80741a4b12f83bb73fe287,pieces+258,30,4,0},
-    {rtSharedPose_46e7c609e66e42bb62c0450f87cac05add1f8deec1955c530759f64e2191fa60,pieces+272,36,4,0},
-    {rtSharedPose_d42e0be70d0b4e91c19e2b6bdd06371374756b42a6562b974b6244fae57af122,pieces+284,20,2,0},
-    {rtSharedPose_5457e57111b85791d4dd5360821c81440a7000bd9310a25052a8783160148fea,pieces+294,24,2,0},
-    {rtSharedPose_4a0849a9352c5a2c713cb00e378b96a388c6865b0c56dd3accb717d4af4d8c4a,pieces+304,24,2,0},
-    {rtSharedPose_27da21b8861147ed33ff1b23b2e64a378d82270b159342f3beaf94c32de37750,pieces+314,42,4,0},
-    {rtSharedPose_7942c509d780784caba0be96af7610596556d85fe1f708f0c0b572c18c128ad3,pieces+328,35,4,0},
-    {rtSharedPose_cbc60cba4b127a3e20d5258fe72235fa9e84921d2afaa93a1e54a2d209e1a32e,pieces+340,36,4,0},
-    {rtSharedPose_176c8e5881908d89d031ae03e18564a293e8f125539fc2f68534ccac0fd712d4,pieces+354,35,4,0},
-    {rtSharedPose_f04b2ca4e81b75521d1a6e1042fd03f95f1799746b79894b838b31fb3ab2d5ea,pieces+368,36,4,0},
-    {rtSharedPose_bdf1eae238d8380b24a640f430ac0309c05e4eb4b39cb24fd27137f0d257a5a0,pieces+382,24,2,0},
-    {rtSharedPose_65c368b2b86f3bfbbdeeb73efa81d03570bf6d46f166e8b6617a47b68711c082,pieces+390,28,2,0},
-    {rtSharedPose_4b4252bb8a77ea9059ecc246f99d62ee4d2ad3d0617be5dd884ad27fe7ee470e,pieces+400,28,2,0},
-    {rtSharedPose_7280c26d9315fab492e61a2322e1163d321641604a109c303c178cae619df715,pieces+408,28,2,0},
-    {rtSharedPose_2ff4a9ee2819bfc93bebb7517c68760f254c0a14c53eeba14fb97e0a92fb2aac,pieces+416,28,2,0},
-    {rtSharedPose_68a76c58bc3c520abca1f598e62f1ed4567c86a89d6910a365157165c380b794,pieces+424,28,2,0},
-    {rtSharedPose_54b969510af9eb283fe563f8afff9722e45ad6502bde2510e41db88d4876a658,pieces+432,28,2,0},
-    {rtSharedPose_05b6d6d464abc74f7d3c120050b194539beddf43559683eb7d9dc27506ffdeea,pieces+440,32,2,0},
-    {rtSharedPose_f5eda6b864a612319045852b18c6cebdc453289ead226e58b51b37a2fe534775,pieces+450,32,2,0},
-    {rtSharedPose_b43e1c03d10cce8117600a80d945aa055a3f739de09717e78d193443f2332e9d,pieces+460,32,2,0},
-    {rtSharedPose_7d735c012a74ba83b4800c981851bd8d4bebe66830d669f182246490a373b635,pieces+468,32,2,0},
-    {rtSharedPose_166266c348f4a1b4fc004d3574210c2e67914602569919e04bdb1c520cbee158,pieces+478,28,2,0},
-    {rtSharedPose_68b25b35d5db16e3429fe205ec04750818c09530d9d1a03f5ee5822193ddaff8,pieces+488,32,2,0},
-    {rtSharedPose_4b56ed524e8e23d37457dcf8f281ffad8c7492399ee302ce51e567b98868baad,pieces+496,16,2,0},
-    {rtSharedPose_ae7c89e3077e451f88bae87ac643fe566fbbbcadb2d50a064373e4a554aa7365,pieces+506,14,2,0},
-    {rtSharedPose_10bae6cc152b57adaa3830f9c9af8ca5b12961120fb1faf6bc54ac949897e282,pieces+516,21,2,0},
-    {rtSharedPose_fb3f4c183ca3268ed936a3e6dea1e9fb5ea56224771ac6ad4ac331e9bfc4ebbe,pieces+526,21,2,0},
-    {rtSharedPose_626c31d41d0928bbc6efdac38427d0400eff360e6a6db62914bbfce94bd5c6e2,pieces+536,14,2,0},
-    {0,0,0,0,0},
-    {0,0,0,0,0},
-    {rtSharedPose_b7c1ad137811a8aca7a68ab8d62b79e6ccb28a54d0f87867184de301d6778f7a,pieces+556,21,2,0},
-    {rtSharedPose_a85e0572a915d51f367e769df8b996a7150ed2c086eb949cec694502af82df31,pieces+566,14,2,0},
-    {rtSharedPose_327091a3f1d01bdc008cf3bb46526fbe2f09acfff362bad8e452682f51940403,pieces+576,28,2,0},
-    {rtSharedPose_4536db3c2602c2ef3c182fd7158526f3c5a6777b717e9dfe6880a5de09f47086,pieces+586,28,2,0},
-    {rtSharedPose_8b735c9765321ce4158d302d49383e8c4bbb97189b0c6f35929e61a3abfdc2a8,pieces+596,14,2,0},
+    {rtSharedPose_8495336a0d8b5b1246cfd2d50f046deded65684e36d21667769f1798b0c03de3,pieces+198,24,2,0},
+    {rtSharedPose_680dcb438ec1750bd54f0faa1490102397f3a4ac80154f6ed4cd462cf6521756,pieces+208,32,2,0},
+    {rtSharedPose_a0e4ada125eab213583bd7791349d9e95b8fcb400b7515a063bad53c72e2b4d5,pieces+218,36,3,0},
+    {rtSharedPose_280a6fa82a0a76a499a829fa4200508fe893f674dbb131cdf5a5b51f3ff74b4d,pieces+230,35,4,0},
+    {rtSharedPose_da923dad872d4c57e093f325c41a6c7345a6f7b47def734c600edcc8729ef428,pieces+242,28,2,0},
+    {rtSharedPose_4604f55f48e265fc40ffaf60bf2bd12089388c69488e8009e08bcc100389ea85,pieces+250,28,2,0},
+    {rtSharedPose_5bfe8343bbcd8c237e250bcd7791fa91450a15167d524a11548fcc74fd6eff73,pieces+258,30,4,0},
+    {rtSharedPose_0a3e762adae472bebf65cfe336599218901197f489072cb46bb4c0f852c90783,pieces+272,36,4,0},
+    {rtSharedPose_c749929c05f020e58fdacad64db5958515314df857dc171bf74625ccd77b04b0,pieces+284,20,2,0},
+    {rtSharedPose_8495336a0d8b5b1246cfd2d50f046deded65684e36d21667769f1798b0c03de3,pieces+294,24,2,0},
+    {rtSharedPose_c3f71c8683bc78f4b0ad6e1f077758bc16ec1713e0ac097da812a18d439c8678,pieces+304,24,2,0},
+    {rtSharedPose_61b30827c5344ab90d1a5516db74a9aec06fc8981d1d26dea27e2260260836cd,pieces+314,42,4,0},
+    {rtSharedPose_d83355054df88f912852d9a8a2e4503a792d303318252ab6ff7c1f1902d62ef1,pieces+328,35,4,0},
+    {rtSharedPose_c4b649abb7b8a8a0a3d28a6cf46d04e61aad4b25d4eb0eb7a654e5a396e65703,pieces+340,36,4,0},
+    {rtSharedPose_b12c8ca932e3a6ca51bde0f12ce5c2203cc7b8658b4f0c1115af990bba0e09ba,pieces+354,35,4,0},
+    {rtSharedPose_40b2438c8ac2a8a47e48a69b2099014cdbcb5ee0b2204591d03c6f3eecd6db70,pieces+368,36,4,0},
+    {rtSharedPose_b94d114c3143b0aa5c1f6e088a963102a9b7566aa01378b58271a42961301cf0,pieces+382,24,2,0},
+    {rtSharedPose_e214762f606e6313fc4d7bb14048a9a279ee71d9746a2c5b658b4a17ea16ca14,pieces+390,28,2,0},
+    {rtSharedPose_e134896af26cee389afbba6c00f8d0bae6c696c960053060b781731da3cec2a2,pieces+400,28,2,0},
+    {rtSharedPose_5f71ee4743d45e1697242e89a28c714491268432de92782631e7aeb19774b7ea,pieces+408,28,2,0},
+    {rtSharedPose_cb5c1605ebe7e115adc0c3182e873a906803236fff500b59a439eae21021dab8,pieces+416,28,2,0},
+    {rtSharedPose_e463d30ecf529b6e68acd980120588b402c991b1563ed37f3ced71a02086cbff,pieces+424,28,2,0},
+    {rtSharedPose_e765f5f42b2338a377096cfdd70613701ce5f3ae71dd558bd4a98bf9c3f17e92,pieces+432,28,2,0},
+    {rtSharedPose_edb4e25d960080869f71335a3f8c7a3d62c6d03946b55fa4b2014f38dcb266f8,pieces+440,32,2,0},
+    {rtSharedPose_e727b8533d5e3d6fdbde9e5ec69557591c3b7a2155e4acd326bebb6c4785fb9c,pieces+450,32,2,0},
+    {rtSharedPose_38fbc56e3102bad63d9a5fb336f825bebab04c85d1b410cfbf31f754315acb11,pieces+460,32,2,0},
+    {rtSharedPose_8c08496c7896911ad44b6888a3b7c541633a2f92da27d09cddbf57c11433e0c7,pieces+468,32,2,0},
+    {rtSharedPose_2437e059251a59a8e4a1a27075cd44b24737ba272d9a6b6b2efed9a86a83afa7,pieces+478,28,2,0},
+    {rtSharedPose_c301e86112d840730dbaa73a1e001bd2b1010263901aea5f4c9c91759de0284e,pieces+488,32,2,0},
+    {rtSharedPose_05aa7d40099876458984e52b774f491321fc8219a7c7926a72d8a86e5e5c5e72,pieces+496,16,2,0},
+    {rtSharedPose_667b50e154958d7068e2c6479fb4dbeed1f2d09ac7dc7d11fb9d47dd4c80fe0b,pieces+506,14,2,0},
+    {rtSharedPose_35f2be1c01f1c713b0bbf2b540e768670201c21b5725a531c4e47ddd8b67417d,pieces+516,21,2,0},
+    {rtSharedPose_6308e6bda6f5f5b2331502626200fcf36f1b6291c2ee64b26d236dfbba0b6a97,pieces+526,21,2,0},
+    {rtSharedPose_1e850e80104c02fb8b999631623439d18c10bf5ebdc52d7ead2dd7b93cb658cb,pieces+536,14,2,0},
     {0,0,0,0,0},
     {0,0,0,0,0},
+    {rtSharedPose_eb31bbafc4b2393e40ebbe7ccad01dd37c989461faf216af285f214242a1ff9c,pieces+556,21,2,0},
+    {rtSharedPose_b6a97ede63fc6457b52d7473382afd441a0d71f965faa5482af2ed55a152dc8a,pieces+566,14,2,0},
+    {rtSharedPose_b0706f8967953b848cdee5f2565149ea213fb3e91715f33611b2053f6d76db2c,pieces+576,28,2,0},
+    {rtSharedPose_629dbba00c89e4fb846aec11a646a610ef19f3682fa21c63a85dabdfa7b4062e,pieces+586,28,2,0},
+    {rtSharedPose_35d1d1b2be242425e7934ae73f0ed15f0c23b4f3522cbc74561a75ab291d595b,pieces+596,14,2,0},
     {0,0,0,0,0},
-    {rtSharedPose_7cd3a0649834e49b7058c37959052156f8a1c79f15329bcbb2747d6a199ab82c,pieces+626,30,4,0},
-    {rtSharedPose_03ffd8a8439f7e50c84d3da49b85f5153cb99a7eecf5bd30b2d534f6a8835202,pieces+638,24,2,0},
-    {rtSharedPose_a68a939a235332921024ce7a3e358986a0425d5bf4b6ef986e2c8217b1b73e2e,pieces+646,40,4,0},
-    {rtSharedPose_5130f5619692690dd1f266592cd92a339a60c8869dfed822b7a8162637400616,pieces+660,24,2,0},
-    {rtSharedPose_c0a5b85481177d833204b58ede8ce618ba92a9cb2230ee84487e871a6cacbb84,pieces+672,42,4,0},
-    {rtSharedPose_f028d80a5c73114eea246d78124dbbc19060818b23c47c53f8200ce37f4eacd4,pieces+690,24,2,0},
-    {rtSharedPose_904997f040938f5d56031ccb00c25867b06cc30a044bb5287b529272d1f17ba6,pieces+702,36,4,0},
-    {rtSharedPose_2394dc1df6206e1b462ebc22a31e2a0e7f917244cadbc16625aed5880ee892e5,pieces+716,20,2,0},
-    {rtSharedPose_2365295808d9414d4886fd8380a9387abf22c349f544d2ac7137f1a02f36df36,pieces+726,20,2,0},
-    {rtSharedPose_505b986289893719c41be0d5c72f1a943ea11f0843d14205404064a28e11cc96,pieces+736,15,2,0},
-    {rtSharedPose_66d07ce19d4c68bcb51b94a3e2380418e73fe1e5a2bd66b9e71f62ef47785b13,pieces+744,30,4,0},
-    {rtSharedPose_3da7bfa18bf6a30da99175c9c742826af5bc82517c87caa757cfccefbf31acec,pieces+756,30,4,0},
-    {rtSharedPose_04a5738ecf74a59adb04d00c3e1369bc21db5ad678722e32ce5d474ca5b1ebfa,pieces+768,30,4,0},
-    {rtSharedPose_a95186dea0c3b1adfa1575e8195bdd09c2b1d72a2b3c579884adef90a74d5516,pieces+780,30,4,0},
+    {0,0,0,0,0},
+    {0,0,0,0,0},
+    {rtSharedPose_c6cf9ffae7c8823e70951d51c7d915337ba39db462177e27229a47e1bc44557f,pieces+626,30,4,0},
+    {rtSharedPose_4ac9c69e73236fdb3198a89cf414f02f2a0d70e59426ea8a3a1faf42ae42237c,pieces+638,24,2,0},
+    {rtSharedPose_c6fde81e98549587095a7fd50dc5245fdf9d017d2b1b3a8885902611084574d2,pieces+646,40,4,0},
+    {rtSharedPose_ef7ef55e93dcb29cf8e20b73a976eead4247380bf3ad6d82949b6e865b4255d0,pieces+660,24,2,0},
+    {rtSharedPose_48214faf1f54c7d2cb5d107fea0bd481683765bcd101faf9b88eda7bb5b86c6b,pieces+672,42,4,0},
+    {rtSharedPose_10bb781c66eeebf23a6d0b8d645c9f1588656ef7336a3474ff80245aeab9eed7,pieces+690,24,2,0},
+    {rtSharedPose_df8ff8576283f9598fa981f51174dff4985caf84bf9f93d4b85ada55396780c6,pieces+702,36,4,0},
+    {rtSharedPose_45b1231d2f9d52fc8034f1f2317dc2e4b5be1a0bf8e0094459c3d25dd761cad9,pieces+716,20,2,0},
+    {rtSharedPose_e97c43b68777ffe77b16a2051e84995c5cf82562d9255503e067cee73c8a8bf2,pieces+726,20,2,0},
+    {rtSharedPose_a69933f7777903cf2ed6b9ba35407b58d9361d4a4c695639b0583d27d82cf6cb,pieces+736,15,2,0},
+    {rtSharedPose_fc69aa3c9abdc45e368cb6087525337053449ab313451416d7b56d43dc93a74d,pieces+744,30,4,0},
+    {rtSharedPose_6490bab53fe11a2faae74dd7a2aa579c2670453abe6389d9c84d52d04339afc2,pieces+756,30,4,0},
+    {rtSharedPose_7b1fe33856bcc9865d0849c269f85854217bb8717a24ce6dc99b2d9d3d89c96a,pieces+768,30,4,0},
+    {rtSharedPose_c461edf062e195fdafd15e500c4e5b27f1071296cb0c3f2c856f89bbc87d41f2,pieces+780,30,4,0},
  },
  {
-    {rtSharedPose_0ce3852d880256df8c7051fe7b77f31313a2ad6d85f491d889f48f433a1b4421,pieces+6,14,2,0},
-    {rtSharedPose_07d5d0a8bfe1d382acb3eca9fbfb219938ddfd3a9b771728c8a9f740e365dd92,pieces+14,21,2,0},
-    {rtSharedPose_09b6825134f699784af0f6d634b6381fece3480b111b65b3208d047085246881,pieces+22,21,2,0},
-    {rtSharedPose_2c39a297a8e5d30109588d3a97abb1eb2d8ea280ee73ea44437e74983badec0e,pieces+30,14,2,0},
-    {rtSharedPose_99363308b9dd2e2e137f91d3066679f6d9bc65e86398b30766eb8de3818f8b39,pieces+38,21,2,0},
-    {rtSharedPose_5217d76724c8d786a610f0be20167f83ab35645cb2691a8db2ec13004f32a3e5,pieces+46,21,2,0},
-    {rtSharedPose_d9a76bc09c868c21f1ff01e71fed2d9c0f6e87dc2116d3aa49844c184c855276,pieces+54,21,2,0},
-    {rtSharedPose_e8c6d45d1a43d0e9a894daac87af0904ec6abdfc51535447ca783d496aac38e5,pieces+62,14,2,0},
-    {rtSharedPose_804e14b7956809015c0f78ec3560e7da00bda55f803409e7cf1615f41e77d84b,pieces+72,24,2,0},
-    {rtSharedPose_5b0cbf4a9a557cd67050eae9a208ef00f97f18e711ff68e1248c08bb40d677a5,pieces+82,30,4,0},
-    {rtSharedPose_c72988e3205959d1c1366d190c6ccf2942b0b4b0e55d2df19da0bb6ca53e214e,pieces+96,30,4,0},
-    {rtSharedPose_1845bbba81a282190d274bdfc66e42e96f06b849fe1be3e6f8b24c18f330084a,pieces+108,28,2,0},
-    {rtSharedPose_b3b806a7f4b5d1be44927cf3414555497a1085cab1e3ecfb3b09c2cd8c0af94d,pieces+116,28,2,0},
-    {rtSharedPose_fca7ac50700db6920731a8ccc3e8ea03eef46fa85e9e78f96af5c50ded215820,pieces+126,21,2,0},
-    {rtSharedPose_4c5b3e167aa4a3a29afa315265514749c99e204fdd11ffb7eb4d366bda4017e2,pieces+138,30,4,0},
-    {rtSharedPose_8a93afe5048fccb48c63fec5b43b99b39079a8ff939407a48cc23488ed4fc6df,pieces+150,30,4,0},
-    {rtSharedPose_417f7cffeabb2dc2e77efd8edd519ff78c54837662615f68e76bcfc632ba9a17,pieces+162,25,4,0},
-    {rtSharedPose_eda597097f287db5ff788ab4050ac7cbbc24b1fd26107e4d9795e10b0624dc04,pieces+172,20,2,0},
-    {rtSharedPose_79d53b85fe1a5e0fa9a4d85236ce10cbff34c78ad97ce2497e9d8b637dc92c5c,pieces+180,20,2,0},
-    {rtSharedPose_137e401a39be8afb01018f4da9b98e3080e06ed61349fef7fac44452c61bdac7,pieces+187,16,1,0},
+    {rtSharedPose_b6a4b325baa436e5ae22fcee662d221f541733c2aee53cbea39e540aae0d4e86,pieces+6,14,2,0},
+    {rtSharedPose_67a0976e9266b96ed19bdb62be735bc5c07fdd6b3fbae65c6cdc093aa0fa5ba1,pieces+14,21,2,0},
+    {rtSharedPose_76692d205a112964b95ba47b4eac6f71958fdb9a9ec55a1a4bae0873b654036e,pieces+22,21,2,0},
+    {rtSharedPose_4628f3e45ca148e8cbb97eb859606df16321dd18bb8c2ba8d25502f6c06fcb8d,pieces+30,14,2,0},
+    {rtSharedPose_8158162dc826b7155ab0ebed0be1a8251cfb348688d109140f5cf211c1e4abb4,pieces+38,21,2,0},
+    {rtSharedPose_6d9881aad29a23c8ced193bc50f8bfef06815aaff3c91298fe5662b2daa7d877,pieces+46,21,2,0},
+    {rtSharedPose_9d0271998d5eab0fd57c1db796f66671fa81e3876671926ff39fb9ec5a0c2667,pieces+54,21,2,0},
+    {rtSharedPose_676052e01aa97ddfd3a7d54a80be7dcfe34de625c68ccaa4aae12c96cf7b151b,pieces+62,14,2,0},
+    {rtSharedPose_3bce4f23ba72e939d0a5872f3a3120bce127fd2d291220e0ae3730b5c6953870,pieces+72,24,2,0},
+    {rtSharedPose_d75ad474ee3db31330cecf512ea83ca56551aa14848d47c0c831f08c3bfb6d21,pieces+82,30,4,0},
+    {rtSharedPose_f83a88f06882ceebca6ce29a514d10772e51985c3fc2243487badf5c97223e2d,pieces+96,30,4,0},
+    {rtSharedPose_186d6b5bfa5e3b68ada119fd934adfe790517b608d82f8afeb685dd9737c8434,pieces+108,28,2,0},
+    {rtSharedPose_82d92f539bc45b80edbe587cdd05313711ddcd830008cffe05398715d5618dba,pieces+116,28,2,0},
+    {rtSharedPose_641aae4b9fc0facb1807ff43b8daa726dbc20ef43ada3a7c1993f6a60b3a7425,pieces+126,21,2,0},
+    {rtSharedPose_bb173356dbf245340c69ed80750d0d37c65a06239515db4fb5acfcfb4156a39d,pieces+138,30,4,0},
+    {rtSharedPose_34cd5c1c4418efdcdafdf187afb667383569ad5c5361388625137ace9a1504b8,pieces+150,30,4,0},
+    {rtSharedPose_39e07b8dc3606e60d0767d846cb9e816f0f23056a53167013a05bc0d6cde9c0e,pieces+162,25,4,0},
+    {rtSharedPose_01725915a2148fd1dc43f3386564bfa0eb5bf5b3ed5ad75c1d7d8875d35643e2,pieces+172,20,2,0},
+    {rtSharedPose_1198862a6f9f143b4d352e8e279dbad9a9b6d418593687448cac0673e148a8b7,pieces+180,20,2,0},
+    {rtSharedPose_0a09f2dce1a36cffe12464aab33c1bfcb05deee05564711596ef41305bb88397,pieces+187,16,1,0},
     {0,0,0,0,0},
-    {rtSharedPose_804e14b7956809015c0f78ec3560e7da00bda55f803409e7cf1615f41e77d84b,pieces+200,24,2,0},
-    {rtSharedPose_43313683349e616b3a7f3396283798454c15429582953b273ce1ce78dc4c7c55,pieces+210,32,2,0},
-    {rtSharedPose_fe3b3b3abee812713d5e55ef75359c397380d8fbdef76097a40d2da92d0d8a75,pieces+221,36,3,0},
-    {rtSharedPose_c7c5493f107b5e408b9e709082966cfaa95398283160fbe8eeecbf71443c8442,pieces+234,35,4,0},
-    {rtSharedPose_7c1399d4b02ca44004eaef5afb5dd42d7df4bdf0cd4f6a8c2d6ee95abda1bc2c,pieces+244,28,2,0},
-    {rtSharedPose_0fb57f0d1023f9c2320eab659c0722f826bea231c0ea73efd0b62a235b8403ce,pieces+252,28,2,0},
-    {rtSharedPose_560b78cdc47a43eee6a315544326bc17285193ec12003e04555571a93cc10017,pieces+262,30,4,0},
-    {rtSharedPose_fe08f0ffeef04fb0547867251e69e7abccba0c23442da6f5a9794a89f115aaa4,pieces+276,36,4,0},
-    {rtSharedPose_c36d3938d6935abe353a25ce16c3c4bade192eb099f92e49aa86014d169d7c46,pieces+286,20,2,0},
-    {rtSharedPose_804e14b7956809015c0f78ec3560e7da00bda55f803409e7cf1615f41e77d84b,pieces+296,24,2,0},
-    {rtSharedPose_7cdfba323f95f5ad76e6e7c9dd9507f3111f1f4b24cb20e92e192cdcd242e6ae,pieces+306,24,2,0},
-    {rtSharedPose_8692abfd165b90a98a50455ad9506a915578806656ceae7754d93b9274ebce59,pieces+318,42,4,0},
-    {rtSharedPose_9145d37651dfb983669150b095ea20a30c4615a425aa6c2b08408d08c0a72d5f,pieces+332,35,4,0},
-    {rtSharedPose_adc410cca274db7dba0d9993b4d14b01e352b19947b08644922c7b47e4a96718,pieces+344,36,4,0},
-    {rtSharedPose_009a05e4e4b37570e618ea52efd671dbbdb9ffa06cdb9c18df25560ee951c208,pieces+358,35,4,0},
-    {rtSharedPose_ccd449a3cb2f393f416888f413c35446a1376660c997cd431da658f10b37296b,pieces+372,36,4,0},
-    {rtSharedPose_40a78ae1985edb76e3d3401559e12b3d08522a3a53047b5eb61dfb6d00a52f04,pieces+384,24,2,0},
-    {rtSharedPose_e0941ec8ccfe1913047c3746da814eaab0eba7df6196d911ea7d6995956d8b21,pieces+392,28,2,0},
-    {rtSharedPose_01c8b9f5e16af447e0eae1602edccf9d496b0b9d7058cd7f4dc97eabf1a347e7,pieces+402,28,2,0},
-    {rtSharedPose_b33e3becb53e6c8392842ae8cd079c503719a5e2913e4f9dddfacaa68023ca6b,pieces+410,28,2,0},
-    {rtSharedPose_c016d1392dc657f051c34f7706d856dcc35155b5edc8ade060bf48bba86fdbb1,pieces+418,28,2,0},
-    {rtSharedPose_598cd7afab30693f63b599b164590c3f428d126e5ca1c6b770e34a38aecfbbc6,pieces+426,28,2,0},
-    {rtSharedPose_c7cab99abc487c8f6770748f7b85494770119e9568e56b8eafed61e6b03e2cb2,pieces+434,28,2,0},
-    {rtSharedPose_8982cea60dc884053f16c2d3c458d60897f1258a6accf6f5714c4e7df5ab304f,pieces+442,32,2,0},
-    {rtSharedPose_aac1aa1b2ebe4e755172b7c0eb94229d67ad0f6beb0516fa6fea1698abf0c8e6,pieces+452,32,2,0},
-    {rtSharedPose_e35d7fac1fabbffeb6687df0ffbec7d3a04caa3243704bee403304546631ef40,pieces+462,32,2,0},
-    {rtSharedPose_f4a798ef837098442b584c548285858632a8dd17b972db1616126b8e65a0e4dc,pieces+470,32,2,0},
-    {rtSharedPose_daf076318667fb7a71d4e803fcea263d8d31df8c1bc3bd6750a5681584e69691,pieces+480,28,2,0},
-    {rtSharedPose_c197fda755ff205464ce9fc49458c365a627ba904cea390404560f399d95f8f4,pieces+490,32,2,0},
-    {rtSharedPose_6f4d305aacbc8b18e8caf9778617c9e91cb89ab4b9b51d53f4d14571a80df68c,pieces+498,16,2,0},
-    {rtSharedPose_5fbc02f9517ca78bcf50095b2e6bc416d6bba2e2cece8040e9967ac23bacda2d,pieces+508,14,2,0},
-    {rtSharedPose_e24585669600dbe0dba139b117fdc8e3bb0c5fd69813edb10c59f814dd1ae958,pieces+518,21,2,0},
-    {rtSharedPose_a753d3877f651cf454d79752d5147294451c04a6c1c9d2c7526313994f2d8065,pieces+528,21,2,0},
-    {rtSharedPose_b2a55f9a9c50c41964d3374ccd338a3d44683a7ec36585143719eef78a1bd0ef,pieces+538,14,2,0},
-    {0,0,0,0,0},
-    {0,0,0,0,0},
-    {rtSharedPose_4af0b90a28845434bcba5e30226fa33e9c23f51e2c535a42c05ae8c256e06d3b,pieces+558,21,2,0},
-    {rtSharedPose_ce94603ab4636e24cc873131b1f989ccb929de291938e6df765fa86d55cc3ae9,pieces+568,14,2,0},
-    {rtSharedPose_68327c9d8a149f06519861322dcf1f7758352eb2f4b4d0609cfa175462cae23b,pieces+578,28,2,0},
-    {rtSharedPose_ee6832523d5e9eed2c50a5e7d815bc91289be1bdcd5fdda216c0995c1cb23c41,pieces+588,28,2,0},
-    {rtSharedPose_70bac9beef81b8fa0ef8dea1918c6013bcc4a3b539834aded750531d375ecec2,pieces+598,14,2,0},
+    {rtSharedPose_3bce4f23ba72e939d0a5872f3a3120bce127fd2d291220e0ae3730b5c6953870,pieces+200,24,2,0},
+    {rtSharedPose_70bd48284f6a0400d422dcad4132eec53554bbee63fe19a246a95e338ad08af6,pieces+210,32,2,0},
+    {rtSharedPose_c72a6d52a279a25d9d916bf6298207fb6d47f2e60e82bf14cc33b794fa7ba0ac,pieces+221,36,3,0},
+    {rtSharedPose_8858f4364e4dfd3ecb922ef14e13364e4a34a59f6ccc62f250de1aa3b51577cf,pieces+234,35,4,0},
+    {rtSharedPose_53dce385ffbb6d4e7e3289e4421e8c6f0677d00dfba2ebf68ef2e5f0e59c9a51,pieces+244,28,2,0},
+    {rtSharedPose_cbda603d577fdf7fd7073a87516ea611589b484e9936deaba4cc0ac4a95fdbae,pieces+252,28,2,0},
+    {rtSharedPose_d42e8bef719b86a2c5c8acdcd994672001667c586583d35bf3adaeebca73e81d,pieces+262,30,4,0},
+    {rtSharedPose_e0b51d16d61eabe3552e4cb4f42a12cfe8ed5274d94474770bf3eb14910478b2,pieces+276,36,4,0},
+    {rtSharedPose_1d7455d8b772f01c30224e82e5297c114bffd2a15673e1d254dbe9c4d8f413d0,pieces+286,20,2,0},
+    {rtSharedPose_3bce4f23ba72e939d0a5872f3a3120bce127fd2d291220e0ae3730b5c6953870,pieces+296,24,2,0},
+    {rtSharedPose_7b69ad2589c7bc115762efec8766e7ff5cc1d5392dd2de20728be044b6abfc8b,pieces+306,24,2,0},
+    {rtSharedPose_9f16b5c56aee0411b71b5649f2d81670d25b222fcea26b28c293dc5e8273ec4c,pieces+318,42,4,0},
+    {rtSharedPose_437ea9fcb39a74e1f3b56730a8b6f482a2f2727956c2f449bc83f12f40b9ec11,pieces+332,35,4,0},
+    {rtSharedPose_5b393f299e1484384237a63da326967d75214eaa927cabd22a9546c2b7c96a98,pieces+344,36,4,0},
+    {rtSharedPose_dc9b80a68c629f3ce3e10223b281883540123e88160f7aba9c7bb1aa9f2f9a1b,pieces+358,35,4,0},
+    {rtSharedPose_4fe04539c5c76d31b4ffad5535a8b371f92e731b401bc33a562e4e4750bb6ebd,pieces+372,36,4,0},
+    {rtSharedPose_f9c51a032616de0a2ddf0240bd337d38377ad708813419dbd4bc6444fbeadc2c,pieces+384,24,2,0},
+    {rtSharedPose_1aaff0ec29607869780c15e58e794bcf6a1bba7404a0998f250b6ca514850f2d,pieces+392,28,2,0},
+    {rtSharedPose_fb0f256ed4f02d1dadbf869a714a04f2e1cde25187375f946fb7c1f8c24fc993,pieces+402,28,2,0},
+    {rtSharedPose_e74a3024059e45cc49dc02ce26b7cc3ed9602fc22ec154fb05e6bf18021f4cd2,pieces+410,28,2,0},
+    {rtSharedPose_0dd3fd8764cf66800aa756ecf69e483e6c4080fd6879786a59e78a6d28a683f0,pieces+418,28,2,0},
+    {rtSharedPose_cd4a9405d9d473cf58be17091c8bf302e5ab0cca5d10ae798f4216a58af1eb72,pieces+426,28,2,0},
+    {rtSharedPose_97b55ecb46f44e6d1310cd26953ebaccd2ba269774876b3908f66fcf370fbb4f,pieces+434,28,2,0},
+    {rtSharedPose_eca7b428d736097ec606c1b4a17e66bf2b3a0a37b884278c2c20eeacce628e39,pieces+442,32,2,0},
+    {rtSharedPose_5c0424b13a16390b1736cba152e047db70d8f82f8275cae058aa5eaa58f809b4,pieces+452,32,2,0},
+    {rtSharedPose_2b58593e819a001638f41680e4eff5bd0dcd6581e8289bc38e8394e58632a577,pieces+462,32,2,0},
+    {rtSharedPose_b8842ecf00b479785f0a2b56c6eeacbb16e6652dbe9c5b54dc568454eeb5999d,pieces+470,32,2,0},
+    {rtSharedPose_5b383727671385c203e1d9434ca11e8565f3859c8224a93890649d54b6cdffe9,pieces+480,28,2,0},
+    {rtSharedPose_8e1de18beb36d0429bc632cbeb57d75a8baef4abc674543f96af0c3f2315868c,pieces+490,32,2,0},
+    {rtSharedPose_0ac79fe0fdab0607c118323be0be14a83768e73c59d04d8801b10c0815c9ec2b,pieces+498,16,2,0},
+    {rtSharedPose_280eb8cc64142e96a3e650c06f5e8007dff65619cdcc6d42fd10b65d47552cff,pieces+508,14,2,0},
+    {rtSharedPose_9dd0a0beb5c0a75431ecb9f8e7dc5c7d068d45fb06d05616711f20d913b8a54c,pieces+518,21,2,0},
+    {rtSharedPose_18dee7fcfbb35b158d25845d3c636efd772be8bac68c67d30aeed1ada3ab585c,pieces+528,21,2,0},
+    {rtSharedPose_6d9c61a46bbf6fab4c466456a6710f5b4bee3f4f60a84909d055062aa426aa68,pieces+538,14,2,0},
     {0,0,0,0,0},
     {0,0,0,0,0},
+    {rtSharedPose_20fe5af00ab568ac371283ed7e46f6d65562a971dc2af7416cff25030a6d1062,pieces+558,21,2,0},
+    {rtSharedPose_9d4e726b09854e5de2a09d9a156c910efdaf05027f9ed4f9c903521dfeb92e43,pieces+568,14,2,0},
+    {rtSharedPose_91ae538cf44e265d3809923288ee5768d9807aeab42847cb4efe225418602f62,pieces+578,28,2,0},
+    {rtSharedPose_988884eb4159db38731f26bf204c1c64798331541df884f6d4bda40d83e7c70c,pieces+588,28,2,0},
+    {rtSharedPose_61938dc2819448bf4f37901f67aee1094fc4cf150351c9f961b6467788ce1d36,pieces+598,14,2,0},
     {0,0,0,0,0},
-    {rtSharedPose_7989e430b5286fb51180df72f190e651e0523838b8ba59bb458878f4fd1a3afc,pieces+630,30,4,0},
-    {rtSharedPose_1a9d2d898a715d22019d9b7b1c082a2fe57a58199e0805f84cc1207f01ed8f47,pieces+640,24,2,0},
-    {rtSharedPose_39deeda6e07920f7713c02d97369f99e2172d9fae142678b0af9bb8bad0bfa85,pieces+650,40,4,0},
-    {rtSharedPose_b013abc398df2e6fead1129340c98d67f8d6a9fedd58369b8db0e818fd5d869d,pieces+662,24,2,0},
-    {rtSharedPose_746e34c7587fa5720e3a5d8fefc94e3bef2e9d0d0047d7771eac053f0273bdee,pieces+676,42,4,0},
-    {rtSharedPose_752275665f513cbb1776d878516dd8dc5d547d95772b781fb135744ad0ec2fc4,pieces+692,24,2,0},
-    {rtSharedPose_3de65345705566601f3663ffd336ea236df1c54183e2b3cddde35c233b730b67,pieces+706,36,4,0},
-    {rtSharedPose_bd3cba5bc068682c163b554101eb8322aa1bde3ad6ab533139c22f8ccd449c1c,pieces+718,20,2,0},
-    {rtSharedPose_7b5f9498c220584f3610e6740b1c8a7487dcb69c05a87c76a7ae1d346ef4a824,pieces+728,20,2,0},
-    {rtSharedPose_536695eb56e543a2887a6367bb734176b12e3dc079e620c59ff568913a2f627d,pieces+738,15,2,0},
-    {rtSharedPose_8f34ae162e3bb84a3aaf03994186a00e452dcc7b80157f99d6115c2629a80589,pieces+748,30,4,0},
-    {rtSharedPose_8bde0165a3eee13093c88bcc749202bde06012cd832909ec277e18d6f56d2eb0,pieces+760,30,4,0},
-    {rtSharedPose_417297df1e184087abbabd58ffcf16b491fc4677e519efe96e6daacc9acd4024,pieces+772,30,4,0},
-    {rtSharedPose_b0b99dc1f9e8af460102c056b08f36350d42e37c8130b659323808d9ddfb4823,pieces+784,30,4,0},
+    {0,0,0,0,0},
+    {0,0,0,0,0},
+    {rtSharedPose_a56d18b98017c4a8bfb529ce23d427c9ca06a12f5aea90603a05f2dd6b641f8e,pieces+630,30,4,0},
+    {rtSharedPose_93f64592026826f930f9bdd1920fd060223962619f06347b9787540ed24fe8d1,pieces+640,24,2,0},
+    {rtSharedPose_03534f2eca875f179fa73f20ea99aab127fd68aa3d1cad05702b4a28c90e12c6,pieces+650,40,4,0},
+    {rtSharedPose_31f55b11ff2bc47b390de58ff0d38d47696b9fd42d4b3d46a3bf07d6e0571541,pieces+662,24,2,0},
+    {rtSharedPose_fbb5aaa94ec1648d907be509d742281402308f25dd2f90fe687174dc6bd5d408,pieces+676,42,4,0},
+    {rtSharedPose_03cbdd54f1ea2d564827e16929d591059868af7b8c1404cb6b6b2b3c4bd5ec6e,pieces+692,24,2,0},
+    {rtSharedPose_a06290daee552a6678bd40a0d3585c0cdde379011d3c124fc9239fa0d1355c82,pieces+706,36,4,0},
+    {rtSharedPose_0782d00c728be146514a8d400fa19c178ecfcee2230107c2134b828631de730d,pieces+718,20,2,0},
+    {rtSharedPose_aa6a8c0cc0633a75722f3e05d7bed58671683c7732f4cbaf136835cfd4c5a617,pieces+728,20,2,0},
+    {rtSharedPose_653575da133a3f331f15f840a2d619aa3b3704663260d87e089504a73b23c408,pieces+738,15,2,0},
+    {rtSharedPose_efef91e817f697e41a13a2f25830e0bfbd8a26e7e857568382f6812c8f4a9c97,pieces+748,30,4,0},
+    {rtSharedPose_1fb7cd5f2923864feb18c6b495e2c08d12facc7a8cfcb05142fb323644250118,pieces+760,30,4,0},
+    {rtSharedPose_da1219728e6f7dd0f70b8229f8773017d5960174b0effe91002afdf46bdf216a,pieces+772,30,4,0},
+    {rtSharedPose_c2297f94db4e72aa793b9e38c3f030ccc8f6e6e3f11959df40f1fd614ec4b846,pieces+784,30,4,0},
  },
  {
     {rtSharedPose_a3d5637808b368f1a8017328b95756a534fa9768545c1fb64d5a13a73c4a6d26,pieces+2,24,2,0},

@@ -10,6 +10,7 @@ class StorageTests(unittest.TestCase):
   p.streams={'a':b'abcdefghijklmno1234567','b':b'1234567ABCDEFG','c':b'ABCDEFGz','d':b'z'+bytes(range(128))}
   raw=bytes(range(32));identity='raw:'+hashlib.sha256(raw).hexdigest();p.raw_streams={identity:raw}
   p.records={k:(k,bytes(8),32) for k in p.streams};p.records[identity]=(identity,bytes(8),32)
+  p.descriptor_stride=6;p.descriptor_count=4;p.palette_stride=1
   p.colors={k:16 for k in p.streams};p.descriptor_bytes=4*6;p.palette_offsets={bytes(8):0};p.palettes=bytes(8)
   blob,descriptors,report=p.materialize(physical,spares)
   for key,data in {**p.streams,**p.raw_streams}.items():
@@ -45,6 +46,26 @@ class StorageTests(unittest.TestCase):
     self.assertEqual(len(p.palettes[index:index+8]),8)
     stream=blob[physical-PAGE:physical-PAGE+len(p.streams[identity])]
     self.assertEqual(decode(stream,size,p.palettes[index:index+8]),raw[offsets[name]:offsets[name]+size])
+ def test_refined_stream_index(self):
+  from pose_codec_fast import decode
+  images=[bytes((i*pen)&255 for i in range(256))*2 for pen in range(1,17)]
+  pool=b''.join(images);offsets={};table=[];cursor=0
+  for raw in images:
+   name='rtSharedPose_'+hashlib.sha256(raw).hexdigest();offsets[name]=cursor
+   table.append((cursor,len(raw),name));cursor+=len(raw)
+  with tempfile.TemporaryDirectory() as tmp:
+   p=PackedPatterns(pool,offsets,[table],Path(tmp)/'encoded',codec='refined')
+   blob,descriptors,report=p.materialize(PAGE)
+   self.assertEqual(report['descriptor_stride'],4)
+   addresses=p.addresses(0x200000)
+   for i,(name,(identity,palette,size)) in enumerate(p.records.items()):
+    self.assertEqual(addresses[name],0x84200000+i*4)
+    stream_index,palette_index=struct.unpack_from('>HH',descriptors,i*4)
+    encoded=struct.unpack_from('>I',descriptors,report['stream_table_offset']+stream_index)[0]
+    self.assertEqual(encoded>>24,p.colors[identity]);physical=encoded&0xffffff
+    stream=blob[physical-PAGE:physical-PAGE+len(p.streams[identity])]
+    actual=decode(stream,size,p.palettes[palette_index*2:palette_index*2+8])
+    self.assertEqual(actual,pool[offsets[name]:offsets[name]+size])
  def test_bank_seams(self):
   for offset in range(1,160):self.make(2*PAGE-offset)
 if __name__=='__main__':unittest.main()

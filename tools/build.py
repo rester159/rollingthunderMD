@@ -81,7 +81,7 @@ def build_completion(sdk,build,inc):
  return data
 
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--rom',required=True,type=Path,help='Owner-supplied Rolling Thunder rev. 3 arcade ZIP');p.add_argument('--sgdk',type=Path,default=os.environ.get('GDK'));p.add_argument('--cart',choices=['standard','mega-everdrive-pro','mega-everdrive-v2-x7'],default='standard');p.add_argument('--output-dir',type=Path,default=ROOT/'dist');p.add_argument('--layout',choices=['compact','shared','packed','frozen'],default='compact');p.add_argument('--jobs',type=int,default=min(8,os.cpu_count() or 1));p.add_argument('--pose-codec',choices=['canonical','fast'],default='canonical',help='Experimental packed-layout sprite codec');a=p.parse_args()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--rom',required=True,type=Path,help='Owner-supplied Rolling Thunder rev. 3 arcade ZIP');p.add_argument('--sgdk',type=Path,default=os.environ.get('GDK'));p.add_argument('--cart',choices=['standard','mega-everdrive-pro','mega-everdrive-v2-x7'],default='standard');p.add_argument('--output-dir',type=Path,default=ROOT/'dist');p.add_argument('--layout',choices=['compact','shared','packed','frozen'],default='compact');p.add_argument('--jobs',type=int,default=min(8,os.cpu_count() or 1));p.add_argument('--pose-codec',choices=['canonical','fast','refined'],default='canonical',help='Experimental packed-layout sprite codec');a=p.parse_args()
  if not a.rom.is_file():p.error('ROM archive not found; supply your own rthunder.zip')
  if not a.sgdk or not (a.sgdk/'makefile.gen').is_file():p.error('Pass --sgdk PATH or set GDK to an SGDK 2.12 installation')
  if a.pose_codec!='canonical' and a.layout!='packed':p.error('--pose-codec requires --layout packed')
@@ -140,7 +140,7 @@ def main():
    from pcm_stream import unpack
    for name,clip in compact_report['streamed_audio'].items():
     address=compact_report['audio_addresses'][name]
-    decoded=unpack(raw[address:address+clip['packed_bytes']],clip['samples'],delta=clip.get('delta',False))
+    decoded=unpack(raw[address:address+clip['packed_bytes']],clip['samples'],delta=clip.get('delta',False),phrases=clip.get('phrases'))
     if digest(decoded)!=clip['sha256']:raise ValueError('Assembled PCM differs: '+name)
    compact_report['verified_audio_samples']=sum(x['samples'] for x in compact_report['streamed_audio'].values())
  dist=a.output_dir;dist.mkdir(parents=True,exist_ok=True);names={'standard':('RollingThunderMD.bin','build.json'),'mega-everdrive-pro':('RollingThunderMD-MegaEverDrivePro.bin','build-mega-everdrive-pro.json'),'mega-everdrive-v2-x7':('RollingThunderMD-MegaEverDriveV2-X7.bin','build-mega-everdrive-v2-x7.json')}
