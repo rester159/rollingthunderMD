@@ -1,5 +1,7 @@
 # Rolling Thunder MD v0.81 Alpha
 
+[Quick dev log](DEVLOG_0_81.md)
+
 Released source snapshot: October 18, 2026. Local ROM:
 `dist/Rolling_Thunder_MD_v0.81_Alpha.bin`.
 
