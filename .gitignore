@@ -17,3 +17,10 @@ __pycache__/
 *.wav
 *.log
 .DS_Store
+
+# Local boot-intro assets must never be uploaded.
+*[Ss][Ee][Gg][Aa]*[Cc][Hh][Aa][Nn][Tt]*
+*[Ss][Ee][Gg][Aa]*[Ll][Oo][Gg][Oo]*
+*[Nn][Aa][Mm][Cc][Oo][Tt]*
+*[Bb][Oo][Oo][Tt]_[Ii][Nn][Tt][Rr][Oo][Ss]*
+*.raw

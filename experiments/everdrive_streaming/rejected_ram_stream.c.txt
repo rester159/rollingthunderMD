@@ -1,0 +1,125 @@
+/* Packed-layout PCM: the 68000 restores exact sample pages ahead of the Z80.
+ * The Z80 retains its local prefetch ring and original 227-cycle DAC cadence.
+ * No Z80 bus request occurs during refill. */
+#include <genesis.h>
+#include "rt_rom_layout.h"
+#ifdef RT_STREAMED_PCM
+#include "rt_segmented_pcm.h"
+#include "rt_z80_bus_policy.h"
+#include "rt_pcm_stream_locations.h"
+extern const u8 pcm_rom_z80[4096];
+extern void RT_decodePcmMask(const void*,void*,u32);
+extern void RT_decodePcmLz(const void*,void*,u32);
+#define P ((volatile u8*)0xa00100)
+static bool active;
+static u16 previousBank,initialPage;
+static u32 generation,cursor,remaining;
+static u8 *allocation,*ring;
+static volatile u8 *progress;
+static volatile u8 status;
+static u8 serviced;
+volatile u16 rtPcmStreamFaults,rtPcmStreamPages,rtPcmStreamMaxLag;
+static void word(u16 at,u16 value){P[at]=value;P[at+1]=value>>8;}
+static bool owns(void)
+{return active && Z80_getLoadedDriver()==Z80_DRIVER_CUSTOM && RT_z80DriverGeneration()==generation && SYS_getBank(1)==initialPage;}
+static bool signature(void)
+{return P[16]==0x52 && P[17]==0x54 && P[18]==0x50 && P[19]==0x43 && P[20]==6;}
+static bool admit(u32 address,u32 count,u32 bytes)
+{
+    if(bytes!=RT_ROM_BYTES)return FALSE;
+    for(u16 i=0;i<4;i++)if(rtPcmStreamClips[i][0]==address && rtPcmStreamClips[i][1]==count)return TRUE;
+    return FALSE;
+}
+static void decodePage(u8 *output)
+{
+    if(!remaining)return;
+    u16 previous=SYS_getBank(7),header;
+    SYS_setBank(7,cursor>>19);
+    const u8 *source=(const u8*)(0x380000UL+(cursor&0x7ffffUL));
+    header=*(const u16*)source;
+    if(!header){cursor=(cursor+0x80000UL)&~0x7ffffUL;SYS_setBank(7,cursor>>19);source=(const u8*)0x380000;header=*(const u16*)source;}
+    if(header&0x8000)RT_decodePcmMask(source+2,output,256);
+    else RT_decodePcmLz(source+2,output,256);
+    cursor+=2+(((header&0x7fff)+1u)&~1u);
+    remaining--;rtPcmStreamPages++;
+    SYS_setBank(7,previous);
+}
+static void service(void)
+{
+    if(!active || !remaining)return;
+    u8 consumed=*progress,lag=consumed-serviced;
+    if(lag>rtPcmStreamMaxLag)rtPcmStreamMaxLag=lag;
+    if(lag>=4){rtPcmStreamFaults++;return;}
+    while(lag-- && remaining){decodePage(ring+((serviced&3)<<8));serviced++;}
+}
+static bool reserve(void)
+{
+    /* The Z80 sees one 32 KiB RAM bank. Overallocate just enough to choose a
+     * 256-aligned 1 KiB ring plus its byte mailbox without crossing it. */
+    allocation=MEM_alloc(2304);
+    if(!allocation)return FALSE;
+    u32 start=((u32)allocation+259)&~255UL;
+    if(!(start&32767) || (start&32767)>31744)start=((start+32767)&~32767UL)+256;
+    ring=(u8*)start;progress=ring-1;
+    return TRUE;
+}
+static void publish(u32 address,u32 count)
+{
+    cursor=address;remaining=(count+255)>>8;serviced=0;*progress=0;
+    decodePage(ring);Z80_upload(0x1000,ring,count<256?count:256);
+    for(u16 i=0;i<4 && remaining;i++)decodePage(ring+(i<<8));
+    u16 preload=count<256?count:256;
+    u32 rest=count-preload;
+    word(2,0x8000|((u32)ring&32767));word(4,((u32)ring>>15)&511);
+    word(6,rest>>8);P[8]=rest&255;P[9]=preload&255;
+    word(22,((u32)&status>>15)&511);word(24,0x8000|((u32)&status&32767));
+    P[26]=1;P[27]=0;P[28]=((u32)ring>>8)|0x80;P[29]=P[28]+4;
+    word(30,0x8000|((u32)progress&32767));P[32]=0;
+    status=RT_SEGPCM_STARTING;P[1]=RT_SEGPCM_STARTING;P[0]=1;
+}
+__attribute__((noipa,used,externally_visible)) bool RT_startSegmentedPcm(u32 address,u32 count,u32 bytes)
+{
+    if(!admit(address,count,bytes))return FALSE;
+    SYS_disableInts();
+    if(active || Z80_isBusTaken() || !reserve()){SYS_enableInts();return FALSE;}
+    previousBank=initialPage=SYS_getBank(1);
+    Z80_loadCustomDriver(pcm_rom_z80,4096);generation=RT_z80DriverGeneration();
+    Z80_requestBus(TRUE);publish(address,count);active=TRUE;
+    Z80_setVIntCallback(service);Z80_releaseBus();SYS_enableInts();return TRUE;
+}
+bool RT_rearmSegmentedPcm(u32 address,u32 count,u32 bytes)
+{
+    if(!admit(address,count,bytes))return FALSE;
+    SYS_disableInts();
+    if(!owns() || Z80_isBusTaken() || status!=RT_SEGPCM_COMPLETE){SYS_enableInts();return FALSE;}
+    Z80_requestBus(TRUE);
+    if(!signature() || P[1]!=RT_SEGPCM_COMPLETE || P[0]){Z80_releaseBus();SYS_enableInts();return FALSE;}
+    publish(address,count);Z80_releaseBus();SYS_enableInts();return TRUE;
+}
+bool RT_replaceSegmentedPcm(u32 address,u32 count,u32 bytes)
+{
+    if(!admit(address,count,bytes))return FALSE;
+    SYS_disableInts();
+    if(!owns() || Z80_isBusTaken()){SYS_enableInts();return FALSE;}
+    Z80_requestBus(TRUE);
+    if(!signature() || P[1]<RT_SEGPCM_STARTING || P[1]>RT_SEGPCM_COMPLETE){Z80_releaseBus();SYS_enableInts();return FALSE;}
+    publish(address,count);Z80_startReset();Z80_releaseBus();waitSubTick(50);Z80_endReset();
+    SYS_enableInts();return TRUE;
+}
+u8 RT_segmentedPcmStatus(void)
+{
+    if(!active)return RT_SEGPCM_OFF;
+    if(!owns() || rtPcmStreamFaults)return RT_SEGPCM_LOST;
+    return status;
+}
+__attribute__((noipa,used,externally_visible)) bool RT_stopSegmentedPcm(void)
+{
+    SYS_disableInts();if(!active){SYS_enableInts();return TRUE;}
+    if(!owns() || Z80_isBusTaken()){SYS_enableInts();return FALSE;}
+    Z80_requestBus(TRUE);
+    if(!signature()){Z80_releaseBus();SYS_enableInts();return FALSE;}
+    Z80_unloadDriver();SYS_setBank(1,previousBank);active=FALSE;
+    MEM_free(allocation);allocation=0;ring=0;progress=0;remaining=0;
+    SYS_enableInts();return TRUE;
+}
+#endif

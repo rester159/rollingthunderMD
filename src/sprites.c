@@ -1,5 +1,9 @@
 #include <genesis.h>
 #include "rt_sprites.h"
+#include "rt_rom_layout.h"
+#ifdef RT_PACKED_PATTERNS
+extern u16 RT_queueCanonicalPose(const void*,u16,u16);
+#endif
 _Static_assert(sizeof(RT_PackedSpritePiece)==12 && sizeof(RT_SpriteCommand)==8,"packed hardware ABI");
 #ifdef __m68k__
 #include "rt_packed_emit_registers.h"
@@ -12,9 +16,19 @@ static RT_PreparedTransfer preparedTransfers[83];
 static u8 prepareTransfers,preparedCount;
 u8 RT_spritesDeferred(void){return prepareTransfers;}
 void RT_spritesDefer(void){preparedCount=0;prepareTransfers=1;}
+static u16 publishTransfer(u8 method,u8 location,void *source,u16 dest,u16 len,s16 step)
+{
+#ifdef RT_PACKED_PATTERNS
+    if(((u32)source&0xfe000000UL)==0x84000000UL){
+        if(method!=DMA_QUEUE || location!=DMA_VRAM || step!=2)return 0;
+        return RT_queueCanonicalPose(source,dest,len);
+    }
+#endif
+    return DMA_transfer(method,location,source,dest,len,step);
+}
 static u16 prepareTransfer(u8 method,u8 location,void *source,u16 dest,u16 len,s16 step)
 {
-    if(!prepareTransfers)return DMA_transfer(method,location,source,dest,len,step);
+    if(!prepareTransfers)return publishTransfer(method,location,source,dest,len,step);
     if(location!=DMA_VRAM || step!=2 || preparedCount>=83)return 0;
     preparedTransfers[preparedCount++]=(RT_PreparedTransfer){source,dest,len,method};return 1;
 }
@@ -23,7 +37,7 @@ u8 RT_spritesPublishPrepared(void)
     prepareTransfers=0;
     for(u8 i=0;i<preparedCount;i++){
         RT_PreparedTransfer *p=preparedTransfers+i;
-        if(!DMA_transfer(p->method,DMA_VRAM,p->source,p->dest,p->len,2))return 0;
+        if(!publishTransfer(p->method,DMA_VRAM,p->source,p->dest,p->len,2))return 0;
     }
     preparedCount=0;return 1;
 }

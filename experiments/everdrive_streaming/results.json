@@ -1,0 +1,278 @@
+{
+  "status": "prototype_complete_compatibility_not_qualified",
+  "accepted_rom_unchanged_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+  "accepted_rom_bytes": 16252928,
+  "graphics": {
+    "status": "diagnostic_only",
+    "poses": 11270,
+    "native_exact_checks": 11274,
+    "baseline_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+    "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+    "decoder_code_bytes": 72,
+    "decoder_stack_bytes": 12,
+    "maximum_single_pose_output_bytes": 2048,
+    "uncompressed_shared_pool_bytes": 9346688,
+    "packed_pose_bytes": 6046386,
+    "baseline_before_pool_bytes": 6886016,
+    "projected_rom_bytes_before_index_alignment": 12932402,
+    "native_decode_master_cycles": {
+      "min": 7098,
+      "median": 60214,
+      "p95": 87290,
+      "max": 137200
+    },
+    "ntsc_refresh_master_cycles": 896040,
+    "physical_hardware_tested": false,
+    "limitations": [
+      "Independent pose decode, not gameplay integration.",
+      "No DMA, bank switching, interrupts or concurrent audio in timing.",
+      "Frame staging needs the sum of queued outputs, not just one pose.",
+      "Size projection excludes index/alignment and does not compress other ROM data."
+    ]
+  },
+  "audio": {
+    "status": "diagnostic_only",
+    "codec": "lz32_or_pcm_presence_mask",
+    "decoder_bytes": 198,
+    "clips": [
+      {
+        "clip": "victory",
+        "sample_count": 76755,
+        "packed_bytes": 62900,
+        "native_exact_blocks_per_decoder": 300,
+        "selected_blocks": {
+          "lz32": 225,
+          "mask": 75
+        },
+        "sample_sha256": "8a800de7f2921d1c775e83fe03b462756f883379f56ab9940cc95b1750c18c7c",
+        "decode_master_cycles": {
+          "mean": 25068.306666666667,
+          "p95": 66724,
+          "max": 67830
+        },
+        "estimated_cpu_percent_at_original_sample_rate": {
+          "mean": 2.875861172295644,
+          "max": 7.781525330396476
+        }
+      },
+      {
+        "clip": "ending",
+        "sample_count": 584641,
+        "packed_bytes": 460084,
+        "native_exact_blocks_per_decoder": 2284,
+        "selected_blocks": {
+          "lz32": 1924,
+          "mask": 360
+        },
+        "sample_sha256": "2edc66bb661ff61992a637edc16b9823aec47b365e8c075804b3f84e7e85af70",
+        "decode_master_cycles": {
+          "mean": 23805.357267950963,
+          "p95": 67144,
+          "max": 67830
+        },
+        "estimated_cpu_percent_at_original_sample_rate": {
+          "mean": 2.730974356180131,
+          "max": 7.781525330396476
+        }
+      },
+      {
+        "clip": "high_cold",
+        "sample_count": 1118805,
+        "packed_bytes": 426950,
+        "native_exact_blocks_per_decoder": 4371,
+        "selected_blocks": {
+          "lz32": 25,
+          "mask": 4346
+        },
+        "sample_sha256": "5f5623f8e2b6efd302218388f9e5c3b3aeb885533d6df30b10e8518dd15f3076",
+        "decode_master_cycles": {
+          "mean": 47438.39945092656,
+          "p95": 57862,
+          "max": 66626
+        },
+        "estimated_cpu_percent_at_original_sample_rate": {
+          "mean": 5.442180553749835,
+          "max": 7.643401248164464
+        }
+      },
+      {
+        "clip": "high_warm",
+        "sample_count": 1118805,
+        "packed_bytes": 405146,
+        "native_exact_blocks_per_decoder": 4371,
+        "selected_blocks": {
+          "lz32": 21,
+          "mask": 4350
+        },
+        "sample_sha256": "2c8a655c1e42b81f7152654151f66bc4442933b50314cddbe7ebb4023d989e4d",
+        "decode_master_cycles": {
+          "mean": 46485.40334019675,
+          "p95": 57610,
+          "max": 61264
+        },
+        "estimated_cpu_percent_at_original_sample_rate": {
+          "mean": 5.332851888330207,
+          "max": 7.0282672540381785
+        }
+      }
+    ],
+    "exhaustive_mask_fixture_pass": true,
+    "raw_sample_bytes": 2899006,
+    "packed_bytes_with_block_lengths": 1355080,
+    "saved_bytes": 1543926,
+    "projected_audio_only_used_bytes": 14688778,
+    "decode_output_buffer_bytes": 256,
+    "physical_hardware_tested": false,
+    "limitations": [
+      "No Z80 stream delivery, bus contention or output-cadence validation.",
+      "Projection excludes driver changes, clip headers and placement changes.",
+      "Gameplay graphics remain uncompressed in the audio-only projection.",
+      "CPU timing excludes stream headers, transfer and scheduling."
+    ]
+  },
+  "workloads": [
+    {
+      "case": "campaign_1p",
+      "trace": true,
+      "requested_refreshes": 1800,
+      "refreshes": 1800,
+      "active_refreshes": 1740,
+      "counters": {
+        "rtAppUpdates": 1735,
+        "rtAppPresentations": 1735,
+        "rtAppFullPresentations": 1291,
+        "rtAppReusedPresentations": 444,
+        "rtAppSkippedPresentations": 0
+      },
+      "final_ram_sha256": "cc52819fe7db1b4e946f89a116b5e14eb1bc99008e7df4bcf9922db5a499b2c2",
+      "final_video_sha256": "c00ca5ed4642a45369a2c4a2c63f7a5cfb948b8ec5b3bd3bd9b5b28a8df3dd57",
+      "final_state": 1,
+      "faults": 0,
+      "source_rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+      "core_sha256": "d622dfa7e9f455209dbdf450c97ddd570acefb56be969e69a9b57bced899514f",
+      "pose_uploads": 753,
+      "max_pose_uploads_per_refresh": 5,
+      "max_pose_output_bytes_per_refresh": 4640,
+      "minimum_heap_free": 4606,
+      "minimum_largest_heap_free": 4606,
+      "dma_buffer_bytes": 7200,
+      "estimated_added_frame_cpu_percent": {
+        "mean": 3.1542934505694795,
+        "median": 0.0,
+        "p95": 15.179009865630999,
+        "max": 35.5827864827463
+      },
+      "unmatched_uploads": [],
+      "limitations": [
+        "One opening workload per mode, not a campaign-wide benchmark.",
+        "Stops at menu; cost and heap summaries exclude continue/transition refreshes.",
+        "CPU overhead is summed isolated native decode cost, not candidate FPS.",
+        "Physical-refresh output total is not a DMA buffer high-water measurement.",
+        "No decoder cache, mapper or queue overhead included."
+      ],
+      "recorder_control_exact_match": true
+    },
+    {
+      "case": "campaign_2p",
+      "trace": true,
+      "requested_refreshes": 1800,
+      "refreshes": 1800,
+      "active_refreshes": 1740,
+      "counters": {
+        "rtAppUpdates": 1737,
+        "rtAppPresentations": 1737,
+        "rtAppFullPresentations": 1454,
+        "rtAppReusedPresentations": 283,
+        "rtAppSkippedPresentations": 0
+      },
+      "final_ram_sha256": "bd0e698b033deca01546f1756e0d2b0ede603767944eb8b96dd73dade0618b34",
+      "final_video_sha256": "ca5271420c01b39efbb61940b51df04e1039696095d0fd85fc195a8d9e61fcc1",
+      "final_state": 1,
+      "faults": 0,
+      "source_rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+      "core_sha256": "d622dfa7e9f455209dbdf450c97ddd570acefb56be969e69a9b57bced899514f",
+      "pose_uploads": 534,
+      "max_pose_uploads_per_refresh": 3,
+      "max_pose_output_bytes_per_refresh": 2464,
+      "minimum_heap_free": 4606,
+      "minimum_largest_heap_free": 4606,
+      "dma_buffer_bytes": 7200,
+      "estimated_added_frame_cpu_percent": {
+        "mean": 1.8165640183345673,
+        "median": 0.0,
+        "p95": 9.165215838578634,
+        "max": 18.433552073568144
+      },
+      "unmatched_uploads": [],
+      "limitations": [
+        "One opening workload per mode, not a campaign-wide benchmark.",
+        "Stops at menu; cost and heap summaries exclude continue/transition refreshes.",
+        "CPU overhead is summed isolated native decode cost, not candidate FPS.",
+        "Physical-refresh output total is not a DMA buffer high-water measurement.",
+        "No decoder cache, mapper or queue overhead included."
+      ],
+      "recorder_control_exact_match": true
+    },
+    {
+      "case": "survival_2p",
+      "trace": true,
+      "requested_refreshes": 1800,
+      "refreshes": 1585,
+      "active_refreshes": 1512,
+      "counters": {
+        "rtAppUpdates": 1502,
+        "rtAppPresentations": 1403,
+        "rtAppFullPresentations": 450,
+        "rtAppReusedPresentations": 953,
+        "rtAppSkippedPresentations": 100
+      },
+      "final_ram_sha256": "68dc4e57ebee22880787e04bbcf12bd33c47ff8e27adade3f171c2e2c48f10dd",
+      "final_video_sha256": "e8e0bec8dcbc8a39ee313e53d884b9c9f41622a7b56543862e538b5f4444586b",
+      "final_state": 0,
+      "faults": 0,
+      "source_rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+      "core_sha256": "d622dfa7e9f455209dbdf450c97ddd570acefb56be969e69a9b57bced899514f",
+      "pose_uploads": 315,
+      "max_pose_uploads_per_refresh": 2,
+      "max_pose_output_bytes_per_refresh": 2112,
+      "minimum_heap_free": 1524,
+      "minimum_largest_heap_free": 1524,
+      "dma_buffer_bytes": 7200,
+      "estimated_added_frame_cpu_percent": {
+        "mean": 1.1546493873454724,
+        "median": 0.0,
+        "p95": 10.951073612785143,
+        "max": 16.322708807642517
+      },
+      "unmatched_uploads": [],
+      "limitations": [
+        "One opening workload per mode, not a campaign-wide benchmark.",
+        "Stops at menu; cost and heap summaries exclude continue/transition refreshes.",
+        "CPU overhead is summed isolated native decode cost, not candidate FPS.",
+        "Physical-refresh output total is not a DMA buffer high-water measurement.",
+        "No decoder cache, mapper or queue overhead included."
+      ],
+      "recorder_control_exact_match": true
+    }
+  ],
+  "combined_projected_bytes_before_integration_overheads": 11388476,
+  "combined_projection_fits_7_mib": false,
+  "physical_hardware_tested": false,
+  "decision": "Do not ship either diagnostic as a compatible game ROM. The tested codecs do not meet the 7 MiB target; audio packing is a promising separate path for larger cartridges.",
+  "remaining": [
+    "Integrate PCM delivery with exact original output cadence and without bus/visual regressions.",
+    "Find substantially greater savings for the 7 MiB target without content cuts.",
+    "Measure a playable candidate against the accepted build across stages and busy modes.",
+    "Validate actual mapper, SRAM and ROM limits per cartridge and test hardware revisions."
+  ],
+  "sources_sha256": {
+    "audio_probe.py": "6a3df1b29fcb00e7cfabf6d566e7c98c0479ed3aba9c97250aba458eed0b16df",
+    "codec.py": "a9709a4403e161bc70b949a20b927cb9dcd17fc3c3e25f69e5033da70b013da2",
+    "decode.s": "6335c1b948571077afcb7ea1ce8674f6526f95aaded3dc7e7334d2ec509d15b6",
+    "pcm_mask.s": "224b80545d4c88ffd530c5c708f2be3f63d478abf4d66f8cd9f59aed87da15e6",
+    "probe.py": "e1fba1938770613f82143b0835421b9347133cfe40d56b1885fec61ef7d7ad6c",
+    "summarize.py": "10762531c2435030825054ac11a0a16e45aa8ce95ec8c525cd17fbe3c57f367e",
+    "trace_core.py": "74284c672f19bbe6ce0832a8036914704e52277ce717d3d2ba446fe80b6f0001",
+    "workload.py": "c2afcad3accdb79ee8cee513067b8cedbfc73bb52a16003e49eb9558ae0c6409"
+  }
+}

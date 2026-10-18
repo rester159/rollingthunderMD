@@ -38,6 +38,7 @@ class ProMachine(reset_tests.Machine):
         assert len(saved) == 65536
         self.bram = C.create_string_buffer(saved, 65536)
         self.pages = list(range(8))
+        self.reserve_os_banks = getattr(args,'reserve_os_banks',False)
         self.write_enabled = False
         self.bus_errors = []
         self.controls = []
@@ -53,6 +54,9 @@ class ProMachine(reset_tests.Machine):
             if page != 31:
                 self.bus_errors.append('ROM write enabled outside battery bank: '+hex(address))
                 return
+            if self.reserve_os_banks and (address & 0x7ffff)<0x40000:
+                self.bus_errors.append('Write to OS portion of bank 31: '+hex(address))
+                return
             offset = address & 65535
             if width == 1:
                 C.c_ubyte.from_buffer(self.bram, offset ^ 1).value = value & 255
@@ -64,6 +68,8 @@ class ProMachine(reset_tests.Machine):
         self.w16 = write_t(lambda a, d: write_ram(a, d, 2))
 
         def map_page(window, page):
+            if self.reserve_os_banks and (page==30 or (page==31 and window!=4)):
+                self.bus_errors.append('OS bank used outside the save window: '+str((window,page)))
             self.pages[window] = page
             for chunk in range(8):
                 entry = maps[window*8+chunk]
@@ -119,10 +125,12 @@ def main():
     parser.add_argument('--rom', required=True, type=Path)
     parser.add_argument('--symbols', required=True, type=Path)
     parser.add_argument('--interrupt-save-on-reset', action='store_true')
+    parser.add_argument('--reserve-os-banks', action='store_true',help='Require the 15 MiB v2/X7 layout and protect OS banks 30-31')
     parser.add_argument('--case', default='campaign_2p', choices=['arcade','campaign_1p','campaign_2p','survival_1p','survival_2p'])
     args = parser.parse_args()
     assert args.rom.read_bytes()[0x100:0x108] == b'SEGA SSF'
     assert len(args.rom.read_bytes()) <= 31*0x80000
+    if args.reserve_os_banks:assert len(args.rom.read_bytes()) <= 30*0x80000
     reset_tests.Machine = ProMachine
     reset_tests.check(args)
     machine = ProMachine.last_instance

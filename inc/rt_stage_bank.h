@@ -12,7 +12,9 @@
  * terminate stage callbacks and release their references, including audio.
  * Compact builds place headers at generated offsets within window 2 and
  * reserve window 7 for temporary shared-pose DMA. Window 1 may be mirrored
- * into window 2 for compact UI assets; fixed code in windows 0/1 is unchanged. */
+ * into window 2 for compact UI assets; fixed code in windows 0/1 is unchanged.
+ * The optional shared layout reserves windows 5/6 for immutable metadata;
+ * its linker requires stage-local data to end before CPU address 0x280000. */
 #ifdef __m68k__
 u8 RT_stageBankSelect(u8 firstPage);
 #endif

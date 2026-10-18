@@ -70,7 +70,7 @@ def probe(args):
     if args.audio_soak:
         m.run(4500)
         zram=(C.c_ubyte*8192).in_dll(m.core,'zram')
-        assert bytes(zram[0x110:0x115])==b'RTPC\x05'
+        assert bytes(zram[0x110:0x114])==b'RTPC' and zram[0x114] in (5,8,9)
         assert zram[0x101]==3, 'Finite high-score PCM did not complete'
         call('endHighClock')
         assert m.number('rtHighAudioRestored',4)==1, 'PCM did not restore fixed ROM window'
@@ -83,18 +83,21 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--audio-soak',action='store_true')
     p.add_argument('--everdrive-model',action='store_true')
+    p.add_argument('--reserve-os-banks',action='store_true')
     p.add_argument('--core',type=Path,required=True)
     p.add_argument('--rom',type=Path,required=True)
     p.add_argument('--symbols',type=Path,required=True)
     p.add_argument('--output',type=Path,default=Path('.build/banked-scenes.json'))
     p.add_argument('--stage',type=int,choices=range(10))
     args=p.parse_args()
+    if args.reserve_os_banks and not args.everdrive_model:p.error('--reserve-os-banks requires --everdrive-model')
     if args.stage is not None:probe(args);return
     rows=[]
     for stage in range(10):
         command=[sys.executable,str(Path(__file__).resolve()),'--core',str(args.core),
                  '--rom',str(args.rom),'--symbols',str(args.symbols),'--stage',str(stage)]
         if args.everdrive_model:command.append('--everdrive-model')
+        if args.reserve_os_banks:command.append('--reserve-os-banks')
         if args.audio_soak and stage==0:command.append('--audio-soak')
         run=subprocess.run(command,capture_output=True,text=True,timeout=60)
         assert run.returncode==0,run.stdout+run.stderr

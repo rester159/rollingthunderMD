@@ -1,4 +1,5 @@
 #include "rt_stage_bank.h"
+#include "rt_rom_layout.h"
 #ifdef __m68k__
 u8 RT_stageBankSelect(u8 firstPage)
 {
@@ -9,10 +10,16 @@ u8 RT_stageBankSelect(u8 firstPage)
     u32 end=*(const volatile u32*)0x1a4;
     if(end>=0x2000000UL || (end&0x7ffffUL)!=0x7ffffUL ||
        ((u32)firstPage+6)*0x80000UL>end+1)return 0;
-    /* No VInt may observe partially installed windows. All six mappings are
-     * stable throughout subsequent gameplay, including queued ROM DMA. */
+    /* Install stage/shared mappings atomically. Queued pixel DMA temporarily
+     * uses window 7 and restores it before returning to the renderer. */
     SYS_disableInts();
     for(u16 region=2;region<8;region++)SYS_setBank(region,firstPage+region-2);
+#ifdef RT_SHARED_METADATA_PAGE
+    /* Immutable geometry/pose tables stay mapped during gameplay. Window 7
+     * remains the transient pixel-DMA window and saves exclusively use 4. */
+    SYS_setBank(5,RT_SHARED_METADATA_PAGE);
+    SYS_setBank(6,RT_SHARED_METADATA_PAGE+1);
+#endif
     SYS_enableInts();
     return 1;
 }

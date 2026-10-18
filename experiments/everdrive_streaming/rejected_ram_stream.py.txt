@@ -1,0 +1,107 @@
+"""Lossless, independently decoded 256-sample PCM pages and Z80 ring driver."""
+import hashlib
+import struct
+import sys
+from pathlib import Path
+
+
+def pack(raw):
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'experiments/everdrive_streaming'))
+    from codec import encode,decode
+    result=bytearray()
+    for at in range(0,len(raw),256):
+        block=raw[at:at+256].ljust(256,b'\x80')
+        masked=bytearray()
+        for start in range(0,256,8):
+            group=block[start:start+8]
+            masked.append(sum(1<<(7-i) for i,x in enumerate(group) if x!=128))
+            masked.extend(x for x in group if x!=128)
+        lz=encode(block)
+        assert decode(lz,256)==block
+        # Byte length and format, followed by even-byte padding. Independent
+        # pages never cross a physical mapper boundary (a zero word skips it).
+        kind,payload=min([(0,lz),(0x8000,bytes(masked))],key=lambda row:(len(row[1])+len(row[1])%2,-row[0]))
+        result+=struct.pack('>H',kind|len(payload))+payload+bytes(len(payload)%2)
+    return bytes(result)
+
+
+def place(blob,address):
+    result=bytearray();at=0
+    while at<len(blob):
+        size=2+(struct.unpack_from('>H',blob,at)[0]&0x7fff)
+        size+=size%2
+        left=0x80000-((address+len(result))&0x7ffff)
+        if size>left:result+=bytes(left)
+        result+=blob[at:at+size];at+=size
+    return bytes(result)
+
+
+def unpack(blob,count):
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'experiments/everdrive_streaming'))
+    from codec import decode
+    result=bytearray();at=0
+    # Caller strips mapper-boundary padding or supplies address separately.
+    while len(result)<count:
+        header=struct.unpack_from('>H',blob,at)[0];at+=2
+        assert header
+        n=header&0x7fff;payload=blob[at:at+n];at+=n+n%2
+        if header&0x8000:
+            cursor=0
+            for _ in range(32):
+                mask=payload[cursor];cursor+=1
+                for bit in range(7,-1,-1):
+                    if mask&(1<<bit):result.append(payload[cursor]);cursor+=1
+                    else:result.append(128)
+            assert cursor==n
+        else:result+=decode(payload,256)
+    assert at==len(blob)
+    return bytes(result[:count])
+
+
+def driver(source):
+    # Every continuation below takes 106 Z80 cycles, including the three
+    # wait cycles on each main-bus access, matching the existing sample loop.
+    def pad(n):
+        for jumps in range(3):
+            for loads in range(4):
+                rest=n-jumps*10-loads*7
+                if rest>=0 and rest%4==0:
+                    return '            JP $+3\n'*jumps+'            LD A,0\n'*loads+'            NOP\n'*(rest//4)
+        raise ValueError(n)
+    source=source.replace('signature DB $52,$54,$50,$43,5','signature DB $52,$54,$50,$43,6')
+    source=source.replace('physicalPage DB 51','physicalPage DB 0\nringStartHi DB 0\nringEndHi DB 0\nprogressPointer DW 0\nconsumed DB 0')
+    source=source.replace('LD IY,count_page\n            JP pad_12','LD IY,stream_wrap\n            JP pad_12')
+    begin=source.index('resolve_bank\n            BIT 7,B')
+    end=source.index('end_pages\n',begin)
+    source=source[:begin]+'''resolve_bank
+            LD IY,(resume)
+'''+pad(76)+'''            JP sample_loop
+'''+source[end:]
+    begin=source.index('\nmapper_overflow\n            EXX')+1
+    source=source[:begin]+'''mapper_overflow
+            JP wait_cmd
+stream_wrap
+            LD A,(ringEndHi)
+            CP B
+            JP NZ,stream_no_wrap
+            LD A,(ringStartHi)
+            LD B,A
+            LD IY,stream_progress
+'''+pad(38)+'''            JP sample_loop
+stream_no_wrap
+            LD IY,stream_progress
+'''+pad(55)+'''            JP sample_loop
+stream_progress
+            EXX
+            LD HL,(progressPointer)
+            LD A,(consumed)
+            INC A
+            LD (consumed),A
+            LD (HL),A
+            EXX
+            LD IY,count_page
+'''+pad(8)+'''            JP sample_loop
+            DS $1000-$,0
+            END
+'''
+    return source

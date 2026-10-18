@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""Exercise production VRAM residency/pinning without replacing its allocator."""
+from pathlib import Path
+import subprocess,tempfile
+root=Path(__file__).resolve().parents[1]
+with tempfile.TemporaryDirectory() as tmp:
+ folder=Path(tmp)
+ (folder/'genesis.h').write_text('#pragma once\n#include <stdint.h>\ntypedef uint8_t u8;typedef uint16_t u16;typedef uint32_t u32;\n')
+ (folder/'rt_rom_layout.h').write_text('#define RT_PACKED_PATTERNS 1\n')
+ (folder/'rt_sprites.h').write_text('#include <genesis.h>\ntypedef struct {const u32 *patterns;const void *pieces;u16 tileCount;u8 pieceCount,reserved;} RT_SpritePose;\ntypedef struct {const RT_SpritePose *pose;u16 firstTile,capacity;} RT_SpriteSlot;\n')
+ (folder/'test.c').write_text(r'''
+#include "rt_sprites.h"
+#include <assert.h>
+#include <stdio.h>
+extern void RT_playerPatternCacheReset(u16),RT_playerPatternCacheFrame(void);
+extern RT_SpriteSlot *RT_playerPatternCacheSlot(const RT_SpritePose*);
+extern u32 rtPlayerPatternHits,rtPlayerPatternMisses;
+static u32 randomState=187491;
+static u32 randomValue(void){randomState=randomState*1664525u+1013904223u;return randomState;}
+int main(void){
+ RT_SpritePose poses[256];u16 vram[128];
+ for(u16 i=0;i<256;i++)poses[i]=(RT_SpritePose){0,0,(i%64)+1,1,0};
+ for(u32 frame=0;frame<200000;frame++){
+  if(frame%1000==0){RT_playerPatternCacheReset(640);for(u16 i=0;i<128;i++)vram[i]=65535;}
+  RT_playerPatternCacheFrame();
+  const RT_SpritePose *shown[2];RT_SpriteSlot *slots[2];
+  for(u8 player=0;player<2;player++){
+   u16 id=(randomValue()>>12)&255;
+   // Include repeated poses, all 64 legal sizes, and distinct costumes.
+   if(frame%3==0)id=(frame/3+player)%4;
+   shown[player]=poses+id;RT_SpriteSlot *slot=slots[player]=RT_playerPatternCacheSlot(shown[player]);
+   assert(slot && slot->firstTile>=640 && slot->firstTile+slot->capacity<=768);
+   assert(slot->capacity>=shown[player]->tileCount);
+   if(slot->pose!=shown[player]){
+    for(u16 i=0;i<shown[player]->tileCount;i++)vram[slot->firstTile-640+i]=id;
+    slot->pose=shown[player];
+   }
+  }
+  for(u8 player=0;player<2;player++){
+   assert(slots[player]->pose==shown[player]);
+   for(u16 i=0;i<shown[player]->tileCount;i++)assert(vram[slots[player]->firstTile-640+i]==shown[player]-poses);
+  }
+ }
+ assert(rtPlayerPatternHits && rtPlayerPatternMisses);
+ puts("400000 player-pose selections preserved exact tiles and current-frame ownership.");
+}
+''')
+ exe=folder/'test'
+ subprocess.run(['cc','-std=c99','-O2','-fsanitize=address,undefined','-I'+str(folder),str(root/'src/player_pattern_cache.c'),str(folder/'test.c'),'-o',str(exe)],check=True)
+ subprocess.run([str(exe)],check=True)

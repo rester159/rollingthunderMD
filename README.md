@@ -82,14 +82,43 @@ This adds `dist/RollingThunderMD-MegaEverDrivePro.bin` and
 `dist/build-mega-everdrive-pro.json`. It uses extended SSF banking and banked
 battery RAM, and leaves physical bank 31 reserved for saves. Both profiles are
 15.5 MiB. **The Pro profile has software protocol tests, but no physical-cart
-validation.** The image does not fit Core/X3/X5; no X7/legacy-cart support is
-claimed. See the [hardware matrix](docs/HARDWARE_COMPATIBILITY.md).
+validation.** The image does not fit Core/X3/X5, and these default profiles do
+not reserve the v2/X7 OS area. See the [hardware matrix](docs/HARDWARE_COMPATIBILITY.md).
 
 The compact build shares identical raw graphics and geometry and packs map
 blocks. It preserves enemy counts, animation policy and audio; it does not
 introduce runtime graphics decompression. All linked pose pixels and packed
 geometry are compared with the frozen reference during every build. Use
 `--layout frozen` only to build the older 32 MiB layout for comparison.
+
+An **experimental 15 MiB candidate** for the Mega EverDrive v2/X7 protocol is
+available separately:
+
+```sh
+python tools/build.py --rom /path/to/your/rthunder.zip --sgdk "$GDK" \
+  --layout shared --cart mega-everdrive-v2-x7 --output-dir dist/compatibility-candidate
+```
+
+This shares immutable geometry, duplicate pose tables and identical raw graphics
+across stages. Graphics and audio remain uncompressed; gameplay modes and
+animation policies are unchanged. Pixel data retain their original offsets within
+512 KiB banks, preserving the original DMA split boundaries. The image occupies
+banks 0–29 and uses only the documented upper portion of bank 31 for saves,
+leaving the OS reservation intact. See
+[Krikzz's extended-SSF specification](https://krikzz.com/pub/support/mega-everdrive/x3x5x7/dev/extended_ssf-v2.txt).
+This is a candidate, not physical-hardware certification or support for
+7 MiB cartridges. The standard shared-layout variant is selected with
+`--layout shared --cart standard` for emulator comparisons.
+See the [candidate results and remaining hardware checks](docs/COMPATIBILITY_CANDIDATE.md).
+
+A separate **7 MiB candidate** now combines lossless graphics storage with
+sample-exact Z80 audio streaming. It uses 7,337,646 bytes before cartridge-bank
+padding (7,340,032 bytes on disk), preserving every mode, character and asset.
+Campaign opening performance has recovered to the accepted build's range;
+measurements include a separate jumping workload and both protagonists.
+Build it with `--layout packed --pose-codec fast --cart standard --output-dir dist/seven-mib-candidate`. It has not replaced the accepted releases,
+and its physical cartridge/console compatibility is still unverified.
+See [the size, timing measurements and validation report](docs/SEVEN_MIB_PROGRESS.md).
 
 Standard Genesis controller inputs are used; Home's setup lets
 player two join before choosing the characters.

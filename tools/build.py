@@ -81,11 +81,13 @@ def build_completion(sdk,build,inc):
  return data
 
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--rom',required=True,type=Path,help='Owner-supplied Rolling Thunder rev. 3 arcade ZIP');p.add_argument('--sgdk',type=Path,default=os.environ.get('GDK'));p.add_argument('--cart',choices=['standard','mega-everdrive-pro'],default='standard');p.add_argument('--output-dir',type=Path,default=ROOT/'dist');p.add_argument('--layout',choices=['compact','frozen'],default='compact');p.add_argument('--jobs',type=int,default=min(8,os.cpu_count() or 1));a=p.parse_args()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--rom',required=True,type=Path,help='Owner-supplied Rolling Thunder rev. 3 arcade ZIP');p.add_argument('--sgdk',type=Path,default=os.environ.get('GDK'));p.add_argument('--cart',choices=['standard','mega-everdrive-pro','mega-everdrive-v2-x7'],default='standard');p.add_argument('--output-dir',type=Path,default=ROOT/'dist');p.add_argument('--layout',choices=['compact','shared','packed','frozen'],default='compact');p.add_argument('--jobs',type=int,default=min(8,os.cpu_count() or 1));p.add_argument('--pose-codec',choices=['canonical','fast'],default='canonical',help='Experimental packed-layout sprite codec');a=p.parse_args()
  if not a.rom.is_file():p.error('ROM archive not found; supply your own rthunder.zip')
  if not a.sgdk or not (a.sgdk/'makefile.gen').is_file():p.error('Pass --sgdk PATH or set GDK to an SGDK 2.12 installation')
+ if a.pose_codec!='canonical' and a.layout!='packed':p.error('--pose-codec requires --layout packed')
  if a.jobs<1:p.error('--jobs must be positive')
- if a.cart!='standard' and a.layout!='compact':p.error('Mega EverDrive Pro requires the compact layout')
+ if a.cart!='standard' and a.layout=='frozen':p.error('Extended-SSF profiles require a compact layout')
+ if a.cart=='mega-everdrive-v2-x7' and a.layout not in ('shared','packed'):p.error('Mega EverDrive v2/X7 requires --layout shared to reserve OS banks 30-31')
  rom=a.rom.resolve();sdk=a.sgdk.resolve();build=ROOT/'.build';game=build/'game';game.mkdir(parents=True,exist_ok=True)
  for name in ['src','inc','res']:shutil.copytree(ROOT/name,game/name,dirs_exist_ok=True)
  (game/'tools').mkdir(exist_ok=True)
@@ -97,9 +99,9 @@ def main():
  completion=build_completion(sdk,build,game/'inc')
  high=json.loads((ROOT/'assets/ui/high_score.json').read_text());high_data=b''.join(struct.pack('>'+str(len(high[n]))+'H',*high[n]) for n in ['scene','panel','maps'])
  compact_report=None
- if a.layout=='compact':
+ if a.layout in ('compact','shared','packed'):
   import compact_build
-  chunks,compact_report=compact_build.prepare(ROOT,sdk,build,game,rows,images,completion,high_data,audio,a.jobs,run)
+  chunks,compact_report=compact_build.prepare(ROOT,sdk,build,game,rows,images,completion,high_data,audio,a.jobs,run,shared=a.layout in ('shared','packed'),packed=a.layout=='packed',packed_codec=a.pose_codec)
  layout=game/'inc/rt_rom_layout.h';text=layout.read_text()
  import re
  text=re.sub(r'^#define RT_CART_EXTENDED_SSF .*\n','',text,flags=re.M)
@@ -117,7 +119,7 @@ def main():
  span=symbols['_stext']+symbols['_sdata'];fixed=(game/'out/release/rom.bin').read_bytes()
  if span>0x100000 or len(fixed)>0x100000:raise ValueError('Fixed code overlaps banked graphics')
  if compact_report and span>compact_build.HIGH_ADDRESS:raise ValueError('Fixed code overlaps compact UI/audio storage')
- raw=bytearray(compact_build.ROM_BYTES if compact_report else 0x2000000);raw[:span]=fixed[:span]
+ raw=bytearray(compact_report['rom_bytes'] if compact_report else 0x2000000);raw[:span]=fixed[:span]
  occupied=[(0,span)]
  def place_at(start,data):
   if any(start<end and start+len(data)>begin for begin,end in occupied):raise ValueError('Overlapping ROM bank at '+str(start))
@@ -133,10 +135,20 @@ def main():
  raw[0x100:0x110]=b'SEGA SSF        ' if a.cart!='standard' else b'SEGA MEGA DRIVE ';raw[0x1a4:0x1a8]=struct.pack('>I',len(raw)-1);raw[0x1b0:0x1bc]=b'RA'+struct.pack('>HII',0xf820,0x240001 if a.cart!='standard' else 0x200001,0x24ffff if a.cart!='standard' else 0x20ffff);raw[0x18e:0x190]=struct.pack('>H',sum(struct.unpack('>'+str((len(raw)-512)//2)+'H',raw[512:]))&65535)
  if compact_report:
   from verify_compact import verify
-  compact_report['verified_art']=verify(ROOT,sdk,run,rows,compact_report['stages'],raw)
- dist=a.output_dir;dist.mkdir(parents=True,exist_ok=True);dest=dist/('RollingThunderMD-MegaEverDrivePro.bin' if a.cart!='standard' else 'RollingThunderMD.bin');dest.write_bytes(raw)
+  compact_report['verified_art']=verify(ROOT,sdk,run,rows,compact_report['stages'],raw,compact_report.get('shared_metadata'),compact_report.get('packed_patterns'))
+  if compact_report.get('streamed_audio'):
+   from pcm_stream import unpack
+   for name,clip in compact_report['streamed_audio'].items():
+    address=compact_report['audio_addresses'][name]
+    decoded=unpack(raw[address:address+clip['packed_bytes']],clip['samples'],delta=clip.get('delta',False))
+    if digest(decoded)!=clip['sha256']:raise ValueError('Assembled PCM differs: '+name)
+   compact_report['verified_audio_samples']=sum(x['samples'] for x in compact_report['streamed_audio'].values())
+ dist=a.output_dir;dist.mkdir(parents=True,exist_ok=True);names={'standard':('RollingThunderMD.bin','build.json'),'mega-everdrive-pro':('RollingThunderMD-MegaEverDrivePro.bin','build-mega-everdrive-pro.json'),'mega-everdrive-v2-x7':('RollingThunderMD-MegaEverDriveV2-X7.bin','build-mega-everdrive-v2-x7.json')}
+ dest=dist/names[a.cart][0];dest.write_bytes(raw)
+ shutil.copy2(game/'out/release/symbol.txt',dest.with_suffix('.symbols.txt'))
  report=dict(sha256=digest(raw),artifact=dest.name,cartridge_profile=a.cart,bytes=len(raw),fixed_span=span,sgdk_version='2.12',compiler=run([sdk/'bin/m68k-elf-gcc','-dumpfullversion']).strip(),stage_banks_reproduced=10,layout=a.layout,compact=compact_report,boot_intros=False,rom_archives_distributed=False)
- (dist/('build-mega-everdrive-pro.json' if a.cart!='standard' else 'build.json')).write_text(json.dumps(report,indent=2)+'\n')
+ report['experimental_layout']=a.layout in ('shared','packed');report['physical_hardware_tested']=False
+ (dist/names[a.cart][1]).write_text(json.dumps(report,indent=2)+'\n')
  sums=dist/'SHA256SUMS';lines=sums.read_text().splitlines() if sums.exists() else []
  lines=[line for line in lines if not line.endswith('  '+dest.name)]+[report['sha256']+'  '+dest.name]
  sums.write_text('\n'.join(sorted(lines))+'\n');print(str(dest)+'\nSHA256 '+report['sha256'],flush=True)
