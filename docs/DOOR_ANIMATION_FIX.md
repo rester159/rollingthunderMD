@@ -30,7 +30,8 @@ tiles. The stage bank fingerprints were repinned for these intentional art edits
 - Matching build and validation metadata: `dist/door-fix-candidate/`.
 
 The previous 7 MiB candidate remains in `dist/seven-mib-candidate/`. The accepted
-15.5 MiB release files in the separate original checkout were not modified.
+15.5 MiB release files are preserved unchanged in `.local/accepted-baseline/dist/`
+after consolidating the local checkouts into this project folder.
 ROMs and boot-intro assets remain excluded from Git.
 
 ## Validation

@@ -24,3 +24,6 @@ __pycache__/
 *[Nn][Aa][Mm][Cc][Oo][Tt]*
 *[Bb][Oo][Oo][Tt]_[Ii][Nn][Tt][Rr][Oo][Ss]*
 *.raw
+
+# Local research history and publishing files consolidated in this checkout.
+/.local/

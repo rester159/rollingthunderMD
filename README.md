@@ -8,6 +8,11 @@ The v0.8 Alpha door fix restores the arcade's three opening/closing frames for
 each door type in all ten stages. The corrected 7 MiB build is documented in
 [Door animation fix](docs/DOOR_ANIMATION_FIX.md).
 
+The local project is consolidated in `/Users/rester159/genesis ports/rolling thunder`.
+The current ROM is `dist/Rolling_Thunder_MD_v0.8._Alpha.bin`; see
+[CURRENT_BUILD.txt](CURRENT_BUILD.txt). Older local research, comparison builds
+and the itch.io package are retained under the Git-ignored `.local/` directory.
+
 In lighter 2P scenes, enemies use their full banked poses. Crowds, rendering lag
 or sprite-memory pressure select compact poses; full detail returns after 30
 light simulation updates. 1P keeps its existing animation policy.
