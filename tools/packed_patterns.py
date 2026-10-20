@@ -39,12 +39,11 @@ def hot_animations(root, rows):
     return names
 
 def shared_player_animations(root, rows):
-    """Keep common player poses raw when all ten terrain palettes share them.
+    """Keep all player/guard walk cycles and player stand/jump frames raw.
 
-    Also retain guard walk cycles whose exact palette appears in at least
-    half the stages. Their pixels need only one ROM copy per costume. Moving these small,
-    globally shared animations out of the decoder also leaves the stage-time
-    RAM cache available for the palette-specific art.
+    Shared player firing poses and the final area's frequent high-enemy poses
+    also transfer directly. Static-screen deduplication pays for these exact
+    pixels; remaining animations use the same lossless decoder and RAM cache.
     """
     stages=defaultdict(set)
     direct=set()
@@ -60,11 +59,10 @@ def shared_player_animations(root, rows):
                     name=records[base+index].split(',')[0]
                     if name.startswith('rtSharedPose_'):
                         stages[name].add(row['stage'])
-                        # Standing and airborne player frames are frequent even
+                        # Standing, walking and airborne frames are frequent even
                         # when terrain palettes give each stage distinct pixels.
-                        if index==19:direct.add(name)
+                        if index in (0,1,2,3,4,5,6,18,19):direct.add(name)
     selected=direct|{name for name,seen in stages.items() if len(seen)==len(rows)}
-    guard_stages=defaultdict(set)
     for row in rows:
         for filename in row['sources']:
             if not re.fullmatch(r'(?:area\d\d_)?enemy_b\d_g\d+_poses.c',filename):continue
@@ -74,8 +72,19 @@ def shared_player_animations(root, rows):
             assert len(records)==383
             for index in range(91,97):
                 name=records[index].split(',')[0]
-                if name.startswith('rtSharedPose_'):guard_stages[name].add(row['stage'])
-    selected.update(name for name,seen in guard_stages.items() if len(seen)*2>=len(rows))
+                if name.startswith('rtSharedPose_'):
+                    selected.add(name)
+    # The final area's large walking enemies have long, frequent animation
+    # cycles. Static-scene packing pays for direct DMA of movement/attack art;
+    # death/exit frames remain losslessly compressed.
+    for row in rows:
+        if row['stage']!=9:continue
+        for filename in row['sources']:
+            if not filename.endswith('high10_poses.c'):continue
+            source=(root/row['folder']/filename).read_text()
+            source=source[source.index('const RT_SpritePose '):]
+            records=re.findall(r'^\s*\{([^{}\n]+)\},?$',source[:source.index('\n};')],re.M)
+            selected.update(record.split(',')[0] for record in records[:515] if record.startswith('rtSharedPose_'))
     return selected
 
 class PackedPatterns:
@@ -198,17 +207,14 @@ class PackedPatterns:
             at=locations[identity]-physical
             assert blob[at:at+len(data)]==data
             assert (locations[identity]& (PAGE-1))+len(data)<=PAGE
-        # Whole raw poses can overlap identical prefix/suffix tiles and remain
-        # contiguous DMA sources, exactly as in the uncompressed shared layout.
+        # Raw DMA sources need word alignment, not whole-tile alignment. Share
+        # matching edges and contained images while retaining every byte of
+        # each contiguous pose; the runtime's normal DMA seam handling applies.
         if self.raw_streams:
             if (physical+len(blob))&1:blob.append(0);padding+=1
-            from compact_assets import pattern_pool
-            raw_image=bytearray();raw_symbols=[]
-            for identity,data in self.raw_streams.items():
-                name='rtSharedPose_'+identity[4:]
-                raw_symbols.append((0x100000+len(raw_image),len(data),name));raw_image+=data
-            raw_pool,raw_offsets=pattern_pool([bytes(raw_image)],[raw_symbols])
-            for identity in self.raw_streams:locations[identity]=physical+len(blob)+raw_offsets['rtSharedPose_'+identity[4:]]
+            from aligned_pool import pack
+            raw_pool,raw_offsets=pack(self.raw_streams)
+            for identity in self.raw_streams:locations[identity]=physical+len(blob)+raw_offsets[identity]
             blob+=raw_pool
         self.locations=locations
         descriptors=bytearray()

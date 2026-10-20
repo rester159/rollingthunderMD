@@ -45,6 +45,11 @@ static void assign(RT_SpriteArena *a,u8 slot,const RT_SpritePose *pose,u8 start,
     planned[slot]=pose;
     u8 h=hashPose(pose);a->chain[slot]=a->heads[h];a->heads[h]=slot;
 }
+#ifdef __m68k__
+/* Keep the allocator's temporary arrays and register pressure out of the
+ * per-frame actor traversal. Planning still sees the complete visible set. */
+__attribute__((noinline))
+#endif
 u8 RT_spriteArenaPlan(RT_SpriteArena *a,const RT_SpritePose *const *poses,u8 count,u8 *slots)
 {
     if(!a || !a->blocks || a->blocks>RT_SPRITE_ARENA_BLOCKS || count>80 ||

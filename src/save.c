@@ -9,6 +9,7 @@
 static u8 previous[42],havePrevious,activeSlot;
 static u32 generation;
 static u8 cached[2][SLOT_SIZE],warmReset;
+static u8 extras[4][2][64],extrasWarm;
 volatile u8 rtSaveAvailable;
 static u32 get32(const u8 *p){return ((u32)p[0]<<24)|((u32)p[1]<<16)|((u32)p[2]<<8)|p[3];}
 static void put32(u8 *p,u32 n){p[0]=n>>24;p[1]=n>>16;p[2]=n>>8;p[3]=n;}
@@ -123,9 +124,56 @@ bool RT_saveStore(const u8 records[35],u32 best,u8 credits,u8 psgMuted,u8 contro
 void RT_saveResetExport(RT_SaveReset *state)
 {
     memcpy(state->slots,cached,sizeof cached);state->available=rtSaveAvailable;
+    memcpy(state->extra,extras,sizeof extras);
 }
 void RT_saveResetImport(const RT_SaveReset *state)
 {
     memcpy(cached,state->slots,sizeof cached);rtSaveAvailable=state->available;
     warmReset=1;
+    memcpy(extras,state->extra,sizeof extras);extrasWarm=1;
+}
+
+static bool extraValid(const u8 *p,u8 slot)
+{return p[0]=='R' && p[1]=='H' && p[2]==1 && p[3]==slot && get32(p+60)==crc(p);}
+static int extraLatest(u8 slot)
+{
+    const u8 *a=extras[slot][0],*b=extras[slot][1];
+    bool va=extraValid(a,slot),vb=extraValid(b,slot);
+    if(!va&&!vb)return -1;
+    return vb&&(!va||(s32)(get32(b+4)-get32(a+4))>0)?1:0;
+}
+void RT_saveExtrasLoad(void)
+{
+    if(extrasWarm){extrasWarm=0;return;}
+    bool bus=enter();
+    for(u16 i=0;i<sizeof extras;i++)((u8*)extras)[i]=readByte(256+i);
+    leave(bus);
+}
+bool RT_saveExtraRead(u8 slot,u8 payload[48])
+{
+    if(slot>=4)return FALSE;
+    int latest=extraLatest(slot);if(latest<0)return FALSE;
+    memcpy(payload,extras[slot][latest]+8,48);return TRUE;
+}
+bool RT_saveExtraWrite(u8 slot,const u8 payload[48])
+{
+    if(slot>=4||!rtSaveAvailable)return FALSE;
+    int latest=extraLatest(slot);
+    if(latest>=0&&!memcmp(extras[slot][latest]+8,payload,48))return TRUE;
+    u8 data[64]={0},target=latest==0?1:0;
+    data[0]='R';data[1]='H';data[2]=1;data[3]=slot;
+    put32(data+4,latest<0?1:get32(extras[slot][latest]+4)+1);
+    memcpy(data+8,payload,48);put32(data+60,crc(data));
+#ifdef __m68k__
+    if(RT_titleMenuActive())VDP_waitVBlank(TRUE);
+#endif
+    u16 base=256+slot*128+target*64;
+    bool bus=enter();writeByte(base,0);
+    for(u8 i=1;i<64;i++)writeByte(base+i,data[i]);
+    writeByte(base,data[0]);leave(bus);
+    extras[slot][target][0]=0;
+    __asm__ volatile("" ::: "memory");
+    memcpy(extras[slot][target]+1,data+1,63);
+    __asm__ volatile("" ::: "memory");
+    extras[slot][target][0]=data[0];return TRUE;
 }

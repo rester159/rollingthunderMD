@@ -73,7 +73,7 @@ u8 RT_campaignSpritesUseHud(RT_CampaignSprites *s,u8 players)
         VDP_loadTileData(s->graphics->bulletPatterns,s->bulletTile,s->graphics->bulletTiles,CPU);
     }
     u16 first=s->bulletTile+s->graphics->bulletTiles;
-    if(first>=1440 || !RT_spriteArenaInitialize(&s->arena,first,(1440-first)/16))return 0;
+    if(first>=1536 || !RT_spriteArenaInitialize(&s->arena,first,min(RT_SPRITE_ARENA_BLOCKS,(1536-first)/16)))return 0;
     s->hud=1;return 1;
 }
 /* RT_campaignSpritesQueue lives with the held-group records it publishes:

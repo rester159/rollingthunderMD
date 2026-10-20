@@ -17,6 +17,9 @@ typedef struct {
      * otherwise it holds direct attributes. Dimensions must be16-cell aligned. */
     const u16 *blocks;
 } RT_DisplayStage;
+#ifdef __m68k__
+void RT_copyPackedColumn(const u16 *map,const u16 *blocks,u16 *dest,u32 strideBytes,u32 count);
+#endif
 static inline u16 RT_displayMapCell(const RT_DisplayStage *s,u16 plane,u32 offset)
 {
     return s->blocks?s->blocks[(u32)s->map[plane][offset>>4]*16+(offset&15)]:s->map[plane][offset];
@@ -42,8 +45,19 @@ static inline void RT_displayPackedStrip(const RT_DisplayStage *stage,u16 plane,
         u16 stride=stage->widthCells>>4;
         const u16 *map=stage->map[plane]+(u32)begin*stride+((u16)at>>4);
         const u16 *blocks=stage->blocks+((u16)at&15);
-        for(s16 i=begin;i<end;i++,map+=stride)
-            buffer[(u16)i&31]=blocks[(u32)*map*16];
+        u16 position=begin;
+        while(position<(u16)end){
+            u16 run=32-(position&31);
+            if(run>(u16)end-position)run=(u16)end-position;
+            u16 *dest=buffer+(position&31);
+#ifdef __m68k__
+            RT_copyPackedColumn(map,blocks,dest,(u32)stride*2,run);
+            map+=(u32)stride*run;
+#else
+            for(u16 i=0;i<run;i++,map+=stride)*dest++=blocks[(u32)*map*16];
+#endif
+            position+=run;
+        }
     }else{
         const u16 *map=stage->map[plane]+((u32)at*stage->widthCells+(u16)begin)/16;
         u16 position=begin;

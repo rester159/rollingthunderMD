@@ -1,0 +1,182 @@
+[
+  {
+    "label": "before",
+    "name": "1-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "1-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "1-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "1-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "2-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "2-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "2-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "2-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "4-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "4-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "4-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "4-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "5-campaign_1p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "5-campaign_1p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "5-campaign_1p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "5-campaign_1p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "5-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "5-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "5-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "5-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "6-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "6-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "6-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "6-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "7-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "7-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "7-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "7-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "9-campaign_1p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "9-campaign_1p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "9-campaign_1p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "9-campaign_1p-1",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "9-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "9-campaign_2p-0",
+    "passed": true
+  },
+  {
+    "label": "before",
+    "name": "9-campaign_2p-1",
+    "passed": true
+  },
+  {
+    "label": "after",
+    "name": "9-campaign_2p-1",
+    "passed": true
+  }
+]

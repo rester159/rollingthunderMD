@@ -67,7 +67,8 @@ enum {
  * poses; its backend temporarily maps window 7, then restores that mapping. */
 u8 RT_spriteSlotInitialize(RT_SpriteSlot *slot,u16 firstTile,u16 capacity);
 void RT_spritesBegin(RT_SpriteBatch *batch);
-/* Reserve four hardware mask records to clip sprites to scanlines24..215. */
+/* Reserve 22 SAT entries for the transparent HUD; native actor records
+ * retain their four-entry offset and link after the persistent HUD tail. */
 void RT_spritesBeginHud(RT_SpriteBatch *batch);
 u8 RT_spriteSubmit(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
     const RT_SpriteInstance *instance,const RT_WorldCamera *camera);

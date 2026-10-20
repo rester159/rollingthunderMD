@@ -1,0 +1,10 @@
+{
+  "rom_sha256": "318691b01538e9165fa64d29302ec27731e916006a13997bedf76835bc61baf4",
+  "bytes": 4194304,
+  "used_bytes": 4189406,
+  "achievement_symbols_absent": true,
+  "achievement_text_absent": true,
+  "header_checksum_valid": true,
+  "versioned_release_unchanged": true,
+  "published": false
+}

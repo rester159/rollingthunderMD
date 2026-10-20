@@ -1,0 +1,1 @@
+Three Home checkpoints, characters, credits, scores, ammo, dead partner handling and both legacy profile versions passed.

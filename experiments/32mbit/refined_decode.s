@@ -51,16 +51,18 @@ RT_decodeCanonicalPose:
     movem.l (%sp),%d2-%d5
     move.l %sp,%a2
     move.w %d6,%d7
+    bra.s .Lrow
+.LhighNibbles:
+    .long 0x00000000,0x10101010,0x20202020,0x30303030
+    .long 0x40404040,0x50505050,0x60606060,0x70707070
+    .long 0x80808080,0x90909090,0xa0a0a0a0,0xb0b0b0b0
+    .long 0xc0c0c0c0,0xd0d0d0d0,0xe0e0e0e0,0xf0f0f0f0
 .Lrow:
     moveq #0,%d0
     move.b (%a2)+,%d0
-    lsl.w #4,%d0
-    move.w %d0,%d1
-    lsl.w #8,%d0
-    or.w %d1,%d0
-    move.w %d0,%d1
-    swap %d0
-    move.w %d1,%d0
+    add.w %d0,%d0
+    add.w %d0,%d0
+    move.l .LhighNibbles(%pc,%d0.w),%d0
     move.l %d2,%d1
     or.l %d0,%d1
     move.l %d1,(%a4)+

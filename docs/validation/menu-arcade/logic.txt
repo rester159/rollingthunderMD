@@ -1,0 +1,1 @@
+Home checkpoints: three slots, both characters, credits, scores, ammo and bonus progress. All 21 achievement conditions, one-shot SFX, persistence, Home/Survival/demo/cheat exclusions, default DIP rules, old-profile migration, spare lives, per-area shots, continue and shot-count failures passed.

@@ -29,11 +29,24 @@ static u8 heldPlayers[2],heldEnemies[RT_ENEMY_CAPACITY];
 static u8 heldObjects[RT_NATIVE_STAGE_CAPACITY],heldProjectiles[RT_PROJECTILE_CAPACITY];
 u32 rtSpriteBirthEpoch;
 static u32 heldBirthEpoch;
-void RT_reprojectionReset(void)
+typedef struct {u16 pose;u8 kind,color;} GraphicKey;
+static GraphicKey graphicKeys[RT_ENEMY_CAPACITY];
+static const RT_PackedSpritePose *graphics[RT_ENEMY_CAPACITY];
+static void resetHeld(void)
 {
     heldReady=heldCount=0;
     memset(heldPlayers,0,sizeof heldPlayers);memset(heldEnemies,0,sizeof heldEnemies);
     memset(heldObjects,0,sizeof heldObjects);memset(heldProjectiles,0,sizeof heldProjectiles);
+}
+void RT_reprojectionReset(void)
+{resetHeld();memset(graphicKeys,255,sizeof graphicKeys);}
+static inline const RT_PackedSpritePose *enemyGraphic(const RT_CampaignGraphics *g,const RT_Enemy *e,u8 index)
+{
+    u16 pose=e->state.pose;u8 kind=e->state.kind,color=e->byte4;
+    GraphicKey *entry=graphicKeys+index;
+    if(entry->pose==pose && entry->kind==kind && entry->color==color)return graphics[index];
+    const RT_PackedSpritePose *graphic=kind>=32?g->highEnemy(kind,color,pose):g->enemy(kind,color,pose);
+    *entry=(GraphicKey){pose,graphic?kind:255,color};return graphic;
 }
 static inline void hold(const RT_SpritePose *pose,const RT_PackedSpritePiece *packed,u16 tile,
     u8 type,u8 index,u8 kind,u8 tag)
@@ -93,7 +106,7 @@ u8 RT_campaignSpritesQueue(RT_CampaignSprites *s,const RT_CampaignScene *scene,R
     if(!s || !s->ready || !scene || !scene->ready || !view || !view->display.ready)return 0;
     const RT_CampaignGraphics *g=s->graphics;
     if(!g || g->stage!=view->display.stage)return fail(s,2);
-    RT_reprojectionReset();
+    resetHeld();
     s->fault=0;if(s->hud)RT_spritesBeginHud(&s->batch);else RT_spritesBegin(&s->batch);
     RT_SpriteBatch *batch=&s->batch;
     const RT_WorldCamera *camera=&scene->camera;
@@ -114,7 +127,6 @@ u8 RT_campaignSpritesQueue(RT_CampaignSprites *s,const RT_CampaignScene *scene,R
     }
     /* Main-thread-only preparation workspace, kept off the interrupt-shared stack. */
     static const RT_SpritePose *poses[RT_ENEMY_CAPACITY+RT_PROJECTILE_CAPACITY+15];
-    static const RT_PackedSpritePose *graphics[RT_ENEMY_CAPACITY];
     static u8 enemySlots[RT_ENEMY_CAPACITY];
     static u8 enemies[RT_ENEMY_CAPACITY],slots[RT_ENEMY_CAPACITY+RT_PROJECTILE_CAPACITY+15];
     static u8 shots[RT_PROJECTILE_CAPACITY],throwIndices[RT_PROJECTILE_CAPACITY];
@@ -130,8 +142,8 @@ retryDetail:
         remaining--;if(e->state.hidden)continue;
         u8 resident=coop && rtCoopCompact?RT_coopResidentIndex(e):255;
         const RT_PackedSpritePose *graphic=resident!=255?RT_coopResidentGraphic(resident):
-            e->state.kind>=32?g->highEnemy(e->state.kind,e->byte4,e->state.pose):
-            g->enemy(e->state.kind,e->byte4,e->state.pose);
+            enemyGraphic(g,e,enemyCount);
+        if(resident!=255)graphicKeys[enemyCount].kind=255;
         if(!graphic || !graphic->pose)return fail(s,3);
         piecesNeeded+=graphic->pose->pieceCount;
         enemySlots[enemyCount]=resident!=255?resident:10+planned;
@@ -362,20 +374,42 @@ void RT_campaignSpritesPreload(const RT_CampaignSprites *s,const RT_CampaignScen
     for(u8 i=0;i<sizeof priority;i++){
         if(i==6){
             if(scene->players.home.players==2)break;
-            /* Only stage-authored guard variants resolve. Cache complete walk
-             * cycles before less frequent player poses; raw ROM poses need no RAM. */
-            u16 colors[2]={256,256};
-            for(u16 color=0;color<256;color+=2)for(u8 bank=0;bank<2;bank++)
-                if(colors[bank]==256 && g->enemy(bank?8:4,(u8)color,91))colors[bank]=color;
+            /* Door constructors are not represented by the enemy spawn grid.
+             * Keep the first regular door guard's short idle cycle resident. */
+            u8 stage=scene->stage->story*5+scene->stage->area;
+            for(u8 choice=0;choice<8;choice++){
+                const RT_EnemyTemplate *d=rtDoorEnemyTemplates+rtDoorEnemyTemplateIds[stage][choice];
+                if(d->kind!=4)continue;
+                for(u16 pose=77;pose<=85;pose++){
+                    const RT_PackedSpritePose *graphic=g->enemy(d->kind,d->initialByte4,pose);
+                    if(graphic && graphic->pose)
+                        RT_packedPreload(graphic->pose->patterns,graphic->pose->tileCount*16);
+                }
+                break;
+            }
+            /* Rank costumes from the complete authored spawn grid. Cache
+             * common firing/door cycles before rare costumes, independent of
+             * the player's current location or this frame's actor order. */
+            u16 weights[2][128]={{0}};
+            if(scene->spawnLevel)for(u16 n=0;n<scene->spawnLevel->eventCount;n++){
+                const RT_EnemySpawn *spawn=scene->spawnLevel->events+n;
+                if(spawn->definition>=rtGridEnemyTemplateCount)continue;
+                const RT_EnemyTemplate *d=rtGridEnemyTemplates+spawn->definition;
+                if(d->kind==4 || d->kind==8)weights[d->kind==8][d->initialByte4/2]++;
+            }
             static const u16 guardPriority[]={91,92,93,94,95,96,
-                69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,
-                204,205,206,207,0,1,2,3,4,5};
-            for(u8 pass=0;pass<3;pass++)for(u8 f=pass?6:0;f<(pass?sizeof guardPriority/sizeof guardPriority[0]:6);f++)
-            for(u8 bank=pass?pass-1:0;bank<(pass?pass:2);bank++){
-                if(colors[bank]==256)continue;
-                const RT_PackedSpritePose *graphic=g->enemy(bank?8:4,(u8)colors[bank],guardPriority[f]);
-                if(graphic && graphic->pose)
-                    RT_packedPreload(graphic->pose->patterns,graphic->pose->tileCount*16);
+                204,205,206,207,77,78,79,80,81,82,83,84,85,69,70,71,72,73,74,75,76,0,1,2,3,4,5};
+            for(u16 rank=0;rank<256;rank++){
+                u16 best=0,color=0;u8 bank=0;
+                for(u16 k=0;k<128;k++)for(u8 b=0;b<2;b++)
+                    if(weights[b][k]>best){best=weights[b][k];color=k*2;bank=b;}
+                if(!best)break;
+                weights[bank][color/2]=0;
+                for(u8 f=0;f<sizeof guardPriority/sizeof guardPriority[0];f++){
+                    const RT_PackedSpritePose *graphic=g->enemy(bank?8:4,(u8)color,guardPriority[f]);
+                    if(graphic && graphic->pose)
+                        RT_packedPreload(graphic->pose->patterns,graphic->pose->tileCount*16);
+                }
             }
         }
         for(u8 p=0;p<scene->players.home.players;p++){

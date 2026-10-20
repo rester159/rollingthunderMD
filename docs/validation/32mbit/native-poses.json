@@ -1,0 +1,15 @@
+{
+  "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+  "core_sha256": "435c60c17c7a7c8f2a92f6449141960ac6b6e8292fad796da6d9b823615787ad",
+  "production_decoder_matches_diagnostic": true,
+  "compressed_native_exact": 10770,
+  "raw_exact": 500,
+  "total_exact": 11270,
+  "native_master_cycles": {
+    "min": 24626,
+    "median": 161224.0,
+    "max": 340578
+  },
+  "physical_hardware_tested": false,
+  "scope": "Every final linked compressed pose with its actual shared palette prefix; isolated native decoding with output canaries and preserved registers. Raw poses checked byte-for-byte."
+}

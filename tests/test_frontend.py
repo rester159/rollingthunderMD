@@ -17,6 +17,7 @@ def main():
    last[0]=v.tobytes();light.append(int(np.count_nonzero(v)))
  callback=vt(video);m.core.retro_set_video_refresh(callback)
  for b in (5,3,3):m.press(b)
+ if 'rtHomeSaveSlot' in m.symbols:m.press(3)
  initial=last[0];light.clear()
  m.press(7);m.press(7)
  assert last[0]==initial,'Switching back did not restore the exact original selection screen'

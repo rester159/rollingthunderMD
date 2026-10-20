@@ -53,9 +53,11 @@ def driver(source,linear=False):
  result+='count_carry\n'+ins('INC D','JR Z,group_end','EXX','LD SP,unchecked_program')+pad(43)+ins('POP IX','JP sample_loop')
  result+='group_end\n'+ins('EXX','LD SP,segment_program')+pad(38)+ins('POP IX','JP sample_loop')
  result+=code('mask_unchecked',read_body,63)
- # Escape masks select the original six-byte program directly. The index
- # calculation fits one timed continuation; publication is a second one.
- result+=code('escape_index',ins('LD A,(BC)','INC BC','EXX','LD L,A','LD H,0','LD C,L','LD B,H','ADD HL,HL','ADD HL,BC','ADD HL,HL','LD A,H','ADD A,$12','LD H,A','EXX'),88)
+ # Escape masks select the original six-byte program within one continuation.
+ # With two pair states and read_mask this emits four samples per four decoded
+ # samples even in an all-escape stream. A second LD SP,HL supplies the exact
+ # six-cycle padding without changing state; ROM reads include three waits.
+ result+=code('escape_index',ins('LD A,(BC)','INC BC','EXX','LD L,A','LD H,3','LD C,L','LD B,H','ADD HL,HL','ADD HL,BC','ADD HL,HL','LD SP,HL','LD SP,HL','EXX'),88)
  result+=code('escape_ready',ins('EXX','LD SP,HL','EXX'),14)
  result+=code('header_low',ins('LD A,(BC)','INC BC','CPL','EXX','LD E,A','EXX'),32)
  result+=code('header_high',ins('LD A,(BC)','INC BC','LD (lastSegment),A','AND $7F','CPL','EXX','LD D,A','EXX'),52)

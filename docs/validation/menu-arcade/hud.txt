@@ -1,0 +1,1 @@
+Arcade banner cleanup and independent Home ammo counters, refill visibility, MG removal, credits and dirty-row behavior passed.

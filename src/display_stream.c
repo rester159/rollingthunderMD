@@ -1,5 +1,6 @@
 #include <genesis.h>
 #include "rt_display_stream.h"
+#include "rt_display_stream_release.h"
 typedef struct {RT_DisplayRuntime *display;TransferMethod method;} Upload;
 static u8 upload(u16 pattern,u16 tile,void *context)
 {
@@ -64,29 +65,18 @@ static u8 stripPacked(RT_DisplayStream *s,RT_DisplayRuntime *d,s16 at,u8 vertica
 {
     u16 buffer[64];Upload u={d,method};
     const RT_DisplayStage *stage=d->stage;
-    u16 count=vertical?32:64,limit=vertical?stage->heightCells:stage->widthCells;
-    u16 step=vertical?stage->widthCells:1;
+    u16 count=vertical?32:64;
     s16 start=vertical?d->row:d->column;
-    u8 fixedValid=(u16)at<(vertical?stage->widthCells:stage->heightCells);
-    s32 first=vertical?(s32)start*stage->widthCells+at:(s32)at*stage->widthCells+start;
     u16 fixed=vertical?((u16)at&63):((u16)at&31)*64;
     for(u16 p=0;p<2;p++){
-        const u16 *source=stage->map[p],*block=0;
-        s32 blockOffset=first>>4;
-        u16 blockStep=step>>4,pen=(u16)first&15;
-        u16 base=p*2048+fixed,padding=stage->padding[p];
+        /* Resolve the immutable source strip first. The map/ownership pass
+         * keeps its original logical order and reuses the same output buffer. */
+        RT_displayPackedStrip(stage,p,at,start,vertical,buffer);
+        u16 base=p*2048+fixed;
         for(u16 i=0;i<count;i++){
-            s16 coordinate=start+i;
-            u16 index=(u16)coordinate&(vertical?31:63);
-            u16 attr=padding;
-            if(fixedValid && (u16)coordinate<limit){
-                if(vertical || !block || !pen)block=stage->blocks+(u32)source[blockOffset]*16;
-                attr=block[pen];
-            }
+            u16 index=(u16)(start+i)&(vertical?31:63);
             u16 destination=base+(vertical?index*64:index);
-            if(!map(s,&u,destination,attr,buffer+index))return 0;
-            if(vertical)blockOffset+=blockStep;
-            else {pen=(pen+1)&15;if(!pen)blockOffset++;}
+            if(!map(s,&u,destination,buffer[index],buffer+index))return 0;
         }
         u16 address=(p?0xe000:0xc000)+(vertical?((u16)at&63)*2:((u16)at&31)*128);
         if(!DMA_transfer(method,DMA_VRAM,buffer,address,count,vertical?128:2))return 0;
@@ -146,7 +136,7 @@ u8 RT_displayStreamPrepare(RT_DisplayStream *s,RT_DisplayRuntime *d,const RT_Wor
     for(u16 p=0;p<2;p++){
         for(s16 i=0;i<(dx<0?-dx:dx);i++){
             s16 col=dx>0?ox+i:ox+63-i;
-            for(s16 j=0;j<32;j++)if(!release(s,indexAt(p,col,oy+j)))goto fail;
+            if(!RT_displayReleaseColumn(s,p,col,oy))goto fail;
         }
         for(s16 i=0;i<(dy<0?-dy:dy);i++){
             s16 row=dy>0?oy+i:oy+31-i;

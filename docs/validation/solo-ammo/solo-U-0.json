@@ -1,0 +1,76 @@
+{
+  "rom_sha256": "ba3f09424c140066af50b29e90a01ab5aaa1a263a359658bbfdf9b176df59d12",
+  "region": "U",
+  "agent": 0,
+  "cases": [
+    {
+      "case": "pistol",
+      "before": [
+        50,
+        0,
+        0
+      ],
+      "after": [
+        70,
+        0,
+        0
+      ],
+      "visit_refreshes": 109,
+      "hud_primary": 70,
+      "hud_machine": null,
+      "spent_door_no_refill": true
+    },
+    {
+      "case": "machine-active",
+      "before": [
+        50,
+        80,
+        1
+      ],
+      "after": [
+        70,
+        80,
+        1
+      ],
+      "visit_refreshes": 109,
+      "hud_primary": 70,
+      "hud_machine": 80,
+      "spent_door_no_refill": true
+    },
+    {
+      "case": "cancel-retry",
+      "before": [
+        50,
+        0,
+        0
+      ],
+      "after": [
+        70,
+        0,
+        0
+      ],
+      "visit_refreshes": 109,
+      "hud_primary": 70,
+      "hud_machine": null,
+      "spent_door_no_refill": true
+    },
+    {
+      "case": "machine-pickup",
+      "before": [
+        50,
+        0,
+        0
+      ],
+      "after": [
+        50,
+        80,
+        1
+      ],
+      "visit_refreshes": 170,
+      "hud_primary": 50,
+      "hud_machine": 80,
+      "spent_door_no_refill": true
+    }
+  ],
+  "scope": "Solo Area 2 authored supply doors via normal controller entry/refill/exit.\n\nThe emulator's entrance table is moved near each door; production stage loaders\ninstantiate the real objects. Only player position, inventory and protection are\nseeded. Door flags, action, phase and timers are never injected. This is a local\nemulator fixture, not a hardware playthrough.\n"
+}

@@ -14,7 +14,9 @@ with ZipFile(a.arcade_rom) as z:arcade=z.read('rt3_2b.12c')
 assert arcade[0x6b00:0x6b00+len(commands)]==commands and arcade[0x6b00+len(commands)]==128
 # Keep an existing score across demo loops and subsequent real Starts.
 m.patch('score',(543210).to_bytes(4,'big'))
-m.press(3);assert m.number('rtArcadeAttract')==1
+m.press(3)
+if 'rtHomeSaveSlot' in m.symbols:m.press(3)
+assert m.number('rtArcadeAttract')==1
 saved=m.sram();records=m.read('highRecords',50);seen=set();indices=set();events=[];last=None
 for frame in range(6500):
  m.run(1);phase=m.number('rtArcadeAttract');seen.add(phase)
@@ -37,6 +39,7 @@ assert all(abs(first[i+1]-first[i]-n)<=1 for i,n in enumerate((36,22,36,22),1)),
 starts=[]
 for target in (1,2,3,4):
  m.core.retro_reset();m.run(300);m.press(3)
+ if 'rtHomeSaveSlot' in m.symbols:m.press(3)
  for _ in range(3500):
   if m.number('rtArcadeAttract')==target:break
   m.run(1)
@@ -52,6 +55,7 @@ for target in (1,2,3,4):
 # Back works in every phase; Home menus never start attract playback.
 for target in (1,2,3,4):
  m.core.retro_reset();m.run(300);m.press(3)
+ if 'rtHomeSaveSlot' in m.symbols:m.press(3)
  for _ in range(3500):
   if m.number('rtArcadeAttract')==target:break
   m.run(1)

@@ -1,10 +1,30 @@
-# Hardware compatibility — October 17, 2026
+# Hardware compatibility — October 18, 2026
 
-**Capacity correction, October 18:** the current target is **32 Mbit = 4 MiB
-(4,194,304 bytes)**. The 7 MiB builds below are **56 Mbit**, and exceed that target
-by 3 MiB. Earlier references to meeting the smaller target refer to the previous
-7 MiB development goal, not support for a 32 Mbit cartridge. No 32 Mbit playable
-build is available yet. The local v0.81 changes remain unreleased.
+**Current capacity:** **32 Mbit = 4 MiB (4,194,304 bytes)**. The separately
+released v0.81 ROM and the newer
+[unreleased optimization candidate](THIRTY_TWO_MBIT_PROGRESS.md) both fit that
+capacity. The newer candidate has a 4,189,406-byte payload and uses linear ROM
+addressing with standard SRAM, without a ROM-bank mapper. Software checks pass;
+the hardware report below covers one clone/cartridge combination. Other physical
+consoles, cartridge revisions, firmware and save persistence remain unverified.
+Fitting the capacity alone does not certify every older EverDrive.
+
+## User-reported v0.81 hardware test
+
+On October 18, 2026, a user reported that v0.81 runs well on a PAL clone with a
+Chinese EverDrive V3. They observed an intermittent Stage 2 AMMO-door problem
+and cyan/green HUD backgrounds instead of black. They later clarified that the
+door failed to refill in solo Home; the equipped weapon and prior use were
+uncertain. See [the local follow-up](SOLO_AMMO_FEEDBACK.md). The exact clone model, cartridge
+revision, firmware, and power-cycle save persistence were not specified. This is
+a user report about the released ROM, not a hardware test of the newer local
+optimization candidate.
+
+## Historical banked profiles
+
+The sizes, mapper profiles and target matrix below document earlier development
+builds. They do not describe the current linear 4 MiB candidate. A 7 MiB build
+is 56 Mbit, not 7 Mbit, and exceeds the corrected target by 3 MiB.
 
 The default compact ROM is **15.5 MiB (16,252,928 bytes)**, down from 32 MiB. Two
 profiles are built from the same assets and gameplay code:

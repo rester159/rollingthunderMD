@@ -114,6 +114,8 @@ class Machine:
     def start(self, case, agent=0):
         if case == 'arcade':
             self.press(3)
+            if 'rtHomeSaveSlot' in self.symbols:
+                self.press(3)  # Arcade > Start.
             if 'rtArcadeAttract' in self.symbols and self.number('rtArcadeAttract'):
                 self.press(3)  # Start from the Arcade attract screen.
         else:
@@ -121,6 +123,10 @@ class Machine:
             if case.startswith('survival'):
                 self.press(5)
             self.press(3)  # agents
+            if 'rtHomeSaveSlot' in self.symbols and not case.startswith('survival'):
+                self.press(3)  # Save slot.
+                if self.number('page') == 13:
+                    self.press(3)  # Confirm replacing an existing slot.
             if case.endswith('2p'):
                 self.press(3, 1)
             if agent:self.press(7)

@@ -80,10 +80,10 @@ void RT_menuCompose(u32 *tiles,u16 left,u16 width,u16 height,u8 spriteOrder,
 #define TEXT_COLUMNS 24
 #define TEXT_ROWS 4
 #define TEXT_SPRITES (TEXT_COLUMNS/4)
-/* Lines 11px apart: 8px glyph, 1px shadow, 2px gap. PAL3 pens 1..10 are
- * identical on both sides of the title's mid-screen palette split: pen2 red
- * (#AC2000), pen4 near-black (#202020).
- * Three lines fill the 32px canvas starting at y124, clear of the cast (y153+). */
+/* Lines 11px apart: 8px glyph, 1px shadow, 2px gap. The selector-0
+ * console uses scene group5: PAL1 pen15 is light gray above the raster
+ * split and white below it; pen1 is black / near-black. Reuse those inks
+ * without changing the background, cast, sprite count or menu tile budget. */
 #define TEXT_PITCH 11
 #define TEXT_TOP 124
 static RT_MenuString textStrings[8];
@@ -123,7 +123,7 @@ void RT_titleMenuTextCommit(void)
  }
  /* One 32x32 sprite (16 tiles) per chunk through the shared buffer. */
  for(u8 k=0;k<TEXT_SPRITES;k++){
-  RT_menuComposeOutline(rtMenuChunk,k*32,4,TEXT_ROWS,1,local,textStringCount,2,4,TEXT_PITCH);
+  RT_menuComposeOutline(rtMenuChunk,k*32,4,TEXT_ROWS,1,local,textStringCount,15,1,TEXT_PITCH);
   /* Queued copy: lands in VBlank, never mid-screen against the raster. */
   VDP_loadTileData(rtMenuChunk,16+k*16,16,DMA_QUEUE_COPY);
  }
@@ -132,7 +132,7 @@ void RT_titleMenuTextCommit(void)
  u16 screenX=(320-contentWidth)/2;
  for(u8 k=0;k<TEXT_SPRITES;k++)
   textSprites[textCount++]=(RT_SpriteCommand){TEXT_TOP+128,SPRITE_SIZE(4,4),0,
-   TILE_ATTR_FULL(PAL3,TRUE,FALSE,FALSE,16+k*16),screenX+k*32+128};
+   TILE_ATTR_FULL(PAL1,TRUE,FALSE,FALSE,16+k*16),screenX+k*32+128};
 }
 /* Tiles 320..415 are free between the logo (112..300) and scene (512+).
  * Row 27 is below the footer palette split, so use its brightest pen. */
@@ -161,10 +161,10 @@ static void loadFooterFont(const RT_SceneBackground *b)
 }
 void RT_titleMenuFooter(void)
 {
- const char *credit="PORTED BY RESTER159, 2026",*version="v0.81";
+ const char *credit="PORTED BY RESTER159, 2026",*version="v0.9 BETA";
  for(u16 x=2;*credit;x++,credit++)VDP_setTileMapXY(BG_A,
   TILE_ATTR_FULL(footerPalette,TRUE,FALSE,FALSE,FOOTER_FONT+*credit-32),x,27);
- for(u16 x=33;*version;x++,version++)VDP_setTileMapXY(BG_A,
+ for(u16 x=29;*version;x++,version++)VDP_setTileMapXY(BG_A,
   TILE_ATTR_FULL(footerPalette,TRUE,FALSE,FALSE,FOOTER_FONT+*version-32),x,27);
 }
 /* Plane A row16 (console bezel) as drawn by the cast scene, restored with

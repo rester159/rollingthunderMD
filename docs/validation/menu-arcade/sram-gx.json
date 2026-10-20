@@ -1,0 +1,11 @@
+{
+  "rom_sha256": "41eb83ddbd2eaeccd2a6641a273f79713ed6c9e58062f97696899ef673805c1c",
+  "three_slots": true,
+  "cold_sram_restore": true,
+  "characters_and_ammo": true,
+  "achievements_persist": true,
+  "home_achievements_excluded": true,
+  "arcade_banner_expires": true,
+  "arcade_settings_persist": true,
+  "physical_hardware_tested": false
+}

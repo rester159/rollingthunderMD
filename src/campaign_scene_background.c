@@ -1,4 +1,9 @@
 #include "rt_campaign_scene_background.h"
+#include "rt_rom_layout.h"
+#ifdef RT_LINEAR_ROM
+extern void RT_decodeCanonicalPose(const void*,const void*,void*,u32);
+extern void *RT_sceneDecodeWorkspace(void);
+#endif
 #ifdef __m68k__
 u8 RT_sceneBackgroundUploadIO(const RT_SceneBackground *b,void (*beginIO)(void),void (*endIO)(void))
 {
@@ -30,10 +35,24 @@ u8 RT_sceneBackgroundUploadIO(const RT_SceneBackground *b,void (*beginIO)(void),
         VDP_clearPlane(plane?BG_B:BG_A,TRUE);
         if(endIO)endIO();
     }
+#ifdef RT_LINEAR_ROM
+    const u8 *packed=((u32)b->patterns&0xff000000UL)==0x86000000UL?
+        (const u8*)((u32)b->patterns&0xffffffUL):0;
+    static const u8 identity[8]={0x01,0x23,0x45,0x67,0x89,0xab,0xcd,0xef};
+    u32 *decoded=RT_sceneDecodeWorkspace();
+#endif
     for(u16 tile=0;tile<b->tileCount;){
         u16 count=b->tileCount-tile;if(count>32)count=32;
+        const u32 *source=b->patterns+(u32)tile*8;
+#ifdef RT_LINEAR_ROM
+        if(packed){
+            u16 length=*(const u16*)packed;packed+=2;
+            RT_decodeCanonicalPose(packed,identity,decoded,0x100000UL+(u32)count*32);
+            packed+=length+(length&1);source=decoded;
+        }
+#endif
         if(beginIO)beginIO();
-        VDP_loadTileData(b->patterns+(u32)tile*8,512+tile,count,DMA);
+        VDP_loadTileData(source,512+tile,count,DMA);
         if(endIO)endIO();tile+=count;
     }
     for(u8 plane=0;plane<2;plane++)for(u16 row=0;row<28;row+=4){

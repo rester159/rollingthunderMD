@@ -52,7 +52,7 @@ static void dispatchTables(u8 mode,u8 clip)
    for(u8 n=0;n<count;n++){
     u8 mask=*dictionary++;
     for(u8 pair=0;pair<2;pair++){
-     u16 index=(mask>>(4-pair*4))&15;
+     u16 index=((mask>>(4-pair*4))&15)+((mode&1)?17:0);
      ram[at++]=ram[0x120+index*2];ram[at++]=ram[0x121+index*2];
     }
    }

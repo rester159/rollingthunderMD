@@ -11,5 +11,6 @@ typedef struct {
     const u8 *groups;
     u16 patternCount;
     u8 groupCount,story,area;
+    const u8 *inks;
 } RT_CampaignHudArt;
 #endif

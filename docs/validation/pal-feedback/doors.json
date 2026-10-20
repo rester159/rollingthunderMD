@@ -1,0 +1,213 @@
+{
+  "rom_sha256": "5dd1fa706f26f993eeaf24edf3b2d81595a1bd404c03e353e1186afc25b8bb56",
+  "cases": [
+    {
+      "case": "arcade",
+      "kind": 0,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x7667",
+        "0x7672",
+        "0x767d"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "arcade",
+      "kind": 1,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x770c",
+        "0x7717",
+        "0x7722"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "arcade",
+      "kind": 2,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x77b1",
+        "0x77bc",
+        "0x77c7"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_1p",
+      "kind": 0,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x7667",
+        "0x7672",
+        "0x767d"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_1p",
+      "kind": 1,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x770c",
+        "0x7717",
+        "0x7722"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_1p",
+      "kind": 2,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x77b1",
+        "0x77bc",
+        "0x77c7"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_2p",
+      "kind": 0,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x7667",
+        "0x7672",
+        "0x767d"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_2p",
+      "kind": 1,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x770c",
+        "0x7717",
+        "0x7722"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_2p",
+      "kind": 2,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x77b1",
+        "0x77bc",
+        "0x77c7"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    }
+  ],
+  "scope": "RAM-seeded door kinds/open requests at opening doorway; real state/renderer/DMA with arcade-derived pose pixels and SAT; not a full playthrough."
+}

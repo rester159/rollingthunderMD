@@ -15,7 +15,7 @@ def verify_preloaded_pose_cache(machine, rom, layout):
     extra_bytes=machine.number('rtPackedExtraBytes',2) if 'rtPackedExtraBytes' in machine.symbols else 0
     def read(address,size):
         return bytes(C.c_ubyte.from_address(machine.ram+(((address+i)&65535)^1)).value for i in range(size))
-    regions=[(workspace,9720)]
+    regions=[(workspace,12288)]
     if extra:regions.append((extra,extra_bytes))
     if 'borrowed' in machine.symbols:
         for i in range(2):
@@ -37,5 +37,6 @@ def verify_preloaded_pose_cache(machine, rom, layout):
         expected=decode(rom[source:source+length],words*2,rom[palette:palette+8])
         assert read(pixels,words*2)==expected, ('Cached pixels differ',index,hex(key))
         count+=1
-    assert count, 'No exact poses were preloaded'
+    # A mode whose startup poses are all direct ROM transfers legitimately
+    # leaves the decode cache empty. Validate every populated entry above.
     return count

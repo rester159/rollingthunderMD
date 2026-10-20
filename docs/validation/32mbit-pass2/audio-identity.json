@@ -1,0 +1,26 @@
+[
+  {
+    "name": "victory",
+    "bytes": 48974,
+    "sha256": "d8fdb897e1b0e9c92b0dbe01106d5c8e34b301d4e1d9b7b53f53562ddc0f7de6",
+    "identical": true
+  },
+  {
+    "name": "ending",
+    "bytes": 279791,
+    "sha256": "b313693cee4e9bb47b557d58f81366ea02b7e0f2082c06b38621d194d609276b",
+    "identical": true
+  },
+  {
+    "name": "high_cold",
+    "bytes": 197411,
+    "sha256": "dd4ec385138316c3d20e5ecbd782b4d663b42b695cdd6d8a5e871494598a1c4c",
+    "identical": true
+  },
+  {
+    "name": "high_warm",
+    "bytes": 181819,
+    "sha256": "43abb6dd4e45ed901b7670930ff3983e8d4761db9027d5cd4c2cdf9f76328deb",
+    "identical": true
+  }
+]

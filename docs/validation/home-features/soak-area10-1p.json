@@ -1,0 +1,43 @@
+{
+  "rom_sha256": "c08a333de4045cd7ed3966409f3322a9d59aa27ea5ba06dae7da7f585cffde55",
+  "case": "campaign_1p",
+  "agent": 0,
+  "input_pattern": "opening",
+  "extended_ssf_software_model": false,
+  "reserved_os_bank_guard": false,
+  "stage": 9,
+  "refresh_phase": 0,
+  "refreshes": 900,
+  "target_updates": 0,
+  "seconds": 15.01933915141368,
+  "play_refreshes": 792,
+  "play_updates": 733,
+  "play_presentations": 730,
+  "initial_counters": {
+    "rtAppUpdates": 1,
+    "rtAppPresentations": 258,
+    "rtAppFullPresentations": 257,
+    "rtAppReusedPresentations": 1,
+    "rtAppSkippedPresentations": 0
+  },
+  "aligned_start_update": 0,
+  "counters": {
+    "rtAppUpdates": 733,
+    "rtAppPresentations": 733,
+    "rtAppFullPresentations": 462,
+    "rtAppReusedPresentations": 271,
+    "rtAppSkippedPresentations": 0
+  },
+  "simulation_updates_per_second": 48.80374513222222,
+  "presentations_per_second": 48.80374513222222,
+  "stalled_refreshes": 167,
+  "longest_stall_refreshes": 36,
+  "compact_refreshes": 0,
+  "final_state": 1,
+  "fault": 0,
+  "scope": "One NTSC movement/shooting workload at the selected stage; emulated timing, not host execution speed or a full-game playthrough.",
+  "packed_graphics": {
+    "rtPackedBufferHighWater": 2688,
+    "rtPackedBufferFailures": 0
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "0-1p": {
+    "stage": 0,
+    "players": 1,
+    "exact_entries": 7,
+    "families": [
+      4,
+      8
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "0-2p": {
+    "stage": 0,
+    "players": 2,
+    "exact_entries": 0,
+    "families": [],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "1-1p": {
+    "stage": 1,
+    "players": 1,
+    "exact_entries": 2,
+    "families": [
+      4,
+      8
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "1-2p": {
+    "stage": 1,
+    "players": 2,
+    "exact_entries": 0,
+    "families": [],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "2-1p": {
+    "stage": 2,
+    "players": 1,
+    "exact_entries": 7,
+    "families": [
+      4,
+      8,
+      32
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "2-2p": {
+    "stage": 2,
+    "players": 2,
+    "exact_entries": 5,
+    "families": [
+      32
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "3-1p": {
+    "stage": 3,
+    "players": 1,
+    "exact_entries": 6,
+    "families": [
+      8,
+      36
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "3-2p": {
+    "stage": 3,
+    "players": 2,
+    "exact_entries": 0,
+    "families": [],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "4-1p": {
+    "stage": 4,
+    "players": 1,
+    "exact_entries": 7,
+    "families": [
+      4,
+      8
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "4-2p": {
+    "stage": 4,
+    "players": 2,
+    "exact_entries": 0,
+    "families": [],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "5-1p": {
+    "stage": 5,
+    "players": 1,
+    "exact_entries": 9,
+    "families": [
+      4,
+      8
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "5-2p": {
+    "stage": 5,
+    "players": 2,
+    "exact_entries": 0,
+    "families": [],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "6-1p": {
+    "stage": 6,
+    "players": 1,
+    "exact_entries": 3,
+    "families": [
+      4,
+      8
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "6-2p": {
+    "stage": 6,
+    "players": 2,
+    "exact_entries": 1,
+    "families": [
+      36
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "7-1p": {
+    "stage": 7,
+    "players": 1,
+    "exact_entries": 3,
+    "families": [
+      32
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "7-2p": {
+    "stage": 7,
+    "players": 2,
+    "exact_entries": 3,
+    "families": [
+      32
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "8-1p": {
+    "stage": 8,
+    "players": 1,
+    "exact_entries": 4,
+    "families": [
+      4,
+      8,
+      40
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "8-2p": {
+    "stage": 8,
+    "players": 2,
+    "exact_entries": 0,
+    "families": [],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "9-1p": {
+    "stage": 9,
+    "players": 1,
+    "exact_entries": 9,
+    "families": [
+      4,
+      8,
+      32
+    ],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "9-2p": {
+    "stage": 9,
+    "players": 2,
+    "exact_entries": 0,
+    "families": [],
+    "passed": true,
+    "rom_sha256": "caf48b1146bfdd7b37100e3b276d1424e4364a2e9d307f304dc23cc1b0b5184e"
+  },
+  "summary": [
+    {
+      "name": "0-1p",
+      "passed": true
+    },
+    {
+      "name": "0-2p",
+      "passed": true
+    },
+    {
+      "name": "1-1p",
+      "passed": true
+    },
+    {
+      "name": "1-2p",
+      "passed": true
+    },
+    {
+      "name": "2-1p",
+      "passed": true
+    },
+    {
+      "name": "2-2p",
+      "passed": true
+    },
+    {
+      "name": "3-1p",
+      "passed": true
+    },
+    {
+      "name": "3-2p",
+      "passed": true
+    },
+    {
+      "name": "4-1p",
+      "passed": true
+    },
+    {
+      "name": "4-2p",
+      "passed": true
+    },
+    {
+      "name": "5-1p",
+      "passed": true
+    },
+    {
+      "name": "5-2p",
+      "passed": true
+    },
+    {
+      "name": "6-1p",
+      "passed": true
+    },
+    {
+      "name": "6-2p",
+      "passed": true
+    },
+    {
+      "name": "7-1p",
+      "passed": true
+    },
+    {
+      "name": "7-2p",
+      "passed": true
+    },
+    {
+      "name": "8-1p",
+      "passed": true
+    },
+    {
+      "name": "8-2p",
+      "passed": true
+    },
+    {
+      "name": "9-1p",
+      "passed": true
+    },
+    {
+      "name": "9-2p",
+      "passed": true
+    }
+  ]
+}

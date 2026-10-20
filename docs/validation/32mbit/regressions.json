@@ -1,0 +1,1053 @@
+{
+  "cold-save-gx": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "extended_ssf_software_model": false,
+    "physical_hardware_tested": false,
+    "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+    "cold_restore_pass": true,
+    "corrupt_slot_fallback_pass": true,
+    "scope": "Three fresh core processes; controller settings, RAM-seeded score and initials saved through P2 pause; emulator/model battery RAM, no savestates."
+  },
+  "cold-save-pico": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "extended_ssf_software_model": false,
+    "physical_hardware_tested": false,
+    "core_sha256": "0646e8d7896e27ee65073851bbd1daf713fb95fb63b7684103ed008518e84512",
+    "cold_restore_pass": true,
+    "corrupt_slot_fallback_pass": true,
+    "scope": "Three fresh core processes; controller settings, RAM-seeded score and initials saved through P2 pause; emulator/model battery RAM, no savestates."
+  },
+  "compatibility": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "rom_bytes": 4194304,
+    "header_system": "SEGA MEGA DRIVE ",
+    "rom_range": [
+      0,
+      4194303
+    ],
+    "ram_range": [
+      16711680,
+      16777215
+    ],
+    "sram_header": "5241f820002000010020ffff",
+    "checksum_valid": true,
+    "exceeds_16_mib": false,
+    "last_nonzero_end": 4191478,
+    "cores": {
+      "picodrive": {
+        "sha256": "0646e8d7896e27ee65073851bbd1daf713fb95fb63b7684103ed008518e84512",
+        "file": "picodrive_libretro.dylib"
+      },
+      "gx": {
+        "sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+        "file": "genesis_plus_gx_libretro.dylib"
+      }
+    },
+    "cases": [
+      {
+        "engine": "picodrive",
+        "region_header": "U",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 690,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [],
+        "data_init_checks": [],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "picodrive",
+        "region_header": "E",
+        "video_region": "PAL",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 694,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [],
+        "data_init_checks": [],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "picodrive",
+        "region_header": "J",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 690,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [],
+        "data_init_checks": [],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "U",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [
+          {
+            "frame": 20,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 1601,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          }
+        ],
+        "data_init_checks": [
+          {
+            "bytes": 88,
+            "exact": true
+          }
+        ],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "U",
+        "video_region": "NTSC",
+        "dirty_launch": true,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [
+          {
+            "frame": 20,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 1601,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          }
+        ],
+        "data_init_checks": [
+          {
+            "bytes": 88,
+            "exact": true
+          }
+        ],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "E",
+        "video_region": "PAL",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 692,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [
+          {
+            "frame": 16,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 1598,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          }
+        ],
+        "data_init_checks": [
+          {
+            "bytes": 88,
+            "exact": true
+          }
+        ],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "E",
+        "video_region": "PAL",
+        "dirty_launch": true,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 692,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [
+          {
+            "frame": 16,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 28,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 1598,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          }
+        ],
+        "data_init_checks": [
+          {
+            "bytes": 88,
+            "exact": true
+          }
+        ],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "J",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [
+          {
+            "frame": 20,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 1601,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          }
+        ],
+        "data_init_checks": [
+          {
+            "bytes": 88,
+            "exact": true
+          }
+        ],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "J",
+        "video_region": "NTSC",
+        "dirty_launch": true,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "0002ad12"
+        },
+        "mapper_writes": [
+          {
+            "frame": 20,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 0
+          },
+          {
+            "frame": 31,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 1,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 32,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          },
+          {
+            "frame": 1601,
+            "address": "0xa130f1",
+            "value": 0,
+            "bank0_before": 0,
+            "bank0_after": 0,
+            "int_callback": "0002ad12",
+            "save_available": 1
+          }
+        ],
+        "data_init_checks": [
+          {
+            "bytes": 88,
+            "exact": true
+          }
+        ],
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      }
+    ],
+    "scope": "Emulator probes and metadata only; no physical hardware certification. U/E/J use temporary header variants; GX dirty launch seeds RAM/I/O. Gameplay coverage is opening Campaign 2P, P2 pause/resume, reset/restart."
+  },
+  "doors": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "cases": [
+      {
+        "case": "arcade",
+        "kind": 0,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x7667",
+          "0x7672",
+          "0x767d"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "arcade",
+        "kind": 1,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x770c",
+          "0x7717",
+          "0x7722"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "arcade",
+        "kind": 2,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x77b1",
+          "0x77bc",
+          "0x77c7"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "campaign_1p",
+        "kind": 0,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x7667",
+          "0x7672",
+          "0x767d"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "campaign_1p",
+        "kind": 1,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x770c",
+          "0x7717",
+          "0x7722"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "campaign_1p",
+        "kind": 2,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x77b1",
+          "0x77bc",
+          "0x77c7"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "campaign_2p",
+        "kind": 0,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x7667",
+          "0x7672",
+          "0x767d"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "campaign_2p",
+        "kind": 1,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x770c",
+          "0x7717",
+          "0x7722"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      },
+      {
+        "case": "campaign_2p",
+        "kind": 2,
+        "checks": 24,
+        "published_sequence": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          3,
+          2,
+          1,
+          0
+        ],
+        "arcade_descriptors": [
+          "0x77b1",
+          "0x77bc",
+          "0x77c7"
+        ],
+        "opening_and_closing": true,
+        "exact_door_vram_and_sat": true
+      }
+    ],
+    "scope": "RAM-seeded door kinds/open requests at opening doorway; real state/renderer/DMA with arcade-derived pose pixels and SAT; not a full playthrough."
+  },
+  "frontend-gx": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "selection_frames": 608,
+    "black_frames": 0,
+    "selection_roundtrip_exact": true,
+    "saved_independent_layouts": true,
+    "settings_commits_without_raster_fault": 30,
+    "p1_p2_jump_fire": true,
+    "default_c_jump": [
+      "campaign_1p",
+      "survival_1p",
+      "arcade"
+    ]
+  },
+  "frontend-pico": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "selection_frames": 608,
+    "black_frames": 0,
+    "selection_roundtrip_exact": true,
+    "saved_independent_layouts": true,
+    "settings_commits_without_raster_fault": 30,
+    "p1_p2_jump_fire": true,
+    "default_c_jump": [
+      "campaign_1p",
+      "survival_1p",
+      "arcade"
+    ]
+  },
+  "scenes-final": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "cases": [
+      {
+        "stage": 0,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "913578950c46b5545da2f05c0815676a067c6759594fe02c6507bf05b86fd0e9",
+        "high_score_frame_sha256": "088334235ead5ba82429d2544d9b383506f14e9e493bf1e8238b58bfd2c64209",
+        "fault": 0,
+        "exact_cached_poses": 0,
+        "finite_pcm_complete_and_restored": true
+      },
+      {
+        "stage": 1,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "73ae38b506037d67c0240b1046bd6c5c2a1f4ed0d879db9ca4eaa9ec06635dae",
+        "high_score_frame_sha256": "732fd11b1cf77f8df3d5e60c406847686e34cba2f236008dc348b6e7958afcc1",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 2,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "c5bb5b81a65141d88f0b50eceff4bc647103ac0da0b8ac20d32ac5bc3a103e1d",
+        "high_score_frame_sha256": "a07627e99e0ed9287c9c02b3a8058df7aa6d35814312a21b0e566058976b6f61",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 3,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "26d90b670b5d310222e87803c3adceef42733e33d83df1d5062e22ff41a2bfa0",
+        "high_score_frame_sha256": "90dc6afa5e043c19cdd82a3a2bc76a906a14e2b0b14241bc704b36929197de30",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 4,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "3bb03267d2e74dd88c3aec5a50c49e81a0ab2b490179fa2c9cd6fb8f2575bfbf",
+        "high_score_frame_sha256": "64229b703d52cde2005014e6e7104df0a094dd67fcc43dc40d9d5651d3e649d1",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 5,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "96eb1a673aa224f253b90db17512815ecf52e818441bcf09edf529e2fee3d5ba",
+        "high_score_frame_sha256": "1fee9dce0e286766a44079901f9c617411b3351cb6113ef63a151301d3d2ef7e",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 6,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "73ae38b506037d67c0240b1046bd6c5c2a1f4ed0d879db9ca4eaa9ec06635dae",
+        "high_score_frame_sha256": "abf410f4c4e2ac11bb1e9b892d700687e26cfedfac877eb134dbc6c9a4d7d1f0",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 7,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "7615778b520dc51c143b03c34c9d5dcee90b062c9cc8b5715a740d1c3c10fd6d",
+        "high_score_frame_sha256": "cb1c12e7ac395f952d27ae34344c5b90b7a8681878d3acd7bbabebe20b3c4a41",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 8,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "c1be9e9c1880c450bb45046430368451c22703de751bc545f76edd79ce908324",
+        "high_score_frame_sha256": "df5aaa3ff6a6956b1c4a571a1d2008e22842fc1e6e879cf394c2b9d90abbc629",
+        "fault": 0,
+        "exact_cached_poses": 0
+      },
+      {
+        "stage": 9,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "0373da96014d0e16416e2dda0b69555232e3d64f18e9bc62fe9f8d58a597b42e",
+        "high_score_frame_sha256": "046fb7805f1b119f3f811dc86acfb74112faca2df61d5f2f12f74826e425f0bf",
+        "fault": 0,
+        "exact_cached_poses": 0
+      }
+    ],
+    "extended_ssf_software_model": false,
+    "physical_hardware_tested": false,
+    "scope": "Diagnostic CPU-register calls in an unmodified ROM; all stage loaders and high-score entry, not full campaign playthroughs."
+  },
+  "soft-reset-gx": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+    "cases": [
+      {
+        "case": "arcade",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "campaign_1p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "campaign_2p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "survival_1p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "survival_2p",
+        "soft_resets": 6,
+        "passed": true
+      }
+    ],
+    "scope": "Real libretro soft resets; controller menu changes; diagnostic RAM-seeded scores/initials; no savestates or ROM changes."
+  },
+  "soft-reset-pico": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "core_sha256": "0646e8d7896e27ee65073851bbd1daf713fb95fb63b7684103ed008518e84512",
+    "cases": [
+      {
+        "case": "arcade",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "campaign_1p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "campaign_2p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "survival_1p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "survival_2p",
+        "soft_resets": 6,
+        "passed": true
+      }
+    ],
+    "scope": "Real libretro soft resets; controller menu changes; diagnostic RAM-seeded scores/initials; no savestates or ROM changes."
+  },
+  "test-summary": [
+    {
+      "name": "frontend-gx",
+      "passed": true
+    },
+    {
+      "name": "soft-reset-gx",
+      "passed": true
+    },
+    {
+      "name": "cold-save-gx",
+      "passed": true
+    },
+    {
+      "name": "frontend-pico",
+      "passed": true
+    },
+    {
+      "name": "soft-reset-pico",
+      "passed": true
+    },
+    {
+      "name": "cold-save-pico",
+      "passed": true
+    },
+    {
+      "name": "compatibility",
+      "passed": true
+    },
+    {
+      "name": "doors",
+      "passed": true
+    },
+    {
+      "name": "music-handoff",
+      "passed": true
+    },
+    {
+      "name": "mapper",
+      "passed": true
+    },
+    {
+      "name": "mapper-unsupported",
+      "passed": true
+    },
+    {
+      "name": "scenes",
+      "passed": true
+    }
+  ]
+}

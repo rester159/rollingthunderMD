@@ -81,6 +81,16 @@ def relocate_completion(root, sdk, reference, objects_dir, output, delta, run):
 
 def prepare(root, sdk, build, game, rows, images, completion, high, audio, jobs, run, shared=False, packed=False, packed_codec="canonical"):
     linear = packed and packed_codec == 'refined'
+    high_packing=None
+    if linear:
+        from packed_high_score import pack as pack_high_score
+        high,high_packing=pack_high_score(high)
+        (game/'inc/rt_high_score_assets.h').write_text(
+            '#include "rt_rom_layout.h"\n'
+            f'#define RT_HIGH_SCENE_BYTES {high_packing["scene_bytes"]}UL\n'
+            f'#define RT_HIGH_PANEL_ADDRESS (RT_HIGH_SCORE_BASE+{high_packing["scene_bytes"]}UL)\n'
+            f'#define RT_HIGH_PANEL_BYTES {high_packing["panel_bytes"]}UL\n'
+            f'#define RT_HIGH_MAPS_ADDRESS (RT_HIGH_SCORE_BASE+{high_packing["maps_offset"]}UL)\n')
     stage_base = lambda address: address if linear else 0x100000+(address & (PAGE-1))
     output = build/'compact'
     output.mkdir(parents=True, exist_ok=True)
@@ -97,9 +107,9 @@ def prepare(root, sdk, build, game, rows, images, completion, high, audio, jobs,
             samples=raw_audio[page][:-16]
             absolute=pcm_stream.pack(samples);difference=pcm_stream.pack(samples,delta=True)
             delta=len(difference)<len(absolute);blob=difference if delta else absolute;phrases=None
-            if linear and name.startswith('high_'):
-                alternative,dictionary=pcm_stream.pack_phrases(samples)
-                if len(alternative)<len(blob):blob=alternative;phrases=dictionary;delta=False
+            if linear:
+                alternative,dictionary=pcm_stream.pack_phrases(samples,delta=delta)
+                if len(alternative)<len(blob):blob=alternative;phrases=dictionary
             assert pcm_stream.unpack(blob,len(samples),delta=delta,phrases=phrases)==samples
             (build/'audio'/(name+'.qpcm')).write_bytes(blob);audio[page]=blob
             audio_report[name]=dict(samples=len(samples),sha256=hashlib.sha256(samples).hexdigest(),packed_bytes=len(blob),delta=delta,phrases=phrases)
@@ -107,9 +117,17 @@ def prepare(root, sdk, build, game, rows, images, completion, high, audio, jobs,
     for path in (game/'src').glob('pcm_stream_*.s'):path.unlink()
     victory_address = (HIGH_ADDRESS + len(high) + 32767) & ~32767
     completion_offset=max(0,((victory_address+len(audio[51])+31)&~31)-0x100000) if packed else COMPLETION_OFFSET
-    completion = relocate_completion(root,sdk,completion,build/'completion',output/'completion',completion_offset,run)
+    completion_packing=None
+    if linear:
+        from packed_completion import pack as pack_completion
+        completion,completion_exports,completion_packing=pack_completion(root,sdk,completion,build/'completion',output/'completion',0x100000+completion_offset,run)
+    else:
+        completion = relocate_completion(root,sdk,completion,build/'completion',output/'completion',completion_offset,run)
     exports=(root/'src/completion_exports.s').read_text()
-    exports=re.sub(r'(\.set \w+, )(\d+)',lambda m:m[1]+str(int(m[2])+completion_offset),exports)
+    if linear:
+        exports=re.sub(r'(\.set (\w+), )(\d+)',lambda m:m[1]+str(completion_exports[m[2]]),exports)
+    else:
+        exports=re.sub(r'(\.set \w+, )(\d+)',lambda m:m[1]+str(int(m[2])+completion_offset),exports)
     (game/'src/completion_exports.s').write_text(exports)
     if packed:audio[51]=pcm_stream.place(audio[51],victory_address)
     chunks = [(HIGH_ADDRESS, high), (victory_address, audio[51]),
@@ -280,10 +298,12 @@ static const u32 rtCampaignBankOffsets[10]={{{','.join(hex(a if linear else a & 
     report = dict(linear_rom=linear,stages=stages, pattern_pool=pool_base, pattern_bytes=len(pool),rom_bytes=rom_bytes,
                   used_bytes=used_bytes, completion_offset=completion_offset,
                   audio_addresses=dict(victory=victory_address,ending=clips[52],high_cold=clips[55],high_warm=clips[58]), geometry_and_maps=stats, reserved_sram_page=31)
+    if completion_packing:report['packed_completion']=completion_packing
+    if high_packing:report['packed_high_score']=high_packing
     if packed:
         addresses=[victory_address,clips[52],clips[55],clips[58]]
         counts=[len(raw_audio[page])-16 for page in (51,52,55,58)]
-        (game/'inc/rt_pcm_stream_locations.h').write_text('static const u32 rtPcmStreamClips[4][5]={'+','.join('{'+str(at)+'UL,'+str(count)+'UL,'+str((at+len(audio[page])-1)>>19)+','+str(2 if audio_report[name]['phrases'] else int(audio_report[name]['delta']))+','+str(len(audio[page]))+'UL}' for at,count,page,name in zip(addresses,counts,[51,52,55,58],['victory','ending','high_cold','high_warm']))+'};\n')
+        (game/'inc/rt_pcm_stream_locations.h').write_text('static const u32 rtPcmStreamClips[4][5]={'+','.join('{'+str(at)+'UL,'+str(count)+'UL,'+str((at+len(audio[page])-1)>>19)+','+str((2 if audio_report[name]['phrases'] else 0)+int(audio_report[name]['delta']))+','+str(len(audio[page]))+'UL}' for at,count,page,name in zip(addresses,counts,[51,52,55,58],['victory','ending','high_cold','high_warm']))+'};\n')
         phrase_headers=[];phrase_names=[]
         for i,name in enumerate(('victory','ending','high_cold','high_warm')):
             dictionary=audio_report[name]['phrases']

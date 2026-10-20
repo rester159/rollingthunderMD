@@ -1,3 +1,4 @@
+#include "rt_home_progress.h"
 #include "rt_save.h"
 #include "rt_cart_probe.h"
 #include "rt_attract.h"
@@ -72,13 +73,31 @@ volatile u32 rtAppSkippedPresentations,rtAppMaxUpdateLag;
 static RT_ArcadeSession arcade;
 static RT_CampaignScore score;
 static RT_CampaignBonus bonus;
+typedef struct {
+    u8 panel[672],published[672];
+    RT_HighScoreInput input;
+    RT_GameOverPanelUpload upload;
+} RT_HighWorkspace;
 #ifdef RT_LINEAR_ROM
-static union {RT_CompletionScene scene;RT_PackedWorkspace prefetch;} screenWorkspace;
-_Static_assert(sizeof(RT_PackedWorkspace)<=sizeof(RT_CompletionScene),"Pose workspace shares the inactive completion scene");
-#define completion screenWorkspace.scene
+/* These screens are mutually exclusive. endHud drains queued sprite DMA
+ * before the high-score or completion code initializes its own workspace. */
+static union {struct {RT_CompletionScene scene;RT_HighWorkspace high;} screens;RT_PackedWorkspace prefetch;} screenWorkspace;
+_Static_assert(sizeof(RT_PackedWorkspace)<=sizeof(RT_CompletionScene)+sizeof(RT_HighWorkspace),"Shared screens must not increase the RAM budget");
+#define highPanel screenWorkspace.screens.high.panel
+#define highPublished screenWorkspace.screens.high.published
+#define highInput screenWorkspace.screens.high.input
+#define highUpload screenWorkspace.screens.high.upload
+#define completion screenWorkspace.screens.scene
+void *RT_sceneDecodeWorkspace(void){return &screenWorkspace.screens.high;}
+_Static_assert(sizeof(RT_HighWorkspace)>=1024,"Scene decode scratch fits inactive score screen");
 extern void RT_campaignSpritesPreload(const RT_CampaignSprites*,const RT_CampaignScene*);
 #else
 static RT_CompletionScene completion;
+static RT_HighWorkspace highWorkspace;
+#define highPanel highWorkspace.panel
+#define highPublished highWorkspace.published
+#define highInput highWorkspace.input
+#define highUpload highWorkspace.upload
 #endif
 RT_CompletionScene *RT_titleMenuStorage(void){return &completion;}
 /* Published source events await the native HUD/audio consumers. Static clear
@@ -230,7 +249,7 @@ static void postUpdateSounds(const RT_CampaignUpdate *u)
 {
     u8 bytes[48],n=0;
     /* The final victory/ending audio owns the Z80 from its command onward. */
-    if(!u->updated || finalMusic.active || rtFinalCommandSeen)return;
+    if(!u->updated || finalMusic.active || rtFinalCommandSeen || (rtArcadeAttract && (rtArcadeDips&RT_DIP_DEMO_MUTE)))return;
     for(u8 p=0;p<2;p++){bytes[n++]=u->players.sounds[p];bytes[n++]=u->players.weapons[p].sound;}
     bytes[n++]=u->exitSounds[0];bytes[n++]=u->exitSounds[1];
     for(u8 i=0;i<u->battle.enemies.eventCount && n<48;i++)bytes[n++]=u->battle.enemies.events[i].sound;
@@ -252,14 +271,18 @@ static void endHud(void){
 }
 static u8 updateHud(void){
 #ifdef RT_GAMEPLAY_HUD
-    u16 ammo[2];u8 health[2];
+    u16 ammo[2],machineAmmo[2];u8 health[2],machineMask=0;
     for(u8 p=0;p<2;p++){
         const RT_Agent *a=scene.players.agents+p;
-        ammo[p]=a->weaponMode==1?a->ammoAlternate:a->ammoPrimary;
+        ammo[p]=rtSession.mode==RT_MODE_HOME?a->ammoPrimary:
+            a->weaponMode==1?a->ammoAlternate:a->ammoPrimary;
+        machineAmmo[p]=a->ammoAlternate;
+        if(a->weaponMode==1)machineMask|=1<<p;
         health[p]=scene.players.combat[p].health;
     }
     return RT_campaignHudUpdate(&hudState,&score,scene.timer.remaining,ammo,health,
-        scene.players.home.credits,rtSession.mode==RT_MODE_ARCADE?arcade.reserves:0);
+        scene.players.home.credits,rtSession.mode==RT_MODE_ARCADE?arcade.reserves:0,
+        machineAmmo,machineMask);
 #else
     return 1;
 #endif
@@ -421,16 +444,14 @@ static u8 advanceFinalEnding(void)
 }
 
 /* Source qualification/initials routines with native ROM-bank/VDP ownership. */
-static u8 highRecords[50],highPanel[672],highScores[8],highPlayer,highRemaining,highArea;
+static u8 highRecords[50],highScores[8],highPlayer,highRemaining,highArea;
 static void saveProgress(void)
 {
     /* Entry IRQ owns the table until its current initials are complete. */
     if(rtArcadeAttract || highRecords[0x2d])return;
     RT_saveStore(highRecords,score.high,rtHomeStartingCredits,RT_gameMusicPsgMuted(),rtControlLayout);
+    RT_homeProfileStore();
 }
-static RT_HighScoreInput highInput;
-static RT_GameOverPanelUpload highUpload;
-static u8 highPublished[672];
 static VoidCallback *highPreviousVInt;
 static u8 highClockInstalled;
 static volatile u8 highClockRunning,highInputFault;
@@ -584,15 +605,18 @@ static u8 start(void){
     rtFinalCommandSeen=rtFinalStatusAvailable=rtFinalAdmissionReady=0;rtFinalSourceStatus=255;
     survival=rtSession.mode==RT_MODE_HOME && rtSession.game==RT_HOME_SURVIVAL;
     rtAppSurvivalRetirements=0;
-    RT_CampaignInit initialized=survival?
+    u8 resume=rtHomeResume && rtSession.mode==RT_MODE_HOME && !survival;
+    score=(RT_CampaignScore){.high=score.high};
+    RT_CampaignInit initialized=resume?(!RT_homeRestore(&scene,&score)):survival?
         RT_survivalSceneInitialize(&scene,&survivalWindow,&survivalWorld,&rtSession,vtimer,0,rtHomeStartingCredits):
-        RT_campaignSceneInitialize(&scene,&rtSession,0,0,0,0,rtSession.mode==RT_MODE_HOME?rtHomeStartingCredits:6);
+        RT_campaignSceneInitialize(&scene,&rtSession,0,0,0,rtSession.mode==RT_MODE_ARCADE && (rtArcadeDips&RT_DIP_EASY)?1:0,rtSession.mode==RT_MODE_HOME?rtHomeStartingCredits:6);
     if(initialized){
         rtAppFault=1;notice("NATIVE BUILD ERROR","STAGE INITIALIZATION",APP_UNFINISHED);return 0;
     }
-    score=(RT_CampaignScore){.high=score.high};
+    rtHomeResume=0;
+    if(!resume)RT_homeCheckpoint(&scene,&score);
     if(rtArcadeAttract==RT_ATTRACT_DEMO)RT_attractDemoInitialize(&scene);
-    if(rtSession.mode==RT_MODE_ARCADE && !RT_arcadeSessionInitialize(&arcade,&scene,0)){rtAppFault=4;return 0;}
+    if(rtSession.mode==RT_MODE_ARCADE && !RT_arcadeSessionInitialize(&arcade,&scene,(rtArcadeDips&RT_DIP_LIVES)?1:0)){rtAppFault=4;return 0;}
     if(!video()){rtAppFault=1;notice("NATIVE BUILD ERROR","STAGE INITIALIZATION",APP_UNFINISHED);return 0;}
     transitionSelector=1;transitionEffect=0;rtAppBonusEvents=0;
     tick=0;rtAppState=APP_PLAY;
@@ -679,6 +703,7 @@ int main(bool hardReset){
     }
     u8 muted=0;
     RT_saveLoad(highRecords,&score.high,&rtHomeStartingCredits,&muted,&rtControlLayout);
+    RT_homeProgressLoad();
     RT_resetMarkReady();
     RT_gameMusicSetPsgMuted(muted);menu();
     while(TRUE){
@@ -751,7 +776,7 @@ int main(bool hardReset){
             u32 now=vtimer;RT_campaignBonusRefresh(&bonus,now-lastRefresh);lastRefresh=now;
             u8 earned=0,events=0;
             u8 *reserves=rtSession.mode==RT_MODE_ARCADE?&arcade.reserves:&earned;
-            RT_BonusResult result=RT_campaignBonusStep(&bonus,&score,scene.exitPlayer,0,reserves,&events);
+            RT_BonusResult result=RT_campaignBonusStep(&bonus,&score,scene.exitPlayer,rtSession.mode==RT_MODE_ARCADE && (rtArcadeDips&RT_DIP_BONUS)?1:0,reserves,&events);
             rtAppBonusEvents=events;scene.timer.remaining=bonus.remaining;
             /* CPU1 bonus queues 0A, followed by 10 on an extra life. */
             if(events&(RT_BONUS_SOUND|RT_BONUS_EXTRA_LIFE_SOUND)){
@@ -784,9 +809,10 @@ int main(bool hardReset){
             RT_completionSceneEnd(&completion);
             if(!result){rtAppFault=42+completion.fault;notice("NATIVE BUILD ERROR","TRANSITION FRAME",APP_UNFINISHED);continue;}
             if(!RT_transitionCommandsEnd(&transitionSelector,&transitionEffect,&rtAppTransitionCommands) ||
-               RT_campaignSceneAdvance(&scene,0)){
+               RT_campaignSceneAdvance(&scene,rtSession.mode==RT_MODE_ARCADE && (rtArcadeDips&RT_DIP_EASY)?1:0)){
                 rtAppFault=51;notice("NATIVE BUILD ERROR","NEXT AREA",APP_UNFINISHED);continue;
             }
+            RT_homeCheckpoint(&scene,&score);
             if(!video()){notice("DEVELOPMENT BUILD","AREA ART NOT LINKED",APP_UNFINISHED);continue;}
             tick=0;rtAppState=APP_PLAY;
             if(rtSession.mode==RT_MODE_ARCADE){
@@ -844,7 +870,7 @@ int main(bool hardReset){
          * runs while VInt commits the previous frame, instead of idling for
          * VBlank after every presentation. */
         beginPipeline();
-        if(!RT_gameMusicActive() && !finalMusic.active && !rtFinalCommandSeen)
+        if(!RT_gameMusicActive() && !finalMusic.active && !rtFinalCommandSeen && !(rtArcadeAttract && (rtArcadeDips&RT_DIP_DEMO_MUTE)))
             RT_gameMusicStart(RT_gameMusicTrackFor(scene.stage->story,survival?0:scene.stage->area));
         u32 refresh=vtimer;
         if(!RT_framePacerStep(&pacer,refresh)){
@@ -869,6 +895,7 @@ int main(bool hardReset){
         if(lag>rtAppMaxUpdateLag)rtAppMaxUpdateLag=lag;
         u32 elapsed=refresh-lastRefresh;lastRefresh=refresh;
         rtAppRefreshes+=elapsed;RT_campaignProtectionAdvance(&scene,elapsed);
+        if(rtSession.mode==RT_MODE_ARCADE && !rtArcadeAttract && (rtArcadeDips&RT_DIP_INVINCIBLE))scene.players.combat[0].invincibleTicks=2;
         RT_CampaignRunState state=survival?
             RT_survivalUpdate(&scene,&survivalWorld,pads,tick++,(u8)refresh,&update):
             RT_campaignUpdate(&scene,pads,tick++,(u8)refresh,&update);
@@ -904,25 +931,26 @@ int main(bool hardReset){
                 }
             }
         }
-        finishPipeline();
-        if(!survival && update.worldUpdated && !consumeFinalCommands()){rtAppFault=90;notice("AUDIO ERROR","FINAL COMMAND",APP_UNFINISHED);continue;}
-        if(state==RT_CAMPAIGN_FAULT){
-            rtAppFault=10+update.faultPhase;notice("NATIVE BUILD ERROR","GAMEPLAY PHASE",APP_UNFINISHED);continue;
-        }
+        /* Score bookkeeping overlaps the previous video publication. */
         /* A completed battle can also end a life. Publish its awards before
          * handling that terminal state, once, even on a skipped presentation. */
         if(update.worldUpdated && !rtArcadeAttract){
             u8 earned=0;
             u8 *reserves=rtSession.mode==RT_MODE_ARCADE?&arcade.reserves:&earned;
             if(!RT_campaignScoreEnemies(&score,&update.battle.enemies,
-                scene.players.home.players,0,reserves)){
-                rtAppFault=6;notice("NATIVE BUILD ERROR","SCORE EVENTS",APP_UNFINISHED);continue;
+                scene.players.home.players,rtSession.mode==RT_MODE_ARCADE && (rtArcadeDips&RT_DIP_BONUS)?1:0,reserves)){
+                finishPipeline();rtAppFault=6;notice("NATIVE BUILD ERROR","SCORE EVENTS",APP_UNFINISHED);continue;
             }
             if(earned){
                 u32 credits=(u32)scene.players.home.credits+earned;
                 scene.players.home.credits=credits>65535?65535:(u16)credits;
                 if(state==RT_CAMPAIGN_GAME_OVER)state=RT_CAMPAIGN_CONTINUE;
             }
+        }
+        finishPipeline();
+        if(!survival && update.worldUpdated && !consumeFinalCommands()){rtAppFault=90;notice("AUDIO ERROR","FINAL COMMAND",APP_UNFINISHED);continue;}
+        if(state==RT_CAMPAIGN_FAULT){
+            rtAppFault=10+update.faultPhase;notice("NATIVE BUILD ERROR","GAMEPLAY PHASE",APP_UNFINISHED);continue;
         }
         if(rtArcadeAttract && state!=RT_CAMPAIGN_RUNNING){
             if(!attractScores())rtAppFault=104;
@@ -935,7 +963,7 @@ int main(bool hardReset){
                 }
                 continue;
             }
-            if(RT_campaignSceneInitialize(&scene,&rtSession,arcade.story,arcade.area,arcade.checkpoint,0,0) || !video()){
+            if(RT_campaignSceneInitialize(&scene,&rtSession,arcade.story,arcade.area,arcade.checkpoint,(rtArcadeDips&RT_DIP_EASY)?1:0,0) || !video()){
                 rtAppFault=5;notice("NATIVE BUILD ERROR","ARCADE RESTART",APP_UNFINISHED);continue;
             }
             arcade.previousWindow=scene.objectWindow;readyStarted=vtimer;rtAppState=APP_READY;continue;

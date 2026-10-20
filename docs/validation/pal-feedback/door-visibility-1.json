@@ -1,0 +1,7 @@
+{
+  "rom_sha256": "5dd1fa706f26f993eeaf24edf3b2d81595a1bd404c03e353e1186afc25b8bb56",
+  "agent": 1,
+  "hidden_sat_frames": 120,
+  "visible_exit_frames": 47,
+  "limits": "First authored supply door, RAM placement/protection only; production input/state/SAT publication."
+}

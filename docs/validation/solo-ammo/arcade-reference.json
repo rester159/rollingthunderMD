@@ -1,0 +1,9 @@
+{
+  "cpu1_file": "rt3_1b.9c",
+  "cpu1_sha256": "86c2d7bd3aadbc27f9b5933572d2964bcf4a786aff72071f1f14c8ac98cdca39",
+  "cpu2_file": "rt3_2b.12c",
+  "cpu2_sha256": "1544ce87f1c4184ab767451d55c097f90a88dc784535535b74ac61f17baee86f",
+  "hud_routine": "CPU1 $9360-$9379: when mode CE is active, print machine-gun counter $56CC at $3F16; always print pistol counter $56CA at $3F96.",
+  "refill_routine": "CPU2 $9F4C-$9F6F: choose pistol $16CA or machine-gun $16CC from door flag bit 5, add one; weapon mode does not choose the refill counter.",
+  "evidence": "Original owner-supplied arcade ROM bytes and local disassembly; no gameplay rule change needed."
+}

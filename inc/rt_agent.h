@@ -20,6 +20,7 @@ typedef struct {
     u8 action,direction,phase,timer,pose,contactPose;
     u8 fireLatch,jumpLatch,fireRepeat,weaponMode;
     u8 sounds[2],soundCount,unsupported,stairCameraFlags;
+    u8 doorSupply; /* Latched refill flags; occupies the former alignment byte. */
     u16 ammoPrimary,ammoAlternate; /* Native decimal counts, 0..9999. */
     u8 shotRequest,alternateReset;
     u8 anchorIndex,interactionEvent; /* index+1; zero means no linked anchor */

@@ -1,7 +1,7 @@
 #ifndef RT_PACKED_CACHE_H
 #define RT_PACKED_CACHE_H
 #include <genesis.h>
-#define RT_PACKED_CACHE_WORDS 4860
+#define RT_PACKED_CACHE_WORDS 6144
 typedef struct {u16 pixels[RT_PACKED_CACHE_WORDS];} RT_PackedWorkspace;
 void RT_packedWorkspaceBegin(void*,u16);
 void RT_packedWorkspaceEnd(void);

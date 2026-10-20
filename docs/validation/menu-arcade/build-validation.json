@@ -1,0 +1,15 @@
+{
+  "rom_sha256": "41eb83ddbd2eaeccd2a6641a273f79713ed6c9e58062f97696899ef673805c1c",
+  "bytes": 4194304,
+  "used_bytes": 4189406,
+  "normal_build": true,
+  "header_checksum_valid": true,
+  "versioned_release_unchanged": true,
+  "published": false,
+  "captures": [
+    "main-menu.png",
+    "home-menu.png",
+    "arcade-menu.png",
+    "achievements.png"
+  ]
+}

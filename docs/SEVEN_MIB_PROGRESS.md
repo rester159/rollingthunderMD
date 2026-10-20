@@ -2,7 +2,9 @@
 
 **October 18 update:** this is a historical size milestone. The corrected target
 is **32 Mbit (4 MiB / 4,194,304 bytes)**. A 7 MiB ROM is **56 Mbit** and does not
-fit that target. No content cuts are authorized; further storage work is needed.
+fit that target. The [current 32 Mbit candidate](THIRTY_TWO_MBIT_PROGRESS.md)
+now fits the corrected target with lossless storage and fresh Campaign timing
+checks. That optimization candidate remains unreleased.
 
 The initial candidate documented below is retained as a reference. The current
 v0.8 Alpha includes the [arcade door-animation correction](DOOR_ANIMATION_FIX.md),

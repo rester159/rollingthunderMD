@@ -35,6 +35,10 @@ u8 RT_agentClimbStep(RT_Agent *agent,u8 input,const RT_WorldStage *stage,
             else return exitDoor(agent,stage,camera,scene);
         }else if(row==6){
             u8 level=(anchor->flags&24)>>3;
+            /* Another player may consume the shared door after row 5. Do
+             * not start a zero-duration refill (which would wrap to 255). */
+            if(!level)return exitDoor(agent,stage,camera,scene);
+            agent->doorSupply=anchor->flags&56;
             if(anchor->flags&32){
                 static const u8 duration[4]={0,40,80,100};
                 agent->weaponMode=level?1:0;agent->timer=duration[level];
@@ -47,7 +51,9 @@ u8 RT_agentClimbStep(RT_Agent *agent,u8 input,const RT_WorldStage *stage,
         }else{
             /* Source 88B2 is BCD +0001 with wrap. Native inventory is decimal,
              * so branch at 9999 instead of carrying packed decimal at runtime. */
-            u16 *ammo=anchor->flags&32?&agent->ammoAlternate:&agent->ammoPrimary;
+            /* Consuming a primary door also sets its shared bit 5. Keep the
+             * supply type captured at refill start until this player exits. */
+            u16 *ammo=agent->doorSupply&32?&agent->ammoAlternate:&agent->ammoPrimary;
             *ammo=*ammo==9999?0:*ammo+1;
             /* Co-op receives 50% more supplies without extending the door wait. */
             if(scene->players==2 && (agent->timer&1))

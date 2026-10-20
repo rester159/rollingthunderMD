@@ -1,4 +1,5 @@
 #include "rt_campaign_scene.h"
+#include "rt_home_progress.h"
 #include <string.h>
 RT_CampaignInit RT_campaignSceneInitialize(RT_CampaignScene *scene,
     const RT_SessionConfig *selection,u8 story,u8 area,u8 checkpoint,
@@ -44,6 +45,6 @@ RT_CampaignInit RT_campaignSceneInitialize(RT_CampaignScene *scene,
         return RT_CAMPAIGN_INIT_ENEMIES;
     /* Cabinet default selects source150; this resets at every authored entry,
      * including checkpoint restart and Continue, never on a co-op respawn. */
-    scene->timer=(RT_CampaignTimer){150,0};
+    scene->timer=(RT_CampaignTimer){selection->mode==RT_MODE_ARCADE && (rtArcadeDips&RT_DIP_TIMER)?120:150,0};
     scene->ready=1;return RT_CAMPAIGN_INIT_OK;
 }

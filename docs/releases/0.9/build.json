@@ -1,0 +1,21 @@
+{
+  "sha256": "ded14ecffd08d6b3cb97240a04bfbd80e75a3aebe1e7ffec58ed80eabbabca1c",
+  "bytes": 4194304,
+  "cartridge_profile": "standard",
+  "layout": "packed",
+  "stage_banks_reproduced": 10,
+  "physical_hardware_tested": false,
+  "artifact": "Rolling_Thunder_MD_v0.9_Beta.bin",
+  "verified_art": {
+    "poses": 33720,
+    "packed_geometry": 29790,
+    "background_map_cells": 808960
+  },
+  "verified_audio_samples": 2899006,
+  "unit_tests": {
+    "aligned_pool": 4,
+    "packed_storage": 5,
+    "pcm_stream": 4
+  },
+  "header_checksum_valid": true
+}

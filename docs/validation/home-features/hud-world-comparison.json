@@ -1,0 +1,67 @@
+{
+  "rom_sha256": "c08a333de4045cd7ed3966409f3322a9d59aa27ea5ba06dae7da7f585cffde55",
+  "baseline_sha256": "ba3f09424c140066af50b29e90a01ab5aaa1a263a359658bbfdf9b176df59d12",
+  "cases": [
+    {
+      "area": 1,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 8261
+    },
+    {
+      "area": 2,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 8183
+    },
+    {
+      "area": 3,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 6079
+    },
+    {
+      "area": 4,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 6858
+    },
+    {
+      "area": 5,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 8261
+    },
+    {
+      "area": 6,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 8261
+    },
+    {
+      "area": 7,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 8183
+    },
+    {
+      "area": 8,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 6079
+    },
+    {
+      "area": 9,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 6117
+    },
+    {
+      "area": 10,
+      "playing_field_equal": true,
+      "existing_hud_ink_equal": true,
+      "revealed_pixels": 8261
+    }
+  ],
+  "scope": "Static area entries via the production loaders, not a complete gameplay visual comparison."
+}

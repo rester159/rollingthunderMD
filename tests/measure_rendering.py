@@ -21,10 +21,12 @@ p.add_argument('--input-pattern',choices=['opening','jump'],default='opening')
 p.add_argument('--stage',type=int,choices=range(10),default=None,help='Diagnostic entry through the production stage loader')
 p.add_argument('--refresh-phase',type=int,choices=range(256),default=None,help='Align enemy decision phase after diagnostic stage entry')
 p.add_argument('--frames',type=int,default=1800)
+p.add_argument('--updates',type=int,default=0,help='Measure a fixed number of simulation updates, with a bounded refresh timeout')
 p.add_argument('--output',type=Path,required=True)
 p.add_argument('--everdrive-model',action='store_true')
 p.add_argument('--reserve-os-banks',action='store_true')
 a=p.parse_args()
+if a.frames<1 or a.updates<0:p.error('--frames must be positive and --updates nonnegative')
 if a.refresh_phase is not None and a.stage is None:p.error('--refresh-phase requires --stage')
 rom_sha256=hashlib.sha256(a.rom.read_bytes()).hexdigest()
 symbol_sha256=hashlib.sha256(a.symbols.read_bytes()).hexdigest()
@@ -49,7 +51,10 @@ names=['rtAppUpdates','rtAppPresentations','rtAppFullPresentations','rtAppReused
 def snapshot():return {name:m.number(name,4) for name in names}
 before=snapshot();last=before['rtAppUpdates'];stalls=compact=0;longest=run=0
 play_frames=play_updates=play_presentations=0
-for frame in range(a.frames):
+refreshes=0
+for frame in range(max(a.frames,a.updates*5+600) if a.updates else a.frames):
+    if a.updates and m.number('rtAppUpdates',4)-before['rtAppUpdates']>=a.updates:break
+    refreshes+=1
     update=m.number('rtAppUpdates',4)
     m.buttons={(0,7),(0,0),(1,7),(1,0)} if (update//180)%3<2 else {(0,0),(1,0)}
     if a.input_pattern=='jump' and update%90<4:m.buttons|={(0,1),(1,1)}  # RetroPad Y maps to Genesis A (jump)
@@ -63,12 +68,13 @@ for frame in range(a.frames):
     last=current;compact+=int(m.number('rtCoopCompact')!=0)
 after=snapshot();delta={name:after[name]-before[name] for name in names}
 # The installed NTSC cores use approximately 59.9227 refreshes per second.
-seconds=a.frames/59.922743
+seconds=refreshes/59.922743
+if a.updates:assert delta['rtAppUpdates']>=a.updates, ('Simulation update target was not reached',delta,m.number('rtAppState',2),m.number('rtAppFault',2),m.number('rtHudFault') if 'rtHudFault' in m.symbols else None)
 assert hashlib.sha256(a.rom.read_bytes()).hexdigest()==rom_sha256, 'ROM changed during measurement'
 assert hashlib.sha256(a.symbols.read_bytes()).hexdigest()==symbol_sha256, 'Symbols changed during measurement'
 report=dict(rom_sha256=rom_sha256,case=a.case,agent=a.agent,input_pattern=a.input_pattern,
             extended_ssf_software_model=a.everdrive_model,reserved_os_bank_guard=a.reserve_os_banks,
-            stage=a.stage,refresh_phase=a.refresh_phase,refreshes=a.frames,seconds=seconds,play_refreshes=play_frames,play_updates=play_updates,play_presentations=play_presentations,initial_counters=before,aligned_start_update=a.align_update,counters=delta,
+            stage=a.stage,refresh_phase=a.refresh_phase,refreshes=refreshes,target_updates=a.updates,seconds=seconds,play_refreshes=play_frames,play_updates=play_updates,play_presentations=play_presentations,initial_counters=before,aligned_start_update=a.align_update,counters=delta,
             simulation_updates_per_second=delta['rtAppUpdates']/seconds,
             presentations_per_second=delta['rtAppPresentations']/seconds,
             stalled_refreshes=stalls,longest_stall_refreshes=longest,compact_refreshes=compact,

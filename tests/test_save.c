@@ -1,12 +1,12 @@
 #include <assert.h>
 #include <stdio.h>
 #include "rt_save.h"
-static u8 memory[256];static int writes,limit=-1;static bool enabled,forbidReads;
+static u8 memory[1024];static int writes,limit=-1;static bool enabled,forbidReads;
 void SYS_disableInts(void){} void SYS_enableInts(void){}
 bool Z80_getAndRequestBus(bool wait){(void)wait;return false;}void Z80_releaseBus(void){}
 void SRAM_enable(void){assert(!enabled);enabled=true;}void SRAM_disable(void){enabled=false;}
-u8 SRAM_readByte(u32 offset){assert(enabled&&offset<256&&!forbidReads);return memory[offset];}
-void SRAM_writeByte(u32 offset,u8 value){assert(enabled&&offset<256);if(limit<0||writes<limit)memory[offset]=value;writes++;}
+u8 SRAM_readByte(u32 offset){assert(enabled&&offset<sizeof memory&&!forbidReads);return memory[offset];}
+void SRAM_writeByte(u32 offset,u8 value){assert(enabled&&offset<sizeof memory);if(limit<0||writes<limit)memory[offset]=value;writes++;}
 static u8 controls;
 static u8 records[35]={0,0x30,0,5,10,15,41,0,0x20,0,4,10,15,20,0,0x10,0,3,10,15,20,0,8,0,2,10,15,20,0,4,0,1,10,15,20};
 static void load(u32 expected,u8 credit,u8 muted){u8 r[35],c,m;u32 b;limit=-1;assert(RT_saveLoad(r,&b,&c,&m,&controls));assert(b==expected&&c==credit&&m==muted&&!memcmp(r,records,35));}
@@ -44,4 +44,5 @@ int main(void){
     controls=10;load(3000,6,0);assert(controls==0);
     assert(RT_saveStore(records,3000,6,0,6));controls=0;load(3000,6,0);assert(controls==6);
     puts("SRAM: roundtrip, unchanged writes, 65 interrupted writes, corruption, defaults, warm reset without SRAM reads and validation passed.");
+    return 0;
 }

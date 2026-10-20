@@ -31,25 +31,29 @@ def pack(raw,delta=False):
         if index<len(groups):result+=bytes(limit-len(result))
     return bytes(result)
 
-def pack_phrases(raw):
-    """Intern common sequences of absolute four-sample masks, without changing
+def pack_phrases(raw,delta=False):
+    """Intern common sequences of four-sample masks, without changing
     samples. Z80 dispatch programs expand each phrase into the existing timed
     pair states. Rare reserved masks use an explicit literal-mask escape.
     """
-    groups=[]
+    groups=[];previous=raw[255]
     for at in range(256,len(raw),4):
         mask=0;literals=bytearray()
         for value in raw[at:at+4].ljust(4,b'\x80'):
-            code={128:0,127:1,129:2}.get(value,3)
+            code=({0:0,255:1,1:2}.get((value-previous)&255,3) if delta else {128:0,127:1,129:2}.get(value,3))
+            previous=value
             mask=(mask<<2)|code
             if code==3:literals.append(value)
         groups.append((mask,bytes(literals)))
     masks=bytes(mask for mask,literals in groups);counts=Counter(masks)
     grams=Counter(masks[i:i+n] for n in (2,3,4,6,8) for i in range(len(masks)-n+1))
-    reserved=sorted(range(256),key=lambda value:(counts[value],value))[:65]
+    # Dense delta passages need producer headroom during the 64-sample IRQ
+    # playback window. Eight reserved phrase codes keep literal escapes rare.
+    slots=8 if delta else 64
+    reserved=sorted(range(256),key=lambda value:(counts[value],value))[:slots+1]
     escape=reserved[-1];phrases={};budget=1532
     for phrase in sorted(grams,key=lambda value:(-(len(value)-1)*grams[value],value)):
-        if len(phrases)==64:break
+        if len(phrases)==slots:break
         size=4*len(phrase)+2
         if size<=budget:
             phrases[phrase]=reserved[len(phrases)];budget-=size
@@ -70,7 +74,7 @@ def pack_phrases(raw):
         struct.pack_into('<H',result,start,count|(0x8000 if index==len(commands) else 0))
         if index<len(commands):result+=bytes(limit-len(result))
     dictionary=[[code,*phrase] for phrase,code in phrases.items()]+[[escape]]
-    assert unpack(result,len(raw),phrases=dictionary)==raw
+    assert unpack(result,len(raw),delta=delta,phrases=dictionary)==raw
     return bytes(result),dictionary
 
 def unpack(blob,count,delta=False,phrases=None):

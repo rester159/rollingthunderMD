@@ -54,6 +54,10 @@ void __wrap__reset_entry(void)
      * below rebuilds heap, DMA, VDP, sound and callbacks after global reset. */
     intCB=defaultInterrupt;
     if(warm)RT_saveResetImport(&saved);
-    __real__reset_entry();
-    while(TRUE);
+    /* The mirror has been imported. Discard this wrapper's temporary stack
+     * before entering the non-returning SDK runtime; otherwise the larger
+     * SRAM snapshot permanently consumes gameplay's reserved stack space. */
+    __asm__ volatile("move.l #0xe1000000,%%sp\n\tjmp (%0)"
+                     : : "a"(__real__reset_entry) : "memory");
+    __builtin_unreachable();
 }

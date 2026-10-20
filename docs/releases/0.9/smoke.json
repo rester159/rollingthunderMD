@@ -1,0 +1,50 @@
+{
+  "rom_sha256": "ded14ecffd08d6b3cb97240a04bfbd80e75a3aebe1e7ffec58ed80eabbabca1c",
+  "results": [
+    {
+      "mode": "campaign_1p",
+      "updates": 240,
+      "session": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "fault": 0
+    },
+    {
+      "mode": "campaign_2p",
+      "updates": 240,
+      "session": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "fault": 0
+    },
+    {
+      "mode": "survival_2p",
+      "updates": 240,
+      "session": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "fault": 0
+    }
+  ]
+}

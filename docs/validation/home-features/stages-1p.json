@@ -1,0 +1,98 @@
+{
+  "rom_sha256": "c08a333de4045cd7ed3966409f3322a9d59aa27ea5ba06dae7da7f585cffde55",
+  "cases": [
+    {
+      "stage": 0,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "abec8d2bb63c06954f42a803bbc7c91cb6e137ac4bdf55846365951a81491b81",
+      "high_score_frame_sha256": "088334235ead5ba82429d2544d9b383506f14e9e493bf1e8238b58bfd2c64209",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 1,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "ba8e494042db0467134c7892e46c57ac178eab852bfb4502bd6a81b61cffb5c0",
+      "high_score_frame_sha256": "732fd11b1cf77f8df3d5e60c406847686e34cba2f236008dc348b6e7958afcc1",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 2,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "69d39275d7342ab797c9520aaeac08d4325300511741a80ed07bc6a7930a4d3c",
+      "high_score_frame_sha256": "a07627e99e0ed9287c9c02b3a8058df7aa6d35814312a21b0e566058976b6f61",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 3,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "2d8afd911861cc1723238d184bf10aede38bdad30bcc7b5514842a07325ab373",
+      "high_score_frame_sha256": "90dc6afa5e043c19cdd82a3a2bc76a906a14e2b0b14241bc704b36929197de30",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 4,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "05227141a317daee1ce0b51eb18c387c13e5c5a06804f2458b7199f39beb66f2",
+      "high_score_frame_sha256": "64229b703d52cde2005014e6e7104df0a094dd67fcc43dc40d9d5651d3e649d1",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 5,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "3b8ea83c1223ee6bc130daa6ed191ef09ebb2cb950954592c0ae91b53def9cd5",
+      "high_score_frame_sha256": "1fee9dce0e286766a44079901f9c617411b3351cb6113ef63a151301d3d2ef7e",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 6,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "ba8e494042db0467134c7892e46c57ac178eab852bfb4502bd6a81b61cffb5c0",
+      "high_score_frame_sha256": "abf410f4c4e2ac11bb1e9b892d700687e26cfedfac877eb134dbc6c9a4d7d1f0",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 7,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "e68c5ad392678351599354bc709a13f5c67b6bb2a8d4b2c4621528d60e0bdc31",
+      "high_score_frame_sha256": "cb1c12e7ac395f952d27ae34344c5b90b7a8681878d3acd7bbabebe20b3c4a41",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 8,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "33598734929c628bea4b2145140ff374ca4d682e22934196035ee48db737f8ca",
+      "high_score_frame_sha256": "df5aaa3ff6a6956b1c4a571a1d2008e22842fc1e6e879cf394c2b9d90abbc629",
+      "fault": 0,
+      "exact_cached_poses": 0
+    },
+    {
+      "stage": 9,
+      "stage_entry_pass": true,
+      "high_score_entry_pass": true,
+      "stage_frame_sha256": "df3407168e9f0425f8de3491df723681853c22b48401cd6db2d8d8c34fb7a3e1",
+      "high_score_frame_sha256": "046fb7805f1b119f3f811dc86acfb74112faca2df61d5f2f12f74826e425f0bf",
+      "fault": 0,
+      "exact_cached_poses": 0
+    }
+  ],
+  "extended_ssf_software_model": false,
+  "physical_hardware_tested": false,
+  "scope": "Diagnostic CPU-register calls in an unmodified ROM; all stage loaders and high-score entry, not full campaign playthroughs."
+}

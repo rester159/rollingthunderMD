@@ -1,0 +1,2 @@
+SRAM: roundtrip, unchanged writes, 65 interrupted writes, corruption, defaults, warm reset without SRAM reads and validation passed.
+Three Campaign SRAM slots and profile: isolated journals, all interrupted writes, cold/warm restore, corruption fallback and unchanged saves passed.
