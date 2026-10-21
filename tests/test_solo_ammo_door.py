@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Solo Area 2 authored supply doors via normal controller entry/refill/exit.
+"""Solo Areas 1/2 authored supply doors via normal controller entry/refill/exit.
 
 The emulator's entrance table is moved near each door; production stage loaders
 instantiate the real objects. Only player position, inventory and protection are
@@ -14,6 +14,7 @@ p=argparse.ArgumentParser(description=__doc__)
 for n in ('rom','symbols','core','output'):p.add_argument('--'+n,type=Path,required=True)
 p.add_argument('--region',choices=('U','E'),default='E')
 p.add_argument('--agent',type=int,choices=(0,1),default=0)
+p.add_argument('--stage',type=int,choices=(0,1),default=1)
 p.add_argument('--capture-dir',type=Path)
 a=p.parse_args();original=a.rom;rows=[]
 class Map(C.Structure):_fields_=[(n,C.c_void_p) for n in ('base','read8','read16','write8','write16')]
@@ -48,16 +49,16 @@ with tempfile.TemporaryDirectory() as folder:
    if entered and exited and action not in (18,19):
     m.buttons.clear();m.run(3);hud();return frame+1
   raise AssertionError(('door visit did not finish',entered,exited,inventory()))
- for case in ('pistol','machine-active','cancel-retry','machine-pickup'):
+ for case in (('pistol','machine-active','cancel-retry','machine-pickup') if a.stage else ('pistol','machine-active','cancel-retry')):
   if rows:m.core.retro_reset();m.run(300)
   m.start('campaign_1p',a.agent)
-  machine=case=='machine-pickup';x,y=(576,289) if machine else (928,321)
-  maps=(Map*256).in_dll(m.core,'m68k');address=symbols['rtWorldStages']+24+12
-  for i,value in enumerate(struct.pack('>hh',x-128,192)):
+  machine=case=='machine-pickup';x,y=((576,289) if machine else (928,321)) if a.stage else (2016,65)
+  maps=(Map*256).in_dll(m.core,'m68k');address=symbols['rtWorldStages']+a.stage*24+12
+  for i,value in enumerate(struct.pack('>hh',x-128,192 if a.stage else -8)):
    C.c_ubyte.from_address(maps[(address+i)>>16].base+(((address+i)&65535)^1)).value=value
-  enter_campaign_stage(m,a.rom,a.symbols,1)
-  slot=next(i for i in range(48) if m.number('scene',4,224+i*16)==x*16 and m.number('scene',1,224+i*16+8)==1)
-  assert m.number('scene',1,224+slot*16+9)==(52 if machine else 12)
+  enter_campaign_stage(m,a.rom,a.symbols,a.stage)
+  slot=next(i for i in range(48) if m.number('scene',4,224+i*16)==x*16 and m.number('scene',1,224+i*16+8)==a.stage)
+  assert m.number('scene',1,224+slot*16+9)==((52 if machine else 12) if a.stage else 28)
   m.patch('scene',struct.pack('>ii',(x+14)*16,(y+63)*16),20);m.patch('scene',b'\2',36)
   m.patch('scene',b'\xff\xff',104)
   active=case=='machine-active'
@@ -66,7 +67,7 @@ with tempfile.TemporaryDirectory() as folder:
   if case=='cancel-retry':
    visit(cancel=True);assert inventory()==before
    assert m.number('scene',1,224+slot*16+9)&24
-  elapsed=visit();expected=(50,80,1) if machine else (70,80 if active else 0,int(active))
+  elapsed=visit();expected=(50,80,1) if machine else (70 if a.stage else 100,80 if active else 0,int(active))
   assert inventory()==expected,(case,inventory(),expected)
   visit();assert inventory()==expected,('spent door granted more ammo',case)
   rows.append(dict(case=case,before=before,after=inventory(),visit_refreshes=elapsed,hud_primary=digits(115),hud_machine=digits(75) if inventory()[2] else None,spent_door_no_refill=True))
@@ -77,5 +78,5 @@ with tempfile.TemporaryDirectory() as folder:
    rgb=np.stack([((pixels>>11)&31)*255//31,((pixels>>5)&63)*255//63,(pixels&31)*255//31],-1).astype('uint8')
    a.capture_dir.mkdir(parents=True,exist_ok=True);Image.fromarray(rgb).resize((640,448),Image.Resampling.NEAREST).save(a.capture_dir/f'solo-ammo-{a.region}-agent{a.agent}.png')
  m.core.retro_unload_game();m.core.retro_deinit()
-report=dict(rom_sha256=hashlib.sha256(original.read_bytes()).hexdigest(),region=a.region,agent=a.agent,cases=rows,scope=__doc__)
+report=dict(rom_sha256=hashlib.sha256(original.read_bytes()).hexdigest(),region=a.region,agent=a.agent,stage=a.stage,cases=rows,scope=__doc__)
 a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report))

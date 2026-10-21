@@ -1,0 +1,78 @@
+{
+  "rom_sha256": "3ed5cc21fe5fd42fedae1b91142217da1fc81ce6717ea489bb068098ee0b36cd",
+  "core_sha256": "435c60c17c7a7c8f2a92f6449141960ac6b6e8292fad796da6d9b823615787ad",
+  "sample_rate": 44100.0,
+  "refresh_rate": 59.92274340431231,
+  "psg_muted": false,
+  "additional_capture_refreshes": 900,
+  "initial_attack_included": true,
+  "tracks": [
+    {
+      "track": 1,
+      "restart": 0,
+      "stereo_samples": 718285,
+      "peak": 26445,
+      "clipped_channel_samples": 0,
+      "music_services": 958,
+      "steady_music_services": 905,
+      "pending_music_services": 0,
+      "rms": 2126.494712552768
+    },
+    {
+      "track": 1,
+      "restart": 1,
+      "stereo_samples": 718285,
+      "peak": 26438,
+      "clipped_channel_samples": 0,
+      "music_services": 959,
+      "steady_music_services": 904,
+      "pending_music_services": 0,
+      "rms": 2129.450117562456
+    },
+    {
+      "track": 1,
+      "restart": 2,
+      "stereo_samples": 718285,
+      "peak": 26340,
+      "clipped_channel_samples": 0,
+      "music_services": 959,
+      "steady_music_services": 905,
+      "pending_music_services": 0,
+      "rms": 2123.5005393037623
+    },
+    {
+      "track": 7,
+      "restart": 0,
+      "stereo_samples": 718285,
+      "peak": 32768,
+      "clipped_channel_samples": 48,
+      "music_services": 955,
+      "steady_music_services": 900,
+      "pending_music_services": 0,
+      "rms": 3052.9135434953905
+    },
+    {
+      "track": 7,
+      "restart": 1,
+      "stereo_samples": 718285,
+      "peak": 32768,
+      "clipped_channel_samples": 32,
+      "music_services": 954,
+      "steady_music_services": 899,
+      "pending_music_services": 1,
+      "rms": 3046.267077487161
+    },
+    {
+      "track": 7,
+      "restart": 2,
+      "stereo_samples": 718285,
+      "peak": 30767,
+      "clipped_channel_samples": 0,
+      "music_services": 954,
+      "steady_music_services": 900,
+      "pending_music_services": 0,
+      "rms": 3047.913906371687
+    }
+  ],
+  "limits": "Emulator digital output only; not analog-console or arcade-fidelity validation."
+}

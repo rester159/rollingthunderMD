@@ -4,6 +4,8 @@
 /* Level music on the Z80 music driver (sequencer + YM2151->YM2612/PSG
  * translation run there). Start/Stop from the main thread. */
 u8 RT_gameMusicTrackFor(u8 story,u8 area);
+/* Install without playing, while the title display/raster is disabled. */
+void RT_gameMusicPrepare(void);
 void RT_gameMusicStart(u8 track);
 void RT_gameMusicStop(void);
 u8 RT_gameMusicActive(void);

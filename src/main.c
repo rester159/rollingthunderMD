@@ -445,6 +445,14 @@ static u8 advanceFinalEnding(void)
 
 /* Source qualification/initials routines with native ROM-bank/VDP ownership. */
 static u8 highRecords[50],highScores[8],highPlayer,highRemaining,highArea;
+/* Menu saves are event driven. Rechecking journal CRCs on every idle frame
+ * halves the cast animation rate even when no SRAM write is needed. */
+static u32 menuSaveState(void)
+{
+    return (u32)rtHomeStartingCredits | ((u32)rtControlLayout<<4) |
+        ((u32)RT_gameMusicPsgMuted()<<8) | ((u32)rtArcadeDips<<9) |
+        ((u32)rtHomeSaveSlot<<15);
+}
 static void saveProgress(void)
 {
     /* Entry IRQ owns the table until its current initials are complete. */
@@ -764,10 +772,11 @@ int main(bool hardReset){
         }
         if(rtAppState==APP_HIGH_ENTRY){if(!stepHighEntry(pads)){rtAppFault=97;notice("HIGH SCORE ERROR","ENTRY",APP_UNFINISHED);}continue;}
         if(rtAppState==APP_MENU){
+            u32 settings=menuSaveState();
             if(RT_stepModeSelect(pads[0],pads[1])){saveProgress();RT_titleMenuEnd();
                 if(rtSession.mode==RT_MODE_ARCADE){if(!beginAttract())rtAppFault=103;}
                 else start();}
-            else saveProgress();
+            else if(settings!=menuSaveState())saveProgress();
             if(rtAppState==APP_MENU){RT_drawModeSelect();if(!RT_titleMenuActive())SYS_doVBlankProcess();}
             continue;
         }

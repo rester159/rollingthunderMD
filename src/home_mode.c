@@ -11,6 +11,7 @@
 #define CONFIRM (BUTTON_A | BUTTON_START)
 enum { MODE, HOME, AGENTS, PENDING, PLAYERS, SETTINGS, GAME_OVER=6, CONTROLS, SOUND, ARCADE, ARCADE_OPTIONS, DIPS, SLOTS, OVERWRITE };
 static u8 optionParent,slotLoad,dipIndex;
+static u32 arcadeIdleSince;
 static u8 soundTrack=1,soundShown;
 RT_SessionConfig rtSession;
 u8 rtHomeStartingCredits=6;
@@ -165,6 +166,9 @@ u16 RT_fireButtons(u8 player)
 void RT_drawModeSelect(void)
 {
     u16 i;
+    /* Text is composed after all rows are queued: each slot needs its own
+     * live buffer until RT_titleMenuTextCommit has consumed it. */
+    static char slotLabels[3][20];
     if(page==SOUND){
         RT_gameMusicPoll();
         u8 playing=RT_gameMusicPlaying();
@@ -220,7 +224,7 @@ void RT_drawModeSelect(void)
                     RT_titleMenuTextAt(slotLoad?"NO SAVES TO CONTINUE":"A: PLAY WITHOUT SAVE",10,17);
                     RT_titleMenuTextAt("B: BACK",15,18);
                 }else for(i=0;i<3;i++){
-                    char label[20]="SLOT 1  EMPTY";label[5]='1'+i;
+                    char *label=slotLabels[i];memcpy(label,"SLOT 1  EMPTY",13);label[5]='1'+i;
                     u8 area=RT_homeSlotArea(i);
                     if(area){memcpy(label+8,"AREA ",5);label[13]='0'+area/10;label[14]='0'+area%10;label[15]=0;}
                     if(cursor==i)RT_titleMenuTextAt(">",10,16+i);
@@ -334,7 +338,15 @@ bool RT_stepModeSelect(u16 pad1, u16 pad2)
     u16 edges[2]={pad1 & ~previous[0],pad2 & ~previous[1]};
     u16 edge=page==GAME_OVER ? edges[0]|edges[1] : edges[0];
     previous[0]=pad1; previous[1]=pad2;
-    if (!(edge | (page==AGENTS?edges[1]:0))) return FALSE;
+    /* Keep the cabinet demo discoverable while its new settings menu is
+     * idle. Home and the option pages never time out into gameplay. */
+    if(edge)arcadeIdleSince=vtimer;
+    if (!(edge | (page==AGENTS?edges[1]:0))) {
+        if(page==ARCADE && (u32)(vtimer-arcadeIdleSince)>=(IS_PAL_SYSTEM?500:600)){
+            page=PENDING;return TRUE;
+        }
+        return FALSE;
+    }
     dirty=TRUE;
     if (page==GAME_OVER) {
         if (edge & (CONFIRM | BUTTON_B)) { page=HOME; cursor=rtSession.game; }

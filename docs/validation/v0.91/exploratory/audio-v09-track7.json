@@ -1,0 +1,36 @@
+{
+  "rom_sha256": "ded14ecffd08d6b3cb97240a04bfbd80e75a3aebe1e7ffec58ed80eabbabca1c",
+  "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+  "sample_rate": 44100.0,
+  "refresh_rate": 59.92274340431231,
+  "psg_muted": false,
+  "additional_capture_refreshes": 1200,
+  "initial_attack_included": true,
+  "tracks": [
+    {
+      "track": 7,
+      "restart": 0,
+      "stereo_samples": 939069,
+      "peak": 32768,
+      "clipped_channel_samples": 4,
+      "rms": 2602.4288557190866
+    },
+    {
+      "track": 7,
+      "restart": 1,
+      "stereo_samples": 939070,
+      "peak": 32767,
+      "clipped_channel_samples": 8,
+      "rms": 2547.388777306014
+    },
+    {
+      "track": 7,
+      "restart": 2,
+      "stereo_samples": 939069,
+      "peak": 32605,
+      "clipped_channel_samples": 0,
+      "rms": 2567.7362982302297
+    }
+  ],
+  "limits": "Emulator digital output only; not analog-console or arcade-fidelity validation."
+}

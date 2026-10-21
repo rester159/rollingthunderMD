@@ -1,11 +1,11 @@
 # Rolling Thunder MD
 
-Native Mega Drive / Genesis port of Rolling Thunder, updated October 19, 2026.
-The current version is **v0.9 Beta**, packaged as a **4 MiB / 32 Mbit** linear ROM.
+Native Mega Drive / Genesis port of Rolling Thunder, updated October 20, 2026.
+The current version is **v0.91 Beta**, packaged as a **4 MiB / 32 Mbit** linear ROM.
 
-Local ROM: `dist/Rolling_Thunder_MD_v0.9_Beta.bin`. See
-[CURRENT_BUILD.txt](CURRENT_BUILD.txt), [release notes](docs/RELEASE_0_9.md), and
-[dev update](docs/DEVLOG_0_9.md). ROM binaries remain excluded from Git.
+Local ROM: `dist/Rolling_Thunder_MD_v0.91_Beta.bin`. See
+[CURRENT_BUILD.txt](CURRENT_BUILD.txt), [release notes](docs/RELEASE_0_91.md), and
+[dev update](docs/DEVLOG_0_91.md). ROM binaries remain excluded from Git.
 
 Includes Arcade and Home, solo/two-player Campaign and Survival, both agents,
 all ten campaign areas (five stages followed by their harder second-story
@@ -17,7 +17,7 @@ colors, with lipstick removed from her gameplay sprites.
 See [Home/Arcade feature details](docs/HOME_FEATURES.md) and the
 [optimization notes](docs/THIRTY_TWO_MBIT_PROGRESS.md). Earlier candidate reports
 retain their original dates and hashes; current-version checks are recorded in
-`docs/releases/0.9/`. This beta has emulator validation, not a physical-hardware
+`docs/validation/v0.91/`. This beta has emulator validation, not a physical-hardware
 certification or a guarantee of 60 FPS in every scene.
 
 In lighter 2P scenes, enemies use their full banked poses. Crowds, rendering lag
@@ -60,7 +60,7 @@ python3 -m venv .venv
 python -m pip install -r requirements.txt
 export GDK=/path/to/sgdk
 python tools/build.py --rom /path/to/your/rthunder.zip --sgdk "$GDK" \
-  --layout packed --pose-codec refined --cart standard --output-dir dist/v0.9-beta
+  --layout packed --pose-codec refined --cart standard --output-dir dist/v0.91-beta
 ```
 
 The flags above select the current 32 Mbit build. The unqualified `make build`
@@ -70,9 +70,9 @@ are ignored. The build reads the supplied archive; it never modifies it.
 
 Outputs:
 
-- `dist/v0.9-beta/RollingThunderMD.bin` — 4 MiB / 32 Mbit linear cartridge
-- `dist/v0.9-beta/SHA256SUMS` — binary checksum
-- `dist/v0.9-beta/build.json` — build identity and validation metadata
+- `dist/v0.91-beta/RollingThunderMD.bin` — 4 MiB / 32 Mbit linear cartridge
+- `dist/v0.91-beta/SHA256SUMS` — binary checksum
+- `dist/v0.91-beta/build.json` — build identity and validation metadata
 
 All intermediates are generated under `.build/`. No research checkout, previous
 Mega Drive ROM, local extracted-audio directory, emulator, or network download is
@@ -90,7 +90,7 @@ pose pixels, geometry, background maps and world collision data.
 ## Older build profiles and validation history
 
 The following larger layouts are retained for comparison; they are not the
-v0.9 Beta download. Use the explicit packed/refined command above for v0.9.
+v0.91 Beta download. Use the explicit packed/refined command above for v0.91.
 
 The default profile is tested in PicoDrive and Genesis Plus GX with standard
 SSF2 banking and SRAM. Build the separate **Mega EverDrive Pro** profile with:

@@ -18,9 +18,11 @@ static void sceneVInt(void)
 }
 static void scenePublish(void)
 {
- RT_CompletionScene *s=owner;if(!s || !s->pending)return;
+ RT_CompletionScene *s=owner;if(!s || !s->pending){RT_releaseStageTransitionRasterIO();return;}
  s->pending=0;
- if(!RT_sceneArtPublish(&s->lowArt,&s->batch)){s->fault=6;return;}
+ u8 published=RT_sceneArtPublish(&s->lowArt,&s->batch);
+ RT_releaseStageTransitionRasterIO();
+ if(!published){s->fault=6;return;}
  s->publicationLine=GET_VCOUNTER;
  if(!GET_VDP_STATUS(VDP_VBLANK_FLAG))s->latePublications++;
  s->lastRefresh=vtimer;

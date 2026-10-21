@@ -1,16 +1,17 @@
-Rolling Thunder MD v0.9 Beta — current build
+Rolling Thunder MD v0.91 Beta — current build
 
-ROM: dist/Rolling_Thunder_MD_v0.9_Beta.bin
+ROM: dist/Rolling_Thunder_MD_v0.91_Beta.bin
 Size: 4,194,304 bytes (4 MiB / 32 Mbit)
-SHA-256: ded14ecffd08d6b3cb97240a04bfbd80e75a3aebe1e7ffec58ed80eabbabca1c
-Build metadata and matching symbols: dist/v0.9-beta/
-Release notes: docs/RELEASE_0_9.md
-Dev update: docs/DEVLOG_0_9.md
-Current-ROM validation: docs/releases/0.9/
+SHA-256: 15bbd465776b3b875896ebafd06166bdc3f9fa161977658a931949d2d7515675
+Build metadata and matching symbols: dist/v0.91-beta/
+Release notes: docs/RELEASE_0_91.md
+Dev update: docs/DEVLOG_0_91.md
+Current-ROM validation: docs/validation/v0.91/
 
-Includes transparent in-field HUD, three Home SRAM Campaign slots and Continue,
-Arcade options/DIP switches, ammo-door fixes, lossless storage/audio optimization,
-original Leila hair with lipstick removed, and v0.9 BETA title footer.
-All ten campaign areas, 2P and Survival retained. No achievements integration.
+Fixes black door interiors, platform/stair bullet collision, yellow-mutant wall
+responses, save-slot labels, title animation, palette transfers, sound-test
+loading flash, Arcade idle attract entry and rushed music startup.
+All ten campaign areas, both characters, 2P, Survival and SRAM saves retained.
+Remaining music fidelity/headroom issues are documented in the release notes.
 
 ROMs and owner-supplied audio/boot assets remain excluded from Git.

@@ -58,19 +58,23 @@ u8 RT_z80DmaGuardBegin(void)
     if (romDriver && currentDriver == Z80_DRIVER_CUSTOM)
     {
         vu8 *flag = (vu8*)(Z80_RAM + RT_PROTECT_FLAG), *ack = (vu8*)(Z80_RAM + RT_PROTECT_ACK);
-        Z80_requestBus(TRUE); *flag = 1; Z80_releaseBus();
+        Z80_requestBus(TRUE);
+        u8 alreadyProtected = *flag;
+        *flag = 1; Z80_releaseBus();
         for (u16 tries = 0; tries < 200; tries++)
         {
             /* Give the Z80 time to reach its next poll before looking. */
             for (u16 i = 0; i < 24; i++) __asm__ volatile("nop");
             Z80_requestBus(TRUE);
             u8 parked = *ack;
-            if (parked) { Z80_releaseBus(); return 2; }
+            /* A raster window can already own this RAM-only park. Nested
+             * DMA must not release that reservation when its transfer ends. */
+            if (parked) { Z80_releaseBus(); return alreadyProtected ? 3 : 2; }
             Z80_releaseBus();
         }
         /* Driver unresponsive: fall back to halting it. */
         Z80_requestBus(TRUE);
-        *flag = 0;
+        if (!alreadyProtected) *flag = 0;
         return 1;
     }
     if (!RT_z80NeedsMainBusHold()) return 0;

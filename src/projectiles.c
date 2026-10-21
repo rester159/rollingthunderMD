@@ -61,7 +61,7 @@ void RT_projectileStepWithTerrain(RT_ProjectilePool *pool,u8 slot,RT_Agent *agen
             shot->x=next;
             RT_MotionBody anchor;anchor.x=shot->x;anchor.y=shot->y;
             u8 blocked=terrain?terrain(shot,terrainContext):
-                RT_motionProbe(stage,&anchor,camera,1,-1)->collision[shot->layer>>1]!=0;
+                RT_motionProbe(stage,&anchor,camera,1,-1)->collision[shot->layer>>1]&1;
             u8 struck=!blocked && hit && hit(shot,context);
             if(blocked || struck){
                 returnRound(shot,agents,players);

@@ -1,0 +1,23 @@
+{
+  "rom_sha256": "15bbd465776b3b875896ebafd06166bdc3f9fa161977658a931949d2d7515675",
+  "tracks": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "restarts_per_track": 3,
+  "steady_menu_animation": true,
+  "no_steady_raster_misses": true,
+  "returned_to_settings": true,
+  "gameplay_after_reset": true
+}

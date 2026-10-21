@@ -2,7 +2,7 @@
 static u8 publishedBlocked(const RT_Projectile *shot,void *context)
 {
     const RT_TerrainMaterial *material=RT_terrainWindowProbe(context,shot->x,shot->y,1,-1);
-    return material->collision[shot->layer>>1]!=0;
+    return material->collision[shot->layer>>1]&1;
 }
 u8 RT_projectilesStepPublished(RT_ProjectilePool *pool,RT_Agent *agents,u8 players,
     const RT_WorldStage *stage,const RT_WorldCamera *camera,const RT_TerrainWindow *window,

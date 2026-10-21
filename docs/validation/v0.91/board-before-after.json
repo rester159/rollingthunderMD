@@ -1,0 +1,58 @@
+[
+  {
+    "build": "v0.9-beta",
+    "case": "door",
+    "exit_code": 1,
+    "expected_failure": true,
+    "matched_expectation": true
+  },
+  {
+    "build": "v0.9-beta",
+    "case": "platform",
+    "exit_code": 1,
+    "expected_failure": true,
+    "matched_expectation": true
+  },
+  {
+    "build": "v0.9-beta",
+    "case": "mutant",
+    "exit_code": 1,
+    "expected_failure": true,
+    "matched_expectation": true
+  },
+  {
+    "build": "v0.9-beta",
+    "case": "mutant-inside",
+    "exit_code": 1,
+    "expected_failure": true,
+    "matched_expectation": true
+  },
+  {
+    "build": "v0.91-board-candidate",
+    "case": "door",
+    "exit_code": 0,
+    "expected_failure": false,
+    "matched_expectation": true
+  },
+  {
+    "build": "v0.91-board-candidate",
+    "case": "platform",
+    "exit_code": 0,
+    "expected_failure": false,
+    "matched_expectation": true
+  },
+  {
+    "build": "v0.91-board-candidate",
+    "case": "mutant",
+    "exit_code": 0,
+    "expected_failure": false,
+    "matched_expectation": true
+  },
+  {
+    "build": "v0.91-board-candidate",
+    "case": "mutant-inside",
+    "exit_code": 0,
+    "expected_failure": false,
+    "matched_expectation": true
+  }
+]

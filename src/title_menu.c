@@ -2,6 +2,7 @@
 #include "rt_rom_layout.h"
 #include "rt_stage_bank_image.h"
 #include "rt_campaign_completion_scene.h"
+#include "rt_game_music.h"
 extern RT_CompletionScene *RT_titleMenuStorage(void);
 extern const u32 rtTitleLogoPatterns[];
 extern const u16 rtTitleLogoMap[],rtTitleMdMap[],rtTitleLogoCount;
@@ -161,10 +162,10 @@ static void loadFooterFont(const RT_SceneBackground *b)
 }
 void RT_titleMenuFooter(void)
 {
- const char *credit="PORTED BY RESTER159, 2026",*version="v0.9 BETA";
+ const char *credit="PORTED BY RESTER159, 2026",*version="v0.91 BETA";
  for(u16 x=2;*credit;x++,credit++)VDP_setTileMapXY(BG_A,
   TILE_ATTR_FULL(footerPalette,TRUE,FALSE,FALSE,FOOTER_FONT+*credit-32),x,27);
- for(u16 x=29;*version;x++,version++)VDP_setTileMapXY(BG_A,
+ for(u16 x=28;*version;x++,version++)VDP_setTileMapXY(BG_A,
   TILE_ATTR_FULL(footerPalette,TRUE,FALSE,FALSE,FOOTER_FONT+*version-32),x,27);
 }
 /* Plane A row16 (console bezel) as drawn by the cast scene, restored with
@@ -181,6 +182,9 @@ u8 RT_titleMenuBegin(void)
  VDP_setEnable(FALSE);DMA_flushQueue();
  if(!RT_stageBankSelect(RT_COMPLETION_PAGE)){rtTitleMenuFault=3;return 0;}
  if(!RT_completionEndingBegin(s,0)){RT_completionSceneEnd(s);rtTitleMenuFault=10+s->fault;return 0;}
+ /* Driver installation masks interrupts for too long for a visible raster.
+  * Prepare it here while the scene is still blank, before any sound-test use. */
+ RT_gameMusicPrepare();
  /* Selector0 is the original console cast, with no upper scene portraits.
   * Reuse its background, native scripts, collision and split palettes. */
  loadFooterFont(s->background);
@@ -198,9 +202,13 @@ u8 RT_titleMenuBegin(void)
 void RT_titleMenuRestoreText(void)
 {
  const RT_SceneBackground *b=RT_titleMenuStorage()->background;
- for(u16 x=0;x<36;x++)VDP_setTileMapXY(BG_A,bezelRow[x],x+2,16);
- for(u16 y=17;y<28;y++)for(u16 x=0;x<36;x++)
-  VDP_setTileMapXY(BG_A,b->maps[0][y*36+x],x+2,y);
+ /* Queue the whole restore for VBlank. Hundreds of immediate control/data
+  * pairs used to cross the palette IRQ and could write map words into CRAM. */
+ VDP_setTileMapDataRect(BG_A,bezelRow,2,16,36,1,36,DMA_QUEUE);
+ VDP_setTileMapDataRect(BG_A,b->maps[0]+17*36,2,17,36,11,36,DMA_QUEUE);
+ /* Caller entered VBlank; finish this bounded restore before the footer and
+  * Home badge overwrite some of these cells. Text patterns queue separately. */
+ DMA_flushQueue();
 }
 u8 RT_titleMenuStep(void)
 {

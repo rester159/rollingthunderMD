@@ -2,7 +2,9 @@
 static u8 bulletTerrain(const RT_Projectile *shot,void *context)
 {
     const RT_TerrainMaterial *m=RT_terrainWindowProbe(context,shot->x,shot->y,1,-1);
-    return m->collision[shot->layer>>1]!=0;
+    /* CPU2 D426 masks D455's material flags with 01. Floor-change and
+     * stair markers must not become invisible bullet walls. */
+    return m->collision[shot->layer>>1]&1;
 }
 u8 RT_projectilesUpdateAll(RT_ProjectilePool *pool,const RT_ProjectilePassContext *c,
     RT_ProjectilePassResult *result)

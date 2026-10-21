@@ -130,6 +130,7 @@ TICKACC     EQU $19AA           ; word
 TICKDUE     EQU $19AC
 SFXRD       EQU $19AD
 TRIG        EQU $19AE           ; scratch: sound byte
+STARTPENDING EQU $19AF          ; first musical service still loading its patches
 ; sample lanes: 16 bytes each; buffers are 256-byte pages
 LANE0       EQU $19C0
 LANE1       EQU $19D0
@@ -171,6 +172,7 @@ init
             LD      (LASTSEQ), A
             LD      (STATOUT), A
             LD      (PSGOFF), A
+            LD      (STARTPENDING), A
             LD      HL, 0
             LD      (ALIVE), HL
 wait_bank
@@ -273,6 +275,17 @@ ml_psg
             OR      A
             JR      Z, ml_out
             CALL    service
+            LD      A, (STARTPENDING)
+            OR      A
+            JR      Z, ml_tick
+            ; The first service installs the track's instruments as well as
+            ; its opening notes. Start musical time at those notes, not at
+            ; the start of the potentially lengthy instrument upload.
+            XOR     A
+            LD      (STARTPENDING), A
+            LD      (TICKDUE), A
+            LD      (BTICKS), A
+ml_tick
             CALL    tick
             LD      HL, (ALIVE)
             INC     HL
@@ -327,7 +340,15 @@ cm_map
             LD      (STATUS), A
             XOR     A
             LD      (IDLEDONE), A
+            ; Chip/patch initialization can take several music ticks while
+            ; dac_poll keeps samples and timers alive. Those ticks precede
+            ; this track: do not rush its opening notes to catch them up.
+            ; Start with one immediate service and a fresh music subdivision.
+            ; Leave the DAC sample accumulator and buffered samples intact.
+            LD      (BTICKS), A
             INC     A
+            LD      (TICKDUE), A
+            LD      (STARTPENDING), A
             LD      (ACTIVE), A
             RET
 
