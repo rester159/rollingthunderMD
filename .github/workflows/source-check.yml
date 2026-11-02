@@ -1,16 +1,38 @@
 name: Source package checks
 on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: source-check-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   audit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          python-version: '3.12'
-      - run: python tools/audit_repo.py
-      - run: python -m compileall -q tools tests
-      - run: python tests/test_cart_boot.py
-      - run: cc -Itests/host -Iinc src/pcm_rom_plan.c src/pcm_segmented_plan.c tests/test_pcm_layout.c -o /tmp/test-pcm && /tmp/test-pcm
-      - run: cc -Wall -Wextra -Werror -Itests/host -Iinc src/save.c tests/test_save.c -o /tmp/test-save && /tmp/test-save
-# Building needs an owner-supplied arcade ROM. It is not stored in CI or secrets.
+          persist-credentials: false
+      - name: Prepare the pinned public toolchain
+        run: docker pull python:3.12-bookworm@sha256:a5bab0ff300f91231c2e68bf73a8a8d60762ac39ce1c50eaf6803e4c38a9062b
+      - name: Check source in an isolated container
+        # No credentials, network, host socket or writable checkout enter this container.
+        # Only temporary compiler and Python cache output can be written.
+        run: |
+          docker run --rm --network=none --read-only --cap-drop=ALL \
+            --security-opt=no-new-privileges --pids-limit=128 --memory=2g --cpus=2 \
+            --user=1001:1001 --tmpfs /tmp:rw,nosuid,nodev,size=512m \
+            --mount "type=bind,source=$GITHUB_WORKSPACE,target=/src,readonly" \
+            --workdir /src --env PYTHONPYCACHEPREFIX=/tmp/pycache \
+            python:3.12-bookworm@sha256:a5bab0ff300f91231c2e68bf73a8a8d60762ac39ce1c50eaf6803e4c38a9062b \
+            sh -eu -c '
+              python tools/audit_repo.py
+              python -m compileall -q tools tests
+              python tests/test_cart_boot.py
+              cc -Itests/host -Iinc src/pcm_rom_plan.c src/pcm_segmented_plan.c tests/test_pcm_layout.c -o /tmp/test-pcm
+              /tmp/test-pcm
+              cc -Wall -Wextra -Werror -Itests/host -Iinc src/save.c tests/test_save.c -o /tmp/test-save
+              /tmp/test-save
+            '
+# These are source/host checks, not a ROM build or hardware acceptance test.
+# Building needs an owner-supplied arcade ROM. No ROM or bot key is stored in CI.
