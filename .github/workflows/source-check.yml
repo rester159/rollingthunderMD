@@ -14,7 +14,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Prepare the pinned public toolchain
-        run: docker pull python:3.12-bookworm@sha256:a5bab0ff300f91231c2e68bf73a8a8d60762ac39ce1c50eaf6803e4c38a9062b
+        run: docker pull python:3.12-trixie@sha256:17b9724493d916f56565c131f389faff2597f46dec6ce09516f95125bc9f519f
       - name: Check source in an isolated container
         # No credentials, network, host socket or writable checkout enter this container.
         # Only temporary compiler and Python cache output can be written.
@@ -24,7 +24,7 @@ jobs:
             --user=1001:1001 --tmpfs /tmp:rw,exec,nosuid,nodev,size=512m \
             --mount "type=bind,source=$GITHUB_WORKSPACE,target=/src,readonly" \
             --workdir /src --env PYTHONPYCACHEPREFIX=/tmp/pycache \
-            python:3.12-bookworm@sha256:a5bab0ff300f91231c2e68bf73a8a8d60762ac39ce1c50eaf6803e4c38a9062b \
+            python:3.12-trixie@sha256:17b9724493d916f56565c131f389faff2597f46dec6ce09516f95125bc9f519f \
             sh -eu -c '
               python tools/audit_repo.py
               python -m compileall -q tools tests
