@@ -21,7 +21,7 @@ jobs:
         run: |
           docker run --rm --network=none --read-only --cap-drop=ALL \
             --security-opt=no-new-privileges --pids-limit=128 --memory=2g --cpus=2 \
-            --user=1001:1001 --tmpfs /tmp:rw,nosuid,nodev,size=512m \
+            --user=1001:1001 --tmpfs /tmp:rw,exec,nosuid,nodev,size=512m \
             --mount "type=bind,source=$GITHUB_WORKSPACE,target=/src,readonly" \
             --workdir /src --env PYTHONPYCACHEPREFIX=/tmp/pycache \
             python:3.12-bookworm@sha256:a5bab0ff300f91231c2e68bf73a8a8d60762ac39ce1c50eaf6803e4c38a9062b \
