@@ -29,11 +29,17 @@ u16 driverFlags;
 u16 busProtectSignalAddress;
 static bool localBusOnly,romDriver;
 static u32 driverGeneration;
+static volatile u32 dmaGuardFallbacks;
 __attribute__((externally_visible)) VoidCallback *z80VIntCB;
 
 u32 RT_z80DriverGeneration(void)
 {
     return driverGeneration;
+}
+
+u32 RT_z80DmaGuardFallbackCount(void)
+{
+    return dmaGuardFallbacks;
 }
 
 void RT_setZ80LocalBusOnly(bool enabled)
@@ -49,28 +55,35 @@ void RT_setZ80RomDriver(bool enabled)
 /* DMA guard. With the ROM-reading music driver, the Z80 is not halted: the
  * 68000 raises PROTECT in Z80 RAM and waits for PROTACK; the driver then
  * parks in its sample loop (RAM only) until PROTECT clears, so DAC playback
- * continues through the DMA. Other drivers keep the plain bus hold. */
+ * continues through the DMA. Other drivers keep the plain bus hold.
+ * A stale PROTACK is cleared when PROTECT is raised and again when it ends.
+ * Polls are spaced out so the Z80 is halted less often while it works
+ * toward its acknowledgement; total timeout is roughly unchanged. */
 #define RT_PROTECT_FLAG 0x1F30
 #define RT_PROTECT_ACK  0x1F31
+#define RT_PROTECT_TRIES 50
+#define RT_PROTECT_POLL_NOPS 96
 u8 RT_z80DmaGuardBegin(void)
 {
     if (Z80_isBusTaken()) return 0;
     if (romDriver && currentDriver == Z80_DRIVER_CUSTOM)
     {
         vu8 *flag = (vu8*)(Z80_RAM + RT_PROTECT_FLAG), *ack = (vu8*)(Z80_RAM + RT_PROTECT_ACK);
-        Z80_requestBus(TRUE); *flag = 1; Z80_releaseBus();
-        for (u16 tries = 0; tries < 200; tries++)
+        Z80_requestBus(TRUE); *ack = 0; *flag = 1; Z80_releaseBus();
+        for (u16 tries = 0; tries < RT_PROTECT_TRIES; tries++)
         {
             /* Give the Z80 time to reach its next poll before looking. */
-            for (u16 i = 0; i < 24; i++) __asm__ volatile("nop");
+            for (u16 i = 0; i < RT_PROTECT_POLL_NOPS; i++) __asm__ volatile("nop");
             Z80_requestBus(TRUE);
             u8 parked = *ack;
             if (parked) { Z80_releaseBus(); return 2; }
             Z80_releaseBus();
         }
         /* Driver unresponsive: fall back to halting it. */
+        dmaGuardFallbacks++;
         Z80_requestBus(TRUE);
         *flag = 0;
+        *ack = 0;
         return 1;
     }
     if (!RT_z80NeedsMainBusHold()) return 0;
@@ -85,6 +98,7 @@ void RT_z80DmaGuardEnd(u8 token)
     {
         Z80_requestBus(TRUE);
         *(vu8*)(Z80_RAM + RT_PROTECT_FLAG) = 0;
+        *(vu8*)(Z80_RAM + RT_PROTECT_ACK) = 0;
         Z80_releaseBus();
     }
 }

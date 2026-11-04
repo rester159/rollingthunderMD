@@ -14,6 +14,9 @@ bool RT_z80NeedsMainBusHold(void);
 /* Around a VDP DMA: returns a token for RT_z80DmaGuardEnd. */
 u8 RT_z80DmaGuardBegin(void);
 void RT_z80DmaGuardEnd(u8 token);
+/* Running count of PROTECT handshakes that timed out and fell back to
+   halting the ROM-reading driver for the whole transfer. Diagnostic only. */
+u32 RT_z80DmaGuardFallbackCount(void);
 /* Changes on every actual sound-driver installation, including custom loads.
    Compare ownership inside the existing driver-load critical section. */
 u32 RT_z80DriverGeneration(void);
