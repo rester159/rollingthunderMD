@@ -31,6 +31,10 @@ static bool localBusOnly,romDriver;
 static u32 driverGeneration;
 __attribute__((externally_visible)) VoidCallback *z80VIntCB;
 
+/* Diagnostic only: counts DMA guards where the ROM driver did not answer
+ * PROTECT in time and was halted instead. Read from memory in a debugger. */
+__attribute__((externally_visible)) volatile u32 rtZ80ProtectFallbacks;
+
 u32 RT_z80DriverGeneration(void)
 {
     return driverGeneration;
@@ -52,6 +56,16 @@ void RT_setZ80RomDriver(bool enabled)
  * continues through the DMA. Other drivers keep the plain bus hold. */
 #define RT_PROTECT_FLAG 0x1F30
 #define RT_PROTECT_ACK  0x1F31
+/* Each ACK check briefly takes the Z80 bus. Space checks roughly one sample
+ * apart (227 Z80 cycles ~= 490 68000 cycles; nop+dbra = 14 cycles/iteration).
+ * Total wait budget, costed per loop iteration (R = one bus round trip):
+ *   previous: 200 x (24 compiled loop iterations, >= ~14 cycles each, + R)
+ *             ~= 200 x (336 + R)
+ *   current:  160 x (35 nop/dbra iterations + R) ~= 160 x (490 + R)
+ * These match at R ~= 280 cycles; for a cheaper round trip the new wait is
+ * longer, and it never falls below ~80% of the previous wait. */
+#define RT_PROTECT_POLL_GAP_LOOPS 35
+#define RT_PROTECT_POLL_TRIES     160
 u8 RT_z80DmaGuardBegin(void)
 {
     if (Z80_isBusTaken()) return 0;
@@ -59,16 +73,18 @@ u8 RT_z80DmaGuardBegin(void)
     {
         vu8 *flag = (vu8*)(Z80_RAM + RT_PROTECT_FLAG), *ack = (vu8*)(Z80_RAM + RT_PROTECT_ACK);
         Z80_requestBus(TRUE); *flag = 1; Z80_releaseBus();
-        for (u16 tries = 0; tries < 200; tries++)
+        for (u16 tries = 0; tries < RT_PROTECT_POLL_TRIES; tries++)
         {
-            /* Give the Z80 time to reach its next poll before looking. */
-            for (u16 i = 0; i < 24; i++) __asm__ volatile("nop");
+            /* Give the Z80 about one sample period before looking. */
+            u16 n = RT_PROTECT_POLL_GAP_LOOPS - 1;
+            __asm__ volatile ("1:\tnop\n\tdbra %0,1b" : "+d" (n));
             Z80_requestBus(TRUE);
             u8 parked = *ack;
             if (parked) { Z80_releaseBus(); return 2; }
             Z80_releaseBus();
         }
         /* Driver unresponsive: fall back to halting it. */
+        rtZ80ProtectFallbacks++;
         Z80_requestBus(TRUE);
         *flag = 0;
         return 1;
