@@ -1,0 +1,134 @@
+[
+  {
+    "scenario": "genesis_plus_gx-campaign_1p-agent0",
+    "old_updates": 59.819427925862065,
+    "new_updates": 59.64676030339666,
+    "old_presentations": 59.716112851724134,
+    "new_presentations": 59.54326679217041,
+    "old_changed_fps": 50.38331782126436,
+    "new_changed_fps": 50.33234429303397,
+    "old_active_refreshes": 1740,
+    "new_active_refreshes": 1737
+  },
+  {
+    "scenario": "genesis_plus_gx-campaign_1p-agent1",
+    "old_updates": 59.819427925862065,
+    "new_updates": 59.57776462924583,
+    "old_presentations": 59.716112851724134,
+    "new_presentations": 59.47427111801957,
+    "old_changed_fps": 50.38331782126436,
+    "new_changed_fps": 50.43583780426022,
+    "old_active_refreshes": 1740,
+    "new_active_refreshes": 1737
+  },
+  {
+    "scenario": "genesis_plus_gx-campaign_2p-agent0",
+    "old_updates": 59.888579520524516,
+    "new_updates": 59.854454973789174,
+    "old_presentations": 59.78608908209806,
+    "new_presentations": 59.75202293447293,
+    "old_changed_fps": 53.63666277651083,
+    "new_changed_fps": 53.60610057549857,
+    "old_active_refreshes": 1754,
+    "new_active_refreshes": 1755
+  },
+  {
+    "scenario": "genesis_plus_gx-stage4-campaign_1p-agent1",
+    "old_updates": 59.322013746867164,
+    "new_updates": 57.27195499190031,
+    "old_presentations": 59.096740276942356,
+    "new_presentations": 57.0852797800623,
+    "old_changed_fps": 52.07571713095238,
+    "new_changed_fps": 51.48502342492212,
+    "old_active_refreshes": 1596,
+    "new_active_refreshes": 1605
+  },
+  {
+    "scenario": "genesis_plus_gx-stage4-campaign_2p-agent0",
+    "old_updates": 59.65403114798206,
+    "new_updates": 59.65403114798206,
+    "old_presentations": 57.86261880119581,
+    "new_presentations": 57.59390694917787,
+    "old_changed_fps": 55.48899744170403,
+    "new_changed_fps": 55.22028558968609,
+    "old_active_refreshes": 1338,
+    "new_active_refreshes": 1338
+  },
+  {
+    "scenario": "genesis_plus_gx-stage9-campaign_1p-agent1",
+    "old_updates": 54.2909062518797,
+    "new_updates": 52.73504024116161,
+    "old_presentations": 54.06563278195488,
+    "new_presentations": 52.5080601540404,
+    "old_changed_fps": 51.73780692606516,
+    "new_changed_fps": 51.18400964583333,
+    "old_active_refreshes": 1596,
+    "new_active_refreshes": 1584
+  },
+  {
+    "scenario": "genesis_plus_gx-stage9-campaign_2p-agent0",
+    "old_updates": 55.203642648892526,
+    "new_updates": 55.38538303621399,
+    "old_presentations": 38.83426330598851,
+    "new_presentations": 38.962112732510285,
+    "old_changed_fps": 37.90027469483182,
+    "new_changed_fps": 38.17300665185185,
+    "old_active_refreshes": 1219,
+    "new_active_refreshes": 1215
+  },
+  {
+    "scenario": "genesis_plus_gx-survival_2p-agent0",
+    "old_updates": 59.49472340714286,
+    "new_updates": 59.4522575089222,
+    "old_presentations": 55.214527478571426,
+    "new_presentations": 55.645602172019984,
+    "old_changed_fps": 51.36235114285714,
+    "new_changed_fps": 51.796175426837976,
+    "old_active_refreshes": 1400,
+    "new_active_refreshes": 1401
+  },
+  {
+    "scenario": "picodrive-campaign_1p-agent0",
+    "old_updates": 59.819427925862065,
+    "new_updates": 59.543921061494245,
+    "old_presentations": 59.819427925862065,
+    "new_presentations": 59.543921061494245,
+    "old_changed_fps": 50.38331782126436,
+    "new_changed_fps": 50.34887946321839,
+    "old_active_refreshes": 1740,
+    "new_active_refreshes": 1740
+  },
+  {
+    "scenario": "picodrive-campaign_1p-agent1",
+    "old_updates": 59.819427925862065,
+    "new_updates": 59.61226246632124,
+    "old_presentations": 59.819427925862065,
+    "new_presentations": 59.61226246632124,
+    "old_changed_fps": 50.38331782126436,
+    "new_changed_fps": 50.43583780426022,
+    "old_active_refreshes": 1740,
+    "new_active_refreshes": 1737
+  },
+  {
+    "scenario": "picodrive-campaign_2p-agent0",
+    "old_updates": 59.82036929328018,
+    "new_updates": 59.82036929328018,
+    "old_presentations": 59.854493862186786,
+    "new_presentations": 59.82036929328018,
+    "old_changed_fps": 53.6096977522779,
+    "new_changed_fps": 53.5755731833713,
+    "old_active_refreshes": 1756,
+    "new_active_refreshes": 1756
+  },
+  {
+    "scenario": "picodrive-survival_2p-agent0",
+    "old_updates": 59.74584929372693,
+    "new_updates": 59.6622093347826,
+    "old_presentations": 52.75854789594095,
+    "new_presentations": 58.57665239637681,
+    "old_changed_fps": 46.788385309225085,
+    "new_changed_fps": 53.19228998188405,
+    "old_active_refreshes": 1355,
+    "new_active_refreshes": 1380
+  }
+]

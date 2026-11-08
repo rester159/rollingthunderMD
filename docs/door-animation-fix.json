@@ -1,0 +1,327 @@
+{
+  "rom_sha256": "e30b81671e1277b2ad586be717fb4420085d9971e37813c97a4cef2668b7e7ed",
+  "artifact": "dist/Rolling_Thunder_MD_v0.8._Alpha.bin",
+  "rom_bytes": 7340032,
+  "used_bytes": 7332772,
+  "headroom_bytes": 7260,
+  "arcade_comparison": "Owner-supplied revision 3 descriptors, graphics and color lookup; existing Mega Drive palette fitting retained.",
+  "cause": "Phase tables CF80/CFAF/CFD4 had been indexed as door kinds, transposing kind and phase.",
+  "corrected_stages": 10,
+  "door_animation": [
+    {
+      "case": "arcade",
+      "kind": 0,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x7667",
+        "0x7672",
+        "0x767d"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "arcade",
+      "kind": 1,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x770c",
+        "0x7717",
+        "0x7722"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "arcade",
+      "kind": 2,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x77b1",
+        "0x77bc",
+        "0x77c7"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_1p",
+      "kind": 0,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x7667",
+        "0x7672",
+        "0x767d"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_1p",
+      "kind": 1,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x770c",
+        "0x7717",
+        "0x7722"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_1p",
+      "kind": 2,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x77b1",
+        "0x77bc",
+        "0x77c7"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_2p",
+      "kind": 0,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x7667",
+        "0x7672",
+        "0x767d"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_2p",
+      "kind": 1,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x770c",
+        "0x7717",
+        "0x7722"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    },
+    {
+      "case": "campaign_2p",
+      "kind": 2,
+      "checks": 24,
+      "published_sequence": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        3,
+        2,
+        1,
+        0
+      ],
+      "arcade_descriptors": [
+        "0x77b1",
+        "0x77bc",
+        "0x77c7"
+      ],
+      "opening_and_closing": true,
+      "exact_door_vram_and_sat": true
+    }
+  ],
+  "runtime_validation": {
+    "rom_sha256": "e30b81671e1277b2ad586be717fb4420085d9971e37813c97a4cef2668b7e7ed",
+    "passed": [
+      "audio-victory",
+      "audio-ending",
+      "audio-high_cold",
+      "audio-high_warm",
+      "audio-rearm",
+      "audio-replace",
+      "scenes",
+      "resets",
+      "cold-save",
+      "boot",
+      "campaign_1p",
+      "campaign_2p",
+      "survival_2p",
+      "leila",
+      "jump",
+      "aligned-campaign_1p"
+    ],
+    "scene_frames_match_accepted": 20,
+    "reference_scene_rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+    "physical_hardware_tested": false
+  },
+  "native_graphics": {
+    "rom_sha256": "e30b81671e1277b2ad586be717fb4420085d9971e37813c97a4cef2668b7e7ed",
+    "core_sha256": "435c60c17c7a7c8f2a92f6449141960ac6b6e8292fad796da6d9b823615787ad",
+    "production_decoder_matches_diagnostic": true,
+    "compressed_native_exact": 9415,
+    "raw_exact": 1855,
+    "total_exact": 11270,
+    "native_master_cycles": {
+      "min": 25256,
+      "median": 202398,
+      "max": 464660
+    },
+    "physical_hardware_tested": false,
+    "scope": "Every final linked compressed pose with its actual shared palette prefix; isolated native decoding with output canaries and preserved registers. Raw poses checked byte-for-byte."
+  },
+  "verified_art": {
+    "poses": 33720,
+    "packed_geometry": 29790,
+    "background_map_cells": 808960
+  },
+  "verified_audio_samples": 2899006,
+  "stage_bank_changes": [
+    {
+      "stage": 0,
+      "previous_sha256": "fd394aefe7b9adea1503e5db64dfa258da55da97ea05131bfc6482ff06d003ea",
+      "corrected_sha256": "781f353204c6f806961a8483fb155005231e4d4e6beaa23c9e76536271d7b539",
+      "bytes": 1542384
+    },
+    {
+      "stage": 1,
+      "previous_sha256": "0e30bcff04c0602f089f220e518f0464c2a51c67d819301639560a8470e403b1",
+      "corrected_sha256": "ad4690efc0bbe4791590f6135e98f715db9097b6881b03e2c2cd72a48a464b17",
+      "bytes": 2105548
+    },
+    {
+      "stage": 2,
+      "previous_sha256": "a5d3659cf9b346759d7fa48fdf512c4255d1d57a266f281c20f5936126a00aed",
+      "corrected_sha256": "6214f6a56a51310f24670727d925b9db4676e49c7fa74785ef9ed2ca2a093049",
+      "bytes": 1934584
+    },
+    {
+      "stage": 3,
+      "previous_sha256": "de9ed1c44c0affe41fe7f4411c052ec547b98186f7a2db687fd716581e8e14f6",
+      "corrected_sha256": "2102045a2de89064bda6ee607df9e2fb5e113e30167ac6782662d348752dbc04",
+      "bytes": 1989724
+    },
+    {
+      "stage": 4,
+      "previous_sha256": "1cbd56356b85dc1dde1d94e12bc65442a0ae39edd88920b81b4e63c294c82ca1",
+      "corrected_sha256": "09d99007353ac8125ca425e0046fc223a1e0e82fc88d4277a9b06ddbccb7750f",
+      "bytes": 2397044
+    },
+    {
+      "stage": 5,
+      "previous_sha256": "9797066f08b29384966c38b7935f17c09071e431d0fff026f390bcc729288418",
+      "corrected_sha256": "0ca305ebec96a812c68d934e5cb48945f944ca1c3baacc8e364e0f3a50758d33",
+      "bytes": 1988132
+    },
+    {
+      "stage": 6,
+      "previous_sha256": "8e399c4095ae4d0d64cb4f02a0c13e98d9cfbbd4a64bfcd087fef4d78f7473a0",
+      "corrected_sha256": "8d933723d38a99344e50f17259fdf31d100845ab2e00f6f1c69b7d9b69ba902d",
+      "bytes": 2626064
+    },
+    {
+      "stage": 7,
+      "previous_sha256": "1a4ae1fc6be162be01928aafc308065c64458021626646cf635c3603b19f6208",
+      "corrected_sha256": "3ac6d000e701f238769a8e7b4e7668d548c1c71bced20d77c2754190d760f78e",
+      "bytes": 2439740
+    },
+    {
+      "stage": 8,
+      "previous_sha256": "98089bd51bf8cc42dc850128900df028674ab9a18980d4c30d09ae69472723b7",
+      "corrected_sha256": "5d8f0b7e1de2584f5d7af3d589b19c53e7925a45fc2dcc67c98b2a520d355f6c",
+      "bytes": 2767088
+    },
+    {
+      "stage": 9,
+      "previous_sha256": "924ab956a5ec55aa87af5fde773cdded2a2ca2ee1d9af5b84ade75aac4bab5a7",
+      "corrected_sha256": "913e041bf1773b12e0f0bb957f6bfeb71d3ec50116aa744b8d9c5e9232facc16",
+      "bytes": 3034056
+    }
+  ],
+  "physical_hardware_tested": false
+}

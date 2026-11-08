@@ -1,0 +1,15 @@
+{
+  "raw_bytes": 117972,
+  "packed_bytes": 33976,
+  "saved_bytes": 83996,
+  "scene_bytes": 23696,
+  "panel_bytes": 6248,
+  "maps_offset": 29944,
+  "lookup_rows": 336,
+  "unique_lookup_rows": 1,
+  "glyph_records": 89,
+  "reference_sha256": "78dcffd47c117a0afd2ddd4e520d45c079bb3b0b1e18746c560bd7b7a46c87c5",
+  "restored_sha256": "78dcffd47c117a0afd2ddd4e520d45c079bb3b0b1e18746c560bd7b7a46c87c5",
+  "production_panel_checks": "RTPC v1/v2: all 30,240 cell/glyph combinations and background restoration produce identical VRAM.",
+  "passed": true
+}

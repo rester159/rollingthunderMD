@@ -1,0 +1,16 @@
+Rolling Thunder MD v0.92 Beta — current build
+
+ROM: dist/Rolling_Thunder_MD_v0.92_Beta.bin
+Size: 4,194,304 bytes (4 MiB / 32 Mbit)
+SHA-256: b50e548c41972be76daab4278bdafb6a71d77d990b7c0be7334a47cd7320805c
+Build metadata and matching symbols: dist/v0.92-beta/
+Release notes: docs/RELEASE_0_92.md
+Dev update: docs/DEVLOG_0_92.md
+Current-ROM validation: docs/validation/v0.92/
+
+Spaces Z80 DMA-guard bus checks about one sample apart (owner-approved Cid
+fix) and adds a Stage 2 stairs bullet regression fixture. Gameplay, graphics
+and music data are otherwise unchanged from v0.91.
+All ten campaign areas, both characters, 2P, Survival and SRAM saves retained.
+
+ROMs and owner-supplied audio/boot assets remain excluded from Git.

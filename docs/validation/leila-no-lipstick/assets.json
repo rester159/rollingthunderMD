@@ -1,0 +1,92 @@
+[
+  {
+    "stage": 0,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 1,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 2,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 3,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 4,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 5,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 6,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 7,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 8,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  },
+  {
+    "stage": 9,
+    "populated_poses_checked": 146,
+    "pose_entries_checked": 158,
+    "changed_pose_entries": 58,
+    "mouth_pixels_changed": 66,
+    "other_pixels_changed": 0,
+    "geometry_changed": false
+  }
+]

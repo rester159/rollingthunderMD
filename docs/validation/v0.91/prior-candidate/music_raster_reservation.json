@@ -1,0 +1,7 @@
+{
+  "rom_sha256": "6f4bfef4c73cd9130d8d4be21a54543df5bec1a4d8dbd38a68129123bcc61a0a",
+  "nested_dma_calls": 3,
+  "outer_reservation_preserved": true,
+  "normal_dma_released": true,
+  "scope": "Actual ROM DMA routine and Z80 handshake; injected outer request, no ROM patches."
+}

@@ -67,6 +67,8 @@ u8 RT_gameMusicTrackFor(u8 story,u8 area)
     return story<2 && area<5?areaTrack[story*5+area]:6;
 }
 
+void RT_gameMusicPrepare(void){ensureDriver();}
+
 void RT_gameMusicStart(u8 track)
 {
     ensureDriver();

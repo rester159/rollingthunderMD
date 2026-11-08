@@ -1,4 +1,5 @@
 #include "rt_rom_resource_copy.h"
+#include "rt_rom_layout.h"
 
 static u8 mappedByte(u32 address)
 {
@@ -18,11 +19,13 @@ bool RT_copyRomResource(void *output,u32 address,u16 length,u32 romBytes)
         u16 count=length;
         u32 available=0x80000UL-(address&0x7FFFFUL);
         if(available<count)count=available;
+#ifndef RT_LINEAR_ROM
         if(address>=0x280000UL){
             u16 bank=address>>19;
             if(SYS_getBank(7)!=bank)SYS_setBank(7,bank);
             mapped=0x380000UL+(address&0x7FFFFUL);
         }
+#endif
         address+=count;length-=count;
         while(count--)*destination++=mappedByte(mapped++);
     }

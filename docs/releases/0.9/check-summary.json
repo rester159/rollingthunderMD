@@ -1,0 +1,39 @@
+[
+  {
+    "check": "home_features-genesis_plus_gx",
+    "exit_code": 0
+  },
+  {
+    "check": "frontend-genesis_plus_gx",
+    "exit_code": 0
+  },
+  {
+    "check": "home_features-picodrive",
+    "exit_code": 0
+  },
+  {
+    "check": "frontend-picodrive",
+    "exit_code": 0
+  },
+  {
+    "check": "attract",
+    "exit_code": 0,
+    "invocation_note": "Passed after supplying the required owner arcade archive argument."
+  },
+  {
+    "check": "arcade_options",
+    "exit_code": 0
+  },
+  {
+    "check": "solo-ammo-U",
+    "exit_code": 0
+  },
+  {
+    "check": "solo-ammo-E",
+    "exit_code": 0
+  },
+  {
+    "check": "smoke",
+    "exit_code": 0
+  }
+]

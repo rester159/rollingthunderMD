@@ -1,0 +1,46 @@
+/* Keep exact player poses in the already reserved 128-tile player region.
+ * Four 32-tile blocks replace two always-overwritten 64-tile slots. A larger
+ * pose takes an aligned pair. Current-frame blocks are pinned before eviction. */
+#include <genesis.h>
+#include "rt_sprites.h"
+#include "rt_rom_layout.h"
+#ifdef RT_PACKED_PATTERNS
+static RT_SpriteSlot cache[4];
+static u8 owner[4],age[4],pinned;
+static u16 firstTile;
+volatile u32 rtPlayerPatternHits,rtPlayerPatternMisses;
+void RT_playerPatternCacheReset(u16 first)
+{
+    firstTile=first;pinned=0;
+    for(u16 i=0;i<4;i++){cache[i]=(RT_SpriteSlot){0,0,0};owner[i]=255;age[i]=0;}
+}
+void RT_playerPatternCacheFrame(void){pinned=0;}
+RT_SpriteSlot *RT_playerPatternCacheSlot(const RT_SpritePose *pose)
+{
+    if(!pose || !pose->tileCount || pose->tileCount>64)return 0;
+    for(u16 i=0;i<4;i++)if(age[i]<255)age[i]++;
+    for(u8 i=0;i<4;i++)if(cache[i].capacity && cache[i].pose==pose){
+        u8 blocks=cache[i].capacity>>5;
+        pinned|=((1<<blocks)-1)<<i;age[i]=0;rtPlayerPatternHits++;return cache+i;
+    }
+    u8 blocks=pose->tileCount>32?2:1,best=255;
+    u16 bestScore=0;
+    for(u8 i=0;i<4;i+=blocks){
+        u8 mask=((1<<blocks)-1)<<i;
+        if(pinned&mask)continue;
+        u16 score=0;
+        for(u8 j=i;j<i+blocks;j++)score+=owner[j]==255?256:age[owner[j]];
+        if(best==255 || score>bestScore){best=i;bestScore=score;}
+    }
+    if(best==255)return 0;
+    for(u8 i=best;i<best+blocks;i++)if(owner[i]!=255){
+        u8 victim=owner[i];
+        for(u8 j=0;j<4;j++)if(owner[j]==victim)owner[j]=255;
+        cache[victim].pose=0;cache[victim].capacity=0;
+    }
+    cache[best]=(RT_SpriteSlot){0,firstTile+(u16)best*32,(u16)blocks*32};
+    for(u8 i=best;i<best+blocks;i++)owner[i]=best;
+    pinned|=((1<<blocks)-1)<<best;age[best]=0;rtPlayerPatternMisses++;
+    return cache+best;
+}
+#endif

@@ -1,5 +1,10 @@
 #include <genesis.h>
 #include "rt_sprites.h"
+#include "rt_rom_layout.h"
+#include "rt_packed_cache.h"
+#ifdef RT_PACKED_PATTERNS
+extern u16 RT_queueCanonicalPose(const void*,u16,u16);
+#endif
 _Static_assert(sizeof(RT_PackedSpritePiece)==12 && sizeof(RT_SpriteCommand)==8,"packed hardware ABI");
 #ifdef __m68k__
 #include "rt_packed_emit_registers.h"
@@ -11,11 +16,32 @@ typedef struct {void *source;u16 dest,len;u8 method;} RT_PreparedTransfer;
 static RT_PreparedTransfer preparedTransfers[83];
 static u8 prepareTransfers,preparedCount;
 u8 RT_spritesDeferred(void){return prepareTransfers;}
-void RT_spritesDefer(void){preparedCount=0;prepareTransfers=1;}
+void RT_spritesDefer(void){
+    preparedCount=0;prepareTransfers=1;
+#ifdef RT_LINEAR_ROM
+    RT_packedPrepareBegin();
+#endif
+}
+static u16 publishTransfer(u8 method,u8 location,void *source,u16 dest,u16 len,s16 step)
+{
+#ifdef RT_PACKED_PATTERNS
+    if(((u32)source&0xfe000000UL)==0x84000000UL){
+        if(method!=DMA_QUEUE || location!=DMA_VRAM || step!=2)return 0;
+        return RT_queueCanonicalPose(source,dest,len);
+    }
+#endif
+    return DMA_transfer(method,location,source,dest,len,step);
+}
 static u16 prepareTransfer(u8 method,u8 location,void *source,u16 dest,u16 len,s16 step)
 {
-    if(!prepareTransfers)return DMA_transfer(method,location,source,dest,len,step);
+    if(!prepareTransfers)return publishTransfer(method,location,source,dest,len,step);
     if(location!=DMA_VRAM || step!=2 || preparedCount>=83)return 0;
+#ifdef RT_LINEAR_ROM
+    if(method==DMA_QUEUE && ((u32)source&0xfe000000UL)==0x84000000UL){
+        void *decoded=RT_prepareCanonicalPose(source,len);
+        if(decoded)source=decoded;
+    }
+#endif
     preparedTransfers[preparedCount++]=(RT_PreparedTransfer){source,dest,len,method};return 1;
 }
 u8 RT_spritesPublishPrepared(void)
@@ -23,8 +49,11 @@ u8 RT_spritesPublishPrepared(void)
     prepareTransfers=0;
     for(u8 i=0;i<preparedCount;i++){
         RT_PreparedTransfer *p=preparedTransfers+i;
-        if(!DMA_transfer(p->method,DMA_VRAM,p->source,p->dest,p->len,2))return 0;
+        if(!publishTransfer(p->method,DMA_VRAM,p->source,p->dest,p->len,2))return 0;
     }
+#ifdef RT_LINEAR_ROM
+    RT_packedPreparePublish();
+#endif
     preparedCount=0;return 1;
 }
 void RT_spritesDiscardPrepared(void){prepareTransfers=0;preparedCount=0;}
@@ -45,16 +74,31 @@ u8 RT_spriteSlotInitialize(RT_SpriteSlot *slot,u16 firstTile,u16 capacity)
 }
 static RT_SpriteCommand published[80];
 static u8 nextPublication;
+#ifndef __m68k__
+static RT_SpriteCommand sdkCache[80];
+#endif
 static RT_SpriteCommand *nextCommands(void)
 {
 #ifdef __m68k__
     _Static_assert(sizeof(VDPSprite)==sizeof(RT_SpriteCommand),"SDK SAT stride");
     RT_SpriteCommand *second=(RT_SpriteCommand*)(void*)vdpSpriteCache;
 #else
-    static RT_SpriteCommand sdkCache[80];
     RT_SpriteCommand *second=sdkCache;
 #endif
     return (nextPublication?second:published)+4;
+}
+
+/* Begin is called with display disabled and no outstanding DMA. The HUD
+ * prefix is immutable for the whole area, so initialize both publication
+ * buffers once instead of copying it on every gameplay frame. */
+void RT_spritesInitializeHud(const RT_SpriteCommand *prefix)
+{
+    memcpy(published,prefix,4*sizeof *prefix);
+#ifdef __m68k__
+    memcpy(vdpSpriteCache,prefix,4*sizeof *prefix);
+#else
+    memcpy(sdkCache,prefix,4*sizeof *prefix);
+#endif
 }
 
 void RT_spritesBegin(RT_SpriteBatch *batch)
@@ -63,7 +107,7 @@ void RT_spritesBegin(RT_SpriteBatch *batch)
     batch->commands=batch->storage;batch->count=0;batch->queuedBytes=0;batch->failed=0;batch->reserved=0;batch->runCount=0;
 }
 void RT_spritesBeginHud(RT_SpriteBatch *batch)
-{RT_spritesBegin(batch);if(batch){batch->reserved=4;batch->commands=nextCommands();}}
+{RT_spritesBegin(batch);if(batch){batch->reserved=22;batch->commands=nextCommands();}}
 u8 RT_spriteSubmit(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
     const RT_SpriteInstance *instance,const RT_WorldCamera *camera)
 {
@@ -75,7 +119,7 @@ u8 RT_spriteSubmit(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
        !pose->tileCount || pose->tileCount>slot->capacity ||
        pose->pieceCount>80-batch->reserved-batch->count || instance->facingLeft>1 ||
        instance->priority>7 || instance->poolRank>RT_SPRITE_POOL_RELATED){batch->failed=1;return 0;}
-    if(slot->pose!=pose){
+    if(!RT_spritePixelsMatch(slot->pose,pose)){
         if(!prepareTransfer(DMA_QUEUE,DMA_VRAM,(void *)pose->patterns,slot->firstTile*32,
             pose->tileCount*16,2)){batch->failed=1;return 0;}
         slot->pose=pose;batch->queuedBytes+=pose->tileCount*32;
@@ -171,7 +215,7 @@ u8 RT_spritesQueue(RT_SpriteBatch *batch)
 {
     if(!batch || batch->failed)return 0;
     u16 count=batch->count;
-    if((batch->reserved && batch->reserved!=4) || count>80-batch->reserved)return 0;
+    if((batch->reserved && batch->reserved!=22) || count>80-batch->reserved)return 0;
     if(!batch->reserved && count>1){
         /* Emitters record keys per run; expand them for the generic sort. */
         for(u16 r=0;r<batch->runCount;r++){
@@ -186,16 +230,12 @@ u8 RT_spritesQueue(RT_SpriteBatch *batch)
         count=1;
     }
     if(batch->reserved){
-        /* A nonzero offscreen X arms the VDP mask; X=0 then suppresses every
-         * following sprite on those scanlines, including high-priority ones. */
         /* Two persistent SAT buffers permit one pending DMA publication while
          * the next frame is prepared. Synchronous clients keep queue-copy
          * semantics; the campaign drains its old queue before publishing the
          * prepared frame. Never use the SDK sprite engine concurrently. */
         RT_SpriteCommand *masked=batch->commands-4;
-        masked[0]=(RT_SpriteCommand){128,2,1,0,1};masked[1]=(RT_SpriteCommand){128,2,2,0,0};
-        masked[2]=(RT_SpriteCommand){344,0,3,0,1};masked[3]=(RT_SpriteCommand){344,0,0,0,0};
-        /* The mask prefix already owns hardware entry zero. Link buckets
+        /* The HUD prefix already owns hardware entry zero. Link buckets
          * directly in their final SAT positions; no head exchange or rebasing. */
         /* Records already link to their predecessor (emitter writes
          * count+3), which is the previous same-key record inside a run of
@@ -208,10 +248,14 @@ u8 RT_spritesQueue(RT_SpriteBatch *batch)
             u8 key=batch->runKeys[r];
             if(distinct<32){u8 k=0;while(k<distinct && keys[k]!=key)k++;if(k==distinct){keys[distinct++]=key;seen[key]=0;}}
         }
+        u8 zeroPredecessor=count>1 && (batch->runCount==1 || batch->runStarts[1]>1)?5:79;
         for(u16 r=0;r<batch->runCount;r++){
             u8 key=batch->runKeys[r],start=batch->runStarts[r];
             u16 end=r+1<batch->runCount?batch->runStarts[r+1]:count;
-            if(seen[key])masked[start+4].link=lastOfKey[key];
+            if(seen[key]){
+                masked[start+4].link=lastOfKey[key];
+                if(lastOfKey[key]==4)zeroPredecessor=start+4;
+            }
             else {seen[key]=1;firstOfKey[key]=start+4;}
             lastOfKey[key]=end+3;
         }
@@ -221,11 +265,25 @@ u8 RT_spritesQueue(RT_SpriteBatch *batch)
             while(j && keys[j-1]<key){keys[j]=keys[j-1];j--;}
             keys[j]=key;
         }
-        u8 last=3;
+        u8 last=79;
         for(u8 i=0;i<distinct;i++){
-            masked[last].link=lastOfKey[keys[i]];last=firstOfKey[keys[i]];
+            u8 head=lastOfKey[keys[i]];
+            masked[last].link=head;
+            if(head==4)zeroPredecessor=last;
+            last=firstOfKey[keys[i]];
         }
         masked[last].link=0;
+        /* Keep the HUD tail's link constant. Exchange the sorted gameplay
+         * head with entry four and repair its single incoming edge, removing
+         * the extra per-frame DMA command for the old dynamic tail link. */
+        if(count){
+            u8 first=lastOfKey[keys[0]];
+            if(first!=4){
+                RT_SpriteCommand saved=masked[4];
+                masked[4]=masked[first];masked[first]=saved;
+                masked[zeroPredecessor==first?4:zeroPredecessor].link=first;
+            }
+        }else{masked[4]=(RT_SpriteCommand){0,0,0,0,128};count=1;}
         if(!prepareTransfer(prepareTransfers?DMA_QUEUE:DMA_QUEUE_COPY,DMA_VRAM,masked,0xf400,(count+4)*4,2)){
             batch->failed=1;return 0;
         }
@@ -250,7 +308,7 @@ u8 RT_spriteSubmitPacked(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
     if(!pose || !pose->patterns || !pose->pieceCount || !pose->tileCount ||
        pose->tileCount>slot->capacity || pose->pieceCount>80-batch->reserved-batch->count ||
        instance->facingLeft>1 || instance->priority>7 || instance->poolRank>3){batch->failed=1;return 0;}
-    if(slot->pose!=pose){
+    if(!RT_spritePixelsMatch(slot->pose,pose)){
         if(!prepareTransfer(DMA_QUEUE,DMA_VRAM,(void*)pose->patterns,slot->firstTile*32,
             pose->tileCount*16,2)){batch->failed=1;return 0;}
         slot->pose=pose;batch->queuedBytes+=pose->tileCount*32;
@@ -288,7 +346,7 @@ u8 RT_spriteSubmitStageCached(RT_SpriteBatch *batch,RT_SpriteSlot *slot,
        !pose->tileCount || pose->tileCount>slot->capacity ||
        pose->pieceCount>80-batch->reserved-batch->count || instance->facingLeft>1 ||
        instance->priority>7 || instance->poolRank>3){batch->failed=1;return 0;}
-    if(slot->pose!=pose){
+    if(!RT_spritePixelsMatch(slot->pose,pose)){
         if(!prepareTransfer(DMA_QUEUE,DMA_VRAM,(void*)pose->patterns,slot->firstTile*32,
             pose->tileCount*16,2)){batch->failed=1;return 0;}
         slot->pose=pose;batch->queuedBytes+=pose->tileCount*32;

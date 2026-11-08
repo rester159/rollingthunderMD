@@ -1,0 +1,7 @@
+{
+  "cpu1_sha1": "cb92709e94eb273b3ce44c55cd252170ad1017f4",
+  "cpu2_sha1": "52e8757aacb4e01f8432125729e2323c48ebc4f5",
+  "bullet_wall_mask": "CPU2 D421..D428: D455 then ANDB 01",
+  "wall_response": "CPU1 BAE2..BB29 dispatches B88E; BBC1..BBD0 terrain/selector table verified",
+  "status": "pass"
+}

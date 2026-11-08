@@ -1,0 +1,167 @@
+{
+  "before_sha256": "bfa641decaaf94721b83f41c76ebd12a715826de557216983f89c21223299237",
+  "after_sha256": "5dd1fa706f26f993eeaf24edf3b2d81595a1bd404c03e353e1186afc25b8bb56",
+  "cases": [
+    {
+      "region": "U",
+      "stage": 0,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "U",
+      "stage": 1,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8250
+    },
+    {
+      "region": "U",
+      "stage": 2,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 6503
+    },
+    {
+      "region": "U",
+      "stage": 3,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 7046
+    },
+    {
+      "region": "U",
+      "stage": 4,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "U",
+      "stage": 5,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "U",
+      "stage": 6,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8250
+    },
+    {
+      "region": "U",
+      "stage": 7,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 6503
+    },
+    {
+      "region": "U",
+      "stage": 8,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "U",
+      "stage": 9,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "E",
+      "stage": 0,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "E",
+      "stage": 1,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8250
+    },
+    {
+      "region": "E",
+      "stage": 2,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 6503
+    },
+    {
+      "region": "E",
+      "stage": 3,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 7046
+    },
+    {
+      "region": "E",
+      "stage": 4,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "E",
+      "stage": 5,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "E",
+      "stage": 6,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8250
+    },
+    {
+      "region": "E",
+      "stage": 7,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 6503
+    },
+    {
+      "region": "E",
+      "stage": 8,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    },
+    {
+      "region": "E",
+      "stage": 9,
+      "world_exact": true,
+      "only_blackening": true,
+      "backing_black": true,
+      "corrected_pixels": 8261
+    }
+  ],
+  "scope": "Compare all ten static scene entries before/after a HUD backing correction.\n\nGX diagnostic entry calls load actual stage/HUD data. Region copies change only\nheader bytes; compare world pixels exactly and permit only blackening within the HUD. This is\nnot a physical PAL-clone test or a gameplay playthrough.\n"
+}

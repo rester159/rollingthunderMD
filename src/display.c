@@ -11,8 +11,24 @@ static s16 cellFloor(s16 value)
 {
     return value/8-(value<0 && ((u16)value&7));
 }
+/* Compact maps are arrays of 16-cell blocks. Hold the current block across
+ * a row run, or advance one block per vertical cell, instead of resolving
+ * the same block pointer separately for every name-table attribute. */
+static u8 stripPacked(const RT_DisplayRuntime *display,s16 at,u8 vertical,TransferMethod method)
+{
+    u16 buffer[64];const RT_DisplayStage *stage=display->stage;
+    u16 count=vertical?32:64;
+    s16 start=vertical?display->row:display->column;
+    for(u16 plane=0;plane<2;plane++){
+        RT_displayPackedStrip(stage,plane,at,start,vertical,buffer);
+        u16 address=(plane?PLANE_B:PLANE_A)+(vertical?((u16)at&63)*2:((u16)at&31)*128);
+        if(!DMA_transfer(method,DMA_VRAM,buffer,address,count,vertical?128:2))return 0;
+    }
+    return 1;
+}
 static u8 strip(const RT_DisplayRuntime *display,s16 at,u8 vertical,TransferMethod method)
 {
+    if(display->stage->blocks)return stripPacked(display,at,vertical,method);
     u16 buffer[64];const RT_DisplayStage *stage=display->stage;
     u16 count=vertical?32:64,limit=vertical?stage->heightCells:stage->widthCells;
     s16 start=vertical?display->row:display->column;

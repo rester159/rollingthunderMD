@@ -29,11 +29,24 @@ static u8 heldPlayers[2],heldEnemies[RT_ENEMY_CAPACITY];
 static u8 heldObjects[RT_NATIVE_STAGE_CAPACITY],heldProjectiles[RT_PROJECTILE_CAPACITY];
 u32 rtSpriteBirthEpoch;
 static u32 heldBirthEpoch;
-void RT_reprojectionReset(void)
+typedef struct {u16 pose;u8 kind,color;} GraphicKey;
+static GraphicKey graphicKeys[RT_ENEMY_CAPACITY];
+static const RT_PackedSpritePose *graphics[RT_ENEMY_CAPACITY];
+static void resetHeld(void)
 {
     heldReady=heldCount=0;
     memset(heldPlayers,0,sizeof heldPlayers);memset(heldEnemies,0,sizeof heldEnemies);
     memset(heldObjects,0,sizeof heldObjects);memset(heldProjectiles,0,sizeof heldProjectiles);
+}
+void RT_reprojectionReset(void)
+{resetHeld();memset(graphicKeys,255,sizeof graphicKeys);}
+static inline const RT_PackedSpritePose *enemyGraphic(const RT_CampaignGraphics *g,const RT_Enemy *e,u8 index)
+{
+    u16 pose=e->state.pose;u8 kind=e->state.kind,color=e->byte4;
+    GraphicKey *entry=graphicKeys+index;
+    if(entry->pose==pose && entry->kind==kind && entry->color==color)return graphics[index];
+    const RT_PackedSpritePose *graphic=kind>=32?g->highEnemy(kind,color,pose):g->enemy(kind,color,pose);
+    *entry=(GraphicKey){pose,graphic?kind:255,color};return graphic;
 }
 static inline void hold(const RT_SpritePose *pose,const RT_PackedSpritePiece *packed,u16 tile,
     u8 type,u8 index,u8 kind,u8 tag)
@@ -50,6 +63,10 @@ static s16 streamStageId(const RT_Anchor *a)
 static u8 fail(RT_CampaignSprites *s,u8 code){s->fault=code;return 0;}
 static inline u8 playerVisible(const RT_CampaignScene *scene,u8 p)
 {
+    const RT_Agent *a=scene->players.agents+p;
+    /* The door state machine clears the actor layer once fully inside and
+     * restores it when emerging. Apply this to full and retained-pose draws. */
+    if(!a->body.layer && (a->action==RT_AGENT_DOOR_ENTER || a->action==RT_AGENT_DOOR_EXIT))return 0;
     const RT_AgentCombat *c=scene->players.combat+p;
     return RT_homeAgentVisible(c) || (!c->hidden && !c->removed &&
         ((scene->exiting&(1<<p)) || (scene->players.selection.mode==RT_MODE_ARCADE &&
@@ -63,7 +80,7 @@ static inline u8 submitPacked(RT_SpriteBatch *b,RT_SpriteSlot *slot,const RT_Spr
     u16 n=pose->pieceCount,count=b->count;
     if(!pieces || !pose->patterns || !n || !pose->tileCount || pose->tileCount>slot->capacity ||
        n>80-b->reserved-count){b->failed=1;return 0;}
-    if(slot->pose!=pose && !RT_spriteUpload(b,slot,pose))return 0;
+    if(!RT_spritePixelsMatch(slot->pose,pose) && !RT_spriteUpload(b,slot,pose))return 0;
     u8 key=(priority<<2)|RT_SPRITE_POOL_ACTOR;
     u16 start=count;
     const RT_PackedSpritePiece *piece=pieces+(facingLeft?n:0);
@@ -89,7 +106,7 @@ u8 RT_campaignSpritesQueue(RT_CampaignSprites *s,const RT_CampaignScene *scene,R
     if(!s || !s->ready || !scene || !scene->ready || !view || !view->display.ready)return 0;
     const RT_CampaignGraphics *g=s->graphics;
     if(!g || g->stage!=view->display.stage)return fail(s,2);
-    RT_reprojectionReset();
+    resetHeld();
     s->fault=0;if(s->hud)RT_spritesBeginHud(&s->batch);else RT_spritesBegin(&s->batch);
     RT_SpriteBatch *batch=&s->batch;
     const RT_WorldCamera *camera=&scene->camera;
@@ -110,7 +127,6 @@ u8 RT_campaignSpritesQueue(RT_CampaignSprites *s,const RT_CampaignScene *scene,R
     }
     /* Main-thread-only preparation workspace, kept off the interrupt-shared stack. */
     static const RT_SpritePose *poses[RT_ENEMY_CAPACITY+RT_PROJECTILE_CAPACITY+15];
-    static const RT_PackedSpritePose *graphics[RT_ENEMY_CAPACITY];
     static u8 enemySlots[RT_ENEMY_CAPACITY];
     static u8 enemies[RT_ENEMY_CAPACITY],slots[RT_ENEMY_CAPACITY+RT_PROJECTILE_CAPACITY+15];
     static u8 shots[RT_PROJECTILE_CAPACITY],throwIndices[RT_PROJECTILE_CAPACITY];
@@ -126,8 +142,8 @@ retryDetail:
         remaining--;if(e->state.hidden)continue;
         u8 resident=coop && rtCoopCompact?RT_coopResidentIndex(e):255;
         const RT_PackedSpritePose *graphic=resident!=255?RT_coopResidentGraphic(resident):
-            e->state.kind>=32?g->highEnemy(e->state.kind,e->byte4,e->state.pose):
-            g->enemy(e->state.kind,e->byte4,e->state.pose);
+            enemyGraphic(g,e,enemyCount);
+        if(resident!=255)graphicKeys[enemyCount].kind=255;
         if(!graphic || !graphic->pose)return fail(s,3);
         piecesNeeded+=graphic->pose->pieceCount;
         enemySlots[enemyCount]=resident!=255?resident:10+planned;
@@ -241,10 +257,7 @@ u8 RT_campaignSpritesReproject(RT_CampaignSprites *s,const RT_CampaignScene *sce
      * silently omit a newly drawable actor just because its last full draw
      * submitted no pose. Fall back before preparing or publishing any SAT. */
     for(u8 p=0;p<scene->players.home.players;p++)if(!heldPlayers[p]){
-        const RT_AgentCombat *c=scene->players.combat+p;
-        if(RT_homeAgentVisible(c) || (!c->hidden && !c->removed &&
-           ((scene->exiting&(1<<p)) || (scene->players.selection.mode==RT_MODE_ARCADE &&
-            RT_agentHasFatalAnimation(scene->players.agents+p,c)))))return 0;
+        if(playerVisible(scene,p))return 0;
     }
     u8 remaining=scene->enemies.count;
     for(u8 i=0;i<RT_ENEMY_CAPACITY && remaining;i++){
@@ -310,9 +323,7 @@ u8 RT_campaignSpritesReproject(RT_CampaignSprites *s,const RT_CampaignScene *sce
         RT_SpriteInstance instance={h->pose,0,0,0,0,0,RT_SPRITE_POOL_ACTOR};
         if(h->type==0){
             const RT_Agent *a=scene->players.agents+h->slot;
-            const RT_AgentCombat *c=scene->players.combat+h->slot;
-            instance.visible=RT_homeAgentVisible(c) || (!c->hidden && !c->removed &&
-                ((scene->exiting&(1<<h->slot)) || (scene->players.selection.mode==RT_MODE_ARCADE && RT_agentHasFatalAnimation(a,c))));
+            instance.visible=playerVisible(scene,h->slot);
             instance.x=a->body.x>>4;instance.y=(a->body.y+15)>>4;
             instance.facingLeft=a->direction==2;instance.priority=a->body.layer;
         }else if(h->type==1){
@@ -345,3 +356,67 @@ u8 RT_campaignSpritesReproject(RT_CampaignSprites *s,const RT_CampaignScene *sce
     if(!RT_spritesDeferred())view->display.queuedBytes+=s->batch.queuedBytes;
     return 1;
 }
+
+#include "rt_rom_layout.h"
+#ifdef RT_LINEAR_ROM
+#include "rt_packed_cache.h"
+void RT_campaignSpritesPreload(const RT_CampaignSprites *s,const RT_CampaignScene *scene)
+{
+    if(scene->players.home.players==1)RT_packedExtraEnable();
+    static const u8 priority[]={1,2,3,4,5,6,0,18,19,10,11,12,13,65,66,70};
+    const RT_CampaignGraphics *g=s->graphics;
+    if(scene->players.home.players==1){
+        u8 identity=scene->players.selection.agent[0],costume=scene->players.selection.costume[0];
+        const RT_SpritePose *poses=g->agents[identity?1+costume:(costume?3:0)];
+        RT_packedPreload(poses[0].patterns,poses[0].tileCount*16);
+        RT_packedPreload(poses[18].patterns,poses[18].tileCount*16);
+    }
+    for(u8 i=0;i<sizeof priority;i++){
+        if(i==6){
+            if(scene->players.home.players==2)break;
+            /* Door constructors are not represented by the enemy spawn grid.
+             * Keep the first regular door guard's short idle cycle resident. */
+            u8 stage=scene->stage->story*5+scene->stage->area;
+            for(u8 choice=0;choice<8;choice++){
+                const RT_EnemyTemplate *d=rtDoorEnemyTemplates+rtDoorEnemyTemplateIds[stage][choice];
+                if(d->kind!=4)continue;
+                for(u16 pose=77;pose<=85;pose++){
+                    const RT_PackedSpritePose *graphic=g->enemy(d->kind,d->initialByte4,pose);
+                    if(graphic && graphic->pose)
+                        RT_packedPreload(graphic->pose->patterns,graphic->pose->tileCount*16);
+                }
+                break;
+            }
+            /* Rank costumes from the complete authored spawn grid. Cache
+             * common firing/door cycles before rare costumes, independent of
+             * the player's current location or this frame's actor order. */
+            u16 weights[2][128]={{0}};
+            if(scene->spawnLevel)for(u16 n=0;n<scene->spawnLevel->eventCount;n++){
+                const RT_EnemySpawn *spawn=scene->spawnLevel->events+n;
+                if(spawn->definition>=rtGridEnemyTemplateCount)continue;
+                const RT_EnemyTemplate *d=rtGridEnemyTemplates+spawn->definition;
+                if(d->kind==4 || d->kind==8)weights[d->kind==8][d->initialByte4/2]++;
+            }
+            static const u16 guardPriority[]={91,92,93,94,95,96,
+                204,205,206,207,77,78,79,80,81,82,83,84,85,69,70,71,72,73,74,75,76,0,1,2,3,4,5};
+            for(u16 rank=0;rank<256;rank++){
+                u16 best=0,color=0;u8 bank=0;
+                for(u16 k=0;k<128;k++)for(u8 b=0;b<2;b++)
+                    if(weights[b][k]>best){best=weights[b][k];color=k*2;bank=b;}
+                if(!best)break;
+                weights[bank][color/2]=0;
+                for(u8 f=0;f<sizeof guardPriority/sizeof guardPriority[0];f++){
+                    const RT_PackedSpritePose *graphic=g->enemy(bank?8:4,(u8)color,guardPriority[f]);
+                    if(graphic && graphic->pose)
+                        RT_packedPreload(graphic->pose->patterns,graphic->pose->tileCount*16);
+                }
+            }
+        }
+        for(u8 p=0;p<scene->players.home.players;p++){
+        u8 identity=scene->players.selection.agent[p],costume=scene->players.selection.costume[p];
+        const RT_SpritePose *pose=g->agents[identity?1+costume:(costume?3:0)]+priority[i];
+        RT_packedPreload(pose->patterns,pose->tileCount*16);
+        }
+    }
+}
+#endif

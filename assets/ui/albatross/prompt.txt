@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: a single vertical character-select portrait for a Sega Genesis game, intended to be reduced to 112 by 176 pixels (7:11 aspect ratio).
+Primary request: draw Albatross based closely on the blond man on the supplied Rolling Thunder cover.
+Input images: Image 1 is the character identity and pose reference. Image 2 is a game screenshot: use ONLY the right-hand Leila portrait as a pixel-art style and framing reference. Replace the old male design entirely; do not reproduce the screenshot, UI, or Leila.
+Subject: adult male spy with swept-up golden blond hair, angular face, strong jaw, stern narrow eyes, clean shaven, vivid red long-sleeved high-collar shirt. Three-quarter view looking toward viewer/right. His right arm extends toward the foreground, holding a dark gun pointing toward the viewer/right, echoing the cover. Keep his entire head and recognizable face clearly visible, with the gun below/right of the face.
+Composition: ONE portrait, chest up, fills a tall narrow panel, full hair visible with a small margin above. Head near upper third, red torso below, foreshortened arm and pistol in lower-right foreground. Dark navy flat background, no scenery.
+Style: polished hand-authored early 1990s console pixel art, bold crisp outlines and angular shapes, broad deliberate color clusters, restrained palette of gold hair, warm skin, vivid red clothing, dark steel gun, navy shadows. Similar level of detail to the Leila portrait in image 2. Readable silhouette and expression at 112 by 176 pixels.
+Constraints: no text, no lettering, no logo, no border, no second character, no white shirt, no tie, no dark hair. Output only the new Albatross portrait.

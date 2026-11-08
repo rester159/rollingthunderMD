@@ -1,0 +1,90 @@
+[
+  {
+    "check": "cram-ntsc-1",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-2",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-3",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-4",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-5",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-6",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-7",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-8",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-ntsc-9",
+    "exit_code": 0
+  },
+  {
+    "check": "menu_feedback-ntsc",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-1",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-2",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-3",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-4",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-5",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-6",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-7",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-8",
+    "exit_code": 0
+  },
+  {
+    "check": "cram-pal-9",
+    "exit_code": 0
+  },
+  {
+    "check": "menu_feedback-pal",
+    "exit_code": 0
+  },
+  {
+    "check": "pacing-v0.91-candidate-campaign_1p",
+    "exit_code": 0
+  },
+  {
+    "check": "pacing-v0.91-candidate-campaign_2p",
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "case": "mutant",
+  "rom_sha256": "15bbd465776b3b875896ebafd06166bdc3f9fa161977658a931949d2d7515675",
+  "scope": "October 19/20 feedback fixtures through production stage/VDP/gameplay paths.\n\nRAM places actors near authored geometry; vault, crouch, fire, wall response and\nopening animation then use production code. These are not full playthroughs.\n",
+  "states": [
+    4,
+    36
+  ],
+  "highest_y": 182.125,
+  "minimum_x": 632.0,
+  "final_position": [
+    799.0,
+    232.0
+  ],
+  "wall_x": 640,
+  "responded": true
+}

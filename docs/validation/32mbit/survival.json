@@ -1,0 +1,200 @@
+{
+  "genesis_plus_gx-0": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "case": "survival_2p",
+    "agent": 0,
+    "input_pattern": "jump",
+    "extended_ssf_software_model": false,
+    "reserved_os_bank_guard": false,
+    "stage": null,
+    "refresh_phase": null,
+    "refreshes": 6000,
+    "target_updates": 0,
+    "seconds": 100.1289276760912,
+    "play_refreshes": 1635,
+    "play_updates": 1583,
+    "play_presentations": 1185,
+    "initial_counters": {
+      "rtAppUpdates": 255,
+      "rtAppPresentations": 254,
+      "rtAppFullPresentations": 65,
+      "rtAppReusedPresentations": 189,
+      "rtAppSkippedPresentations": 0
+    },
+    "aligned_start_update": 0,
+    "counters": {
+      "rtAppUpdates": 1583,
+      "rtAppPresentations": 1185,
+      "rtAppFullPresentations": 362,
+      "rtAppReusedPresentations": 823,
+      "rtAppSkippedPresentations": 399
+    },
+    "simulation_updates_per_second": 15.809617028166667,
+    "presentations_per_second": 11.8347417425,
+    "stalled_refreshes": 4501,
+    "longest_stall_refreshes": 4370,
+    "compact_refreshes": 6000,
+    "final_state": 0,
+    "fault": 0,
+    "scope": "One NTSC movement/shooting workload at the selected stage; emulated timing, not host execution speed or a full-game playthrough.",
+    "packed_graphics": {
+      "rtPackedBufferHighWater": 0,
+      "rtPackedBufferFailures": 0
+    }
+  },
+  "genesis_plus_gx-1": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "case": "survival_2p",
+    "agent": 1,
+    "input_pattern": "jump",
+    "extended_ssf_software_model": false,
+    "reserved_os_bank_guard": false,
+    "stage": null,
+    "refresh_phase": null,
+    "refreshes": 6000,
+    "target_updates": 0,
+    "seconds": 100.1289276760912,
+    "play_refreshes": 1101,
+    "play_updates": 1094,
+    "play_presentations": 1092,
+    "initial_counters": {
+      "rtAppUpdates": 255,
+      "rtAppPresentations": 254,
+      "rtAppFullPresentations": 73,
+      "rtAppReusedPresentations": 181,
+      "rtAppSkippedPresentations": 0
+    },
+    "aligned_start_update": 0,
+    "counters": {
+      "rtAppUpdates": 1094,
+      "rtAppPresentations": 1094,
+      "rtAppFullPresentations": 454,
+      "rtAppReusedPresentations": 640,
+      "rtAppSkippedPresentations": 1
+    },
+    "simulation_updates_per_second": 10.925913473666666,
+    "presentations_per_second": 10.925913473666666,
+    "stalled_refreshes": 4907,
+    "longest_stall_refreshes": 4853,
+    "compact_refreshes": 5976,
+    "final_state": 0,
+    "fault": 0,
+    "scope": "One NTSC movement/shooting workload at the selected stage; emulated timing, not host execution speed or a full-game playthrough.",
+    "packed_graphics": {
+      "rtPackedBufferHighWater": 0,
+      "rtPackedBufferFailures": 0
+    }
+  },
+  "picodrive-0": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "case": "survival_2p",
+    "agent": 0,
+    "input_pattern": "jump",
+    "extended_ssf_software_model": false,
+    "reserved_os_bank_guard": false,
+    "stage": null,
+    "refresh_phase": null,
+    "refreshes": 6000,
+    "target_updates": 0,
+    "seconds": 100.1289276760912,
+    "play_refreshes": 1532,
+    "play_updates": 1517,
+    "play_presentations": 1293,
+    "initial_counters": {
+      "rtAppUpdates": 255,
+      "rtAppPresentations": 254,
+      "rtAppFullPresentations": 65,
+      "rtAppReusedPresentations": 189,
+      "rtAppSkippedPresentations": 0
+    },
+    "aligned_start_update": 0,
+    "counters": {
+      "rtAppUpdates": 1517,
+      "rtAppPresentations": 1293,
+      "rtAppFullPresentations": 659,
+      "rtAppReusedPresentations": 634,
+      "rtAppSkippedPresentations": 225
+    },
+    "simulation_updates_per_second": 15.150466855166666,
+    "presentations_per_second": 12.9133511165,
+    "stalled_refreshes": 4599,
+    "longest_stall_refreshes": 4448,
+    "compact_refreshes": 5777,
+    "final_state": 0,
+    "fault": 0,
+    "scope": "One NTSC movement/shooting workload at the selected stage; emulated timing, not host execution speed or a full-game playthrough.",
+    "packed_graphics": {
+      "rtPackedBufferHighWater": 0,
+      "rtPackedBufferFailures": 0
+    }
+  },
+  "picodrive-1": {
+    "rom_sha256": "48b3066db45e9e029e2bed8437e5f2c48826efc107949bdca6ae8aa8364337c6",
+    "case": "survival_2p",
+    "agent": 1,
+    "input_pattern": "jump",
+    "extended_ssf_software_model": false,
+    "reserved_os_bank_guard": false,
+    "stage": null,
+    "refresh_phase": null,
+    "refreshes": 6000,
+    "target_updates": 0,
+    "seconds": 100.1289276760912,
+    "play_refreshes": 1437,
+    "play_updates": 1432,
+    "play_presentations": 1277,
+    "initial_counters": {
+      "rtAppUpdates": 255,
+      "rtAppPresentations": 254,
+      "rtAppFullPresentations": 65,
+      "rtAppReusedPresentations": 189,
+      "rtAppSkippedPresentations": 0
+    },
+    "aligned_start_update": 0,
+    "counters": {
+      "rtAppUpdates": 1432,
+      "rtAppPresentations": 1277,
+      "rtAppFullPresentations": 381,
+      "rtAppReusedPresentations": 896,
+      "rtAppSkippedPresentations": 156
+    },
+    "simulation_updates_per_second": 14.301561329333333,
+    "presentations_per_second": 12.753557135166666,
+    "stalled_refreshes": 4714,
+    "longest_stall_refreshes": 4568,
+    "compact_refreshes": 6000,
+    "final_state": 0,
+    "fault": 0,
+    "scope": "One NTSC movement/shooting workload at the selected stage; emulated timing, not host execution speed or a full-game playthrough.",
+    "packed_graphics": {
+      "rtPackedBufferHighWater": 0,
+      "rtPackedBufferFailures": 0
+    }
+  },
+  "summary": [
+    {
+      "name": "genesis_plus_gx-0",
+      "passed": true,
+      "updates": 1583,
+      "final_state": 0
+    },
+    {
+      "name": "genesis_plus_gx-1",
+      "passed": true,
+      "updates": 1094,
+      "final_state": 0
+    },
+    {
+      "name": "picodrive-0",
+      "passed": true,
+      "updates": 1517,
+      "final_state": 0
+    },
+    {
+      "name": "picodrive-1",
+      "passed": true,
+      "updates": 1432,
+      "final_state": 0
+    }
+  ]
+}

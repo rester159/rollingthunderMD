@@ -6,11 +6,11 @@ typedef struct {
  u32 romBytes,lookup,records;
  u16 count,index,entries[256];
  u8 cells[672];
- bool valid,ready;
+ bool valid,ready,sharedLookup;
 } RT_GameOverPanelUpload;
 typedef enum {RT_COMPOSITE_PANEL_INVALID,RT_COMPOSITE_PANEL_RETRY,
  RT_COMPOSITE_PANEL_MORE,RT_COMPOSITE_PANEL_QUEUED} RT_CompositePanelResult;
-/* Bind immutable RTGC/RTPC v1; no VDP writes. Initialize state to zero.
+/* Bind immutable RTGC and RTPC v1/v2; no VDP writes. Initialize state to zero.
    Exclusive scene owner; do not run the head/HUD panel writer concurrently.
    This validation can scan the embedded scene: perform before timed playback.
    romBytes=0 uses FAR, otherwise resource reads reserve audio regions5/6. */

@@ -7,6 +7,7 @@ void RT_titleMenuEnd(void);
 u8 RT_titleMenuStep(void);
 void RT_titleMenuRestoreText(void);
 void RT_titleMenuSetHome(u8 home);
+void RT_titleMenuFooter(void);
 /* Menu text: red glyphs in front of a white copy offset 2px right/down. */
 typedef struct {const char *text;u8 column,row;} RT_MenuString;
 /* Compose strings (cells) into a cleared 4bpp chunk covering cell columns

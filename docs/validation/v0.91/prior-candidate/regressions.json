@@ -1,0 +1,66 @@
+[
+  {
+    "check": "home_features-genesis_plus_gx",
+    "exit_code": 0
+  },
+  {
+    "check": "frontend-genesis_plus_gx",
+    "exit_code": 0
+  },
+  {
+    "check": "home_features-picodrive",
+    "exit_code": 0
+  },
+  {
+    "check": "frontend-picodrive",
+    "exit_code": 0
+  },
+  {
+    "check": "arcade_options",
+    "exit_code": 0
+  },
+  {
+    "check": "sound_menu_tracks",
+    "exit_code": 0
+  },
+  {
+    "check": "attract",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-1",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-2",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-3",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-4",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-5",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-6",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-7",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-8",
+    "exit_code": 0
+  },
+  {
+    "check": "transition-9",
+    "exit_code": 0
+  }
+]

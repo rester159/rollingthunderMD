@@ -1,0 +1,10 @@
+{
+  "rom_sha256": "fe33a1ce6376546d927213fbe79e2ed9329da0e2105eecaef893cbe0b09f02ed",
+  "title_updates_per_600_refreshes": 600,
+  "three_distinct_rendered_slot_digits": true,
+  "sound_actions": 40,
+  "no_raster_recoveries": true,
+  "arcade_idle_attract": true,
+  "home_idle_unchanged": true,
+  "physical_hardware_tested": false
+}

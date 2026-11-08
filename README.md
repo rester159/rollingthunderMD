@@ -1,8 +1,24 @@
 # Rolling Thunder MD
 
-Native Mega Drive / Genesis port of Rolling Thunder, updated October 17, 2026. Includes Arcade, Home Campaign and Survival, two-player
-co-op, the HUD and shirt-colour fixes, increased co-op ammunition, and adaptive
-2P enemy animation. Enemy counts are unchanged.
+Native Mega Drive / Genesis port of Rolling Thunder, updated November 7, 2026.
+The current version is **v0.92 Beta**, packaged as a **4 MiB / 32 Mbit** linear ROM.
+
+Local ROM: `dist/Rolling_Thunder_MD_v0.92_Beta.bin`. See
+[CURRENT_BUILD.txt](CURRENT_BUILD.txt), [release notes](docs/RELEASE_0_92.md), and
+[dev update](docs/DEVLOG_0_92.md). ROM binaries remain excluded from Git.
+
+Includes Arcade and Home, solo/two-player Campaign and Survival, both agents,
+all ten campaign areas (five stages followed by their harder second-story
+versions), Arcade attract, three SRAM Campaign save slots, title-screen Continue,
+Arcade options/DIP switches, and a transparent in-field HUD. Home displays
+pistol and machine-gun ammunition separately. Leila retains her original hair
+colors, with lipstick removed from her gameplay sprites.
+
+See [Home/Arcade feature details](docs/HOME_FEATURES.md) and the
+[optimization notes](docs/THIRTY_TWO_MBIT_PROGRESS.md). Earlier candidate reports
+retain their original dates and hashes; current-version checks are recorded in
+`docs/validation/v0.92/`. This beta has emulator validation, not a physical-hardware
+certification or a guarantee of 60 FPS in every scene.
 
 In lighter 2P scenes, enemies use their full banked poses. Crowds, rendering lag
 or sprite-memory pressure select compact poses; full detail returns after 30
@@ -43,18 +59,20 @@ python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r requirements.txt
 export GDK=/path/to/sgdk
-python tools/build.py --rom /path/to/your/rthunder.zip --sgdk "$GDK"
+python tools/build.py --rom /path/to/your/rthunder.zip --sgdk "$GDK" \
+  --layout packed --pose-codec refined --cart standard --output-dir dist/v0.92-beta
 ```
 
-Or use `make build ROM=/path/to/rthunder.zip GDK=/path/to/sgdk`.
+The flags above select the current 32 Mbit build. The unqualified `make build`
+target retains the older shared-layout defaults.
 Do not put ROMs in Git. `roms/`, `.build/`, `dist/` and common ROM/archive formats
 are ignored. The build reads the supplied archive; it never modifies it.
 
 Outputs:
 
-- `dist/RollingThunderMD.bin` — 15.5 MiB standard-SSF2 cartridge for the tested emulators
-- `dist/SHA256SUMS` — binary checksum
-- `dist/build.json` — build identity and validation metadata
+- `dist/v0.92-beta/RollingThunderMD.bin` — 4 MiB / 32 Mbit linear cartridge
+- `dist/v0.92-beta/SHA256SUMS` — binary checksum
+- `dist/v0.92-beta/build.json` — build identity and validation metadata
 
 All intermediates are generated under `.build/`. No research checkout, previous
 Mega Drive ROM, local extracted-audio directory, emulator, or network download is
@@ -69,7 +87,10 @@ banks are assembled from those new outputs. The compact packer then checks all
 four audio placements with the runtime planners and independently verifies linked
 pose pixels, geometry, background maps and world collision data.
 
-## Playing and validation
+## Older build profiles and validation history
+
+The following larger layouts are retained for comparison; they are not the
+v0.92 Beta download. Use the explicit packed/refined command above for v0.92.
 
 The default profile is tested in PicoDrive and Genesis Plus GX with standard
 SSF2 banking and SRAM. Build the separate **Mega EverDrive Pro** profile with:
@@ -82,14 +103,51 @@ This adds `dist/RollingThunderMD-MegaEverDrivePro.bin` and
 `dist/build-mega-everdrive-pro.json`. It uses extended SSF banking and banked
 battery RAM, and leaves physical bank 31 reserved for saves. Both profiles are
 15.5 MiB. **The Pro profile has software protocol tests, but no physical-cart
-validation.** The image does not fit Core/X3/X5; no X7/legacy-cart support is
-claimed. See the [hardware matrix](docs/HARDWARE_COMPATIBILITY.md).
+validation.** The image does not fit Core/X3/X5, and these default profiles do
+not reserve the v2/X7 OS area. See the [hardware matrix](docs/HARDWARE_COMPATIBILITY.md).
 
 The compact build shares identical raw graphics and geometry and packs map
 blocks. It preserves enemy counts, animation policy and audio; it does not
 introduce runtime graphics decompression. All linked pose pixels and packed
 geometry are compared with the frozen reference during every build. Use
 `--layout frozen` only to build the older 32 MiB layout for comparison.
+
+An **experimental 15 MiB candidate** for the Mega EverDrive v2/X7 protocol is
+available separately:
+
+```sh
+python tools/build.py --rom /path/to/your/rthunder.zip --sgdk "$GDK" \
+  --layout shared --cart mega-everdrive-v2-x7 --output-dir dist/compatibility-candidate
+```
+
+This shares immutable geometry, duplicate pose tables and identical raw graphics
+across stages. Graphics and audio remain uncompressed; gameplay modes and
+animation policies are unchanged. Pixel data retain their original offsets within
+512 KiB banks, preserving the original DMA split boundaries. The image occupies
+banks 0–29 and uses only the documented upper portion of bank 31 for saves,
+leaving the OS reservation intact. See
+[Krikzz's extended-SSF specification](https://krikzz.com/pub/support/mega-everdrive/x3x5x7/dev/extended_ssf-v2.txt).
+This is a candidate, not physical-hardware certification or support for
+7 MiB cartridges. The standard shared-layout variant is selected with
+`--layout shared --cart standard` for emulator comparisons.
+See the [candidate results and remaining hardware checks](docs/COMPATIBILITY_CANDIDATE.md).
+
+A **7 MiB (56 Mbit) candidate** combines lossless graphics storage with
+sample-exact Z80 audio streaming. It uses 7,337,646 bytes before cartridge-bank
+padding (7,340,032 bytes on disk), preserving every mode, character and asset.
+Campaign opening performance has recovered to the accepted build's range;
+measurements include a separate jumping workload and both protagonists.
+Build it with `--layout packed --pose-codec fast --cart standard --output-dir dist/seven-mib-candidate`. It has not replaced the accepted releases,
+and its physical cartridge/console compatibility is still unverified.
+See [the size, timing measurements and validation report](docs/SEVEN_MIB_PROGRESS.md).
+
+Version 0.81 meets the **32 Mbit = 4 MiB = 4,194,304 byte** target using the
+refined pose codec and compressed audio. Build with `--layout packed --pose-codec
+refined --cart standard`. The older 7 MiB and extended-mapper measurements above
+are historical. See [feedback validation](docs/ITCH_FEEDBACK_FIXES.md) and
+[Arcade attract mode](docs/ARCADE_ATTRACT.md). The user reported v0.81 working on a PAL clone with a Chinese EverDrive V3;
+v0.9 itself has not been tested on that hardware. KFusion and Mednafen remain
+unverified.
 
 Standard Genesis controller inputs are used; Home's setup lets
 player two join before choosing the characters.
