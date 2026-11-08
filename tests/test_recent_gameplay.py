@@ -10,7 +10,7 @@ from test_soft_reset import Machine
 from stage_entry_probe import enter_campaign_stage
 p=argparse.ArgumentParser(description=__doc__)
 for n in ('rom','symbols','core','output'):p.add_argument('--'+n,type=Path,required=True)
-p.add_argument('--case',choices=('platform','mutant','mutant-inside','door'),required=True)
+p.add_argument('--case',choices=('platform','stairs','mutant','mutant-inside','door'),required=True)
 a=p.parse_args();m=Machine(a)
 syms={r[2].split('.lto_priv')[0]:int(r[0],16) for l in a.symbols.read_text().splitlines() if len(r:=l.split())==3}
 class Map(C.Structure):_fields_=[(n,C.c_void_p) for n in ('base','read8','read16','write8','write16')]
@@ -40,6 +40,44 @@ if a.case=='platform':
  assert shots and all(kind!=5 for x,kind in shots),('Invisible platform wall',shots)
  assert shots[-1][0]-shots[0][0]>=64*16,shots
  result=dict(vault_landing_y=127,bullet_y=112,travel_pixels=(shots[-1][0]-shots[0][0])//16,no_false_impact=True)
+elif a.case=='stairs':
+ # First tower flight, entered from the upper walkway with the authored
+ # camera Y. Marker cells beside the steps are not walls: downhill crouched
+ # shots never strike, and uphill shots meet the real steps, never the muzzle.
+ enter(1,2100,-8);m.patch('rtAppPaused',b'\1');m.run(2);clear_enemies()
+ m.patch('scene',struct.pack('>ii',2196*16,144*16),20);m.patch('scene',b'\2',36);m.patch('rtAppPaused',b'\0')
+ for _ in range(20):clear_enemies();m.run(1)
+ m.core.retro_serialize_size.restype=C.c_size_t;m.core.retro_serialize.argtypes=m.core.retro_unserialize.argtypes=[C.c_void_p,C.c_size_t]
+ def snapshot():
+  b=C.create_string_buffer(m.core.retro_serialize_size());assert m.core.retro_serialize(b,len(b));return b
+ def fire(left):
+  m.patch('scene',bytes([2 if left else 1]),39);m.buttons={(0,5)}
+  for _ in range(12):clear_enemies();m.run(1)
+  m.patch('scene',bytes([2 if left else 1]),39);m.buttons.add((0,0));m.patch('scene',bytes(49*18+2),6768)
+  start=None
+  for frame in range(60):
+   clear_enemies();m.run(1)
+   if frame==3:m.buttons.discard((0,0))
+   for i in range(49):
+    x,y,vx,kind=struct.unpack('>iihB',m.read('scene',11,6768+i*18))
+    if kind not in (3,5) or m.number('scene',1,6768+i*18+14)&8:continue
+    if kind==3 and start is None:start=x
+    if kind==5:m.buttons.clear();return (x-start)//16 if start is not None else 0
+  m.buttons.clear();return None
+ samples=[]
+ while len(samples)<40:
+  pos=(m.number('scene',4,20)//16,m.number('scene',4,24)//16)
+  if pos[1]>=240:break
+  if pos[1]>144 and (not samples or samples[-1][0]!=pos):
+   state=snapshot();left=fire(1);m.core.retro_unserialize(state,len(state))
+   right=fire(0);m.core.retro_unserialize(state,len(state))
+   samples.append((pos,left,right))
+  for _ in range(6):clear_enemies();m.buttons={(0,7)};m.run(1)
+  m.buttons=set();m.run(2)
+ assert len(samples)>=8,('Did not descend the flight',samples)
+ assert all(r is None for p,l,r in samples),('Downhill crouched shot struck a stair marker',samples)
+ assert all(l is None or l<=-16 for p,l,r in samples),('Uphill crouched shot struck at the muzzle',samples)
+ result=dict(stair_positions=len(samples),downhill_impacts=0,shortest_uphill_impact=min((-l for p,l,r in samples if l is not None),default=None))
 elif a.case.startswith('mutant'):
  embedded=a.case=='mutant-inside'
  enter(2,640 if embedded else 480,-8)
