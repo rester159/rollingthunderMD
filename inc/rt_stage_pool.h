@@ -31,6 +31,10 @@ enum {RT_STAGE_BOUNDARY_RIGHT=1,RT_STAGE_BOUNDARY_LEFT=2,
 u8 RT_stagePoolCull(RT_StagePool *pool,const RT_WorldCamera *camera,u8 boundaries);
 /* Visibility only: high-object behavior/timers belong to their own service.
  * Refresh, run object services, then advance the window. */
+/* Cached form for fixed Campaign anchors. Invalidate before external writes
+ * to coordinates, kinds or visibility; pool admission/retirement does so. */
+void RT_stagePoolInvalidateVisibility(RT_StagePool *pool);
+u8 RT_stagePoolRefreshStaticVisibility(RT_StagePool *pool,const RT_WorldCamera *camera);
 u8 RT_stagePoolRefreshVisibility(RT_StagePool *pool,const RT_WorldCamera *camera);
 /* Kind8 (CPU1 D8D6): visible fans advance every eight services. pose is
  * zero-based for fans, unlike doors; hidden fans retain their clock.

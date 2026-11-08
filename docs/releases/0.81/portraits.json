@@ -1,0 +1,23 @@
+{
+  "rom_sha256": "54eba2215c07860b6644426bf82d97fcbea3070dbe893e0edfab3fbedca9156d",
+  "assets": {
+    "portrait_tiles.bin": {
+      "bytes": 19712,
+      "rom_offset": 552468,
+      "sha256": "99674c747a91c5edc8c1603b0958dfcd778ea2bfb144fb8e717e24a8d489e6fd",
+      "matches_current_asset": true
+    },
+    "portrait_map.bin": {
+      "bytes": 1232,
+      "rom_offset": 549244,
+      "sha256": "ae566546708f54366427c3d55fc87b0db54737446e67392524bdad478e20cebd",
+      "matches_current_asset": true
+    },
+    "portrait_palette.bin": {
+      "bytes": 96,
+      "rom_offset": 550476,
+      "sha256": "1da79f0688c34ac9ac45e71d743d836efb92a682f8bec68f736f4b88ec3b077a",
+      "matches_current_asset": true
+    }
+  }
+}

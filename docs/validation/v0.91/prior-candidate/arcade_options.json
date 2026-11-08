@@ -1,0 +1,11 @@
+{
+  "rom_sha256": "6f4bfef4c73cd9130d8d4be21a54543df5bec1a4d8dbd38a68129123bcc61a0a",
+  "all_six_switches_persist": true,
+  "lives_and_timer": true,
+  "authored_enemy_set": true,
+  "invulnerability_900_refreshes": true,
+  "demo_muted_gameplay_music_retained": true,
+  "home_rules_independent": true,
+  "reset_defaults": true,
+  "physical_hardware_tested": false
+}

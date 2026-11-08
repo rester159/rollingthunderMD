@@ -1,0 +1,14 @@
+{
+  "rom_sha256": "41eb83ddbd2eaeccd2a6641a273f79713ed6c9e58062f97696899ef673805c1c",
+  "selection_frames": 608,
+  "black_frames": 0,
+  "selection_roundtrip_exact": true,
+  "saved_independent_layouts": true,
+  "settings_commits_without_raster_fault": 30,
+  "p1_p2_jump_fire": true,
+  "default_c_jump": [
+    "campaign_1p",
+    "survival_1p",
+    "arcade"
+  ]
+}

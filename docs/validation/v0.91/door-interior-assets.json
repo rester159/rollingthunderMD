@@ -1,0 +1,52 @@
+[
+  {
+    "stage": "0_0",
+    "cleared_cells_made_black": 96,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "0_1",
+    "cleared_cells_made_black": 96,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "0_2",
+    "cleared_cells_made_black": 32,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "0_3",
+    "cleared_cells_made_black": 32,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "0_4",
+    "cleared_cells_made_black": 96,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "1_0",
+    "cleared_cells_made_black": 96,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "1_1",
+    "cleared_cells_made_black": 96,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "1_2",
+    "cleared_cells_made_black": 32,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "1_3",
+    "cleared_cells_made_black": 96,
+    "other_art_unchanged": true
+  },
+  {
+    "stage": "1_4",
+    "cleared_cells_made_black": 96,
+    "other_art_unchanged": true
+  }
+]

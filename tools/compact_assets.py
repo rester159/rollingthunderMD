@@ -8,6 +8,7 @@ from collections import defaultdict
 import ast
 import hashlib
 import re
+import struct
 from pathlib import Path
 
 ARRAY = re.compile(r'static const (RT_SpritePiece|RT_PackedSpritePiece) (\w+)\[[^\]]*\]=\{(.*?)\n\};', re.S)
@@ -23,13 +24,30 @@ def initializer(value):
     return str(value)
 
 
-def compact_stage(folder, sources, output):
+def compact_stage(folder, sources, output, intern_static_pixels=False):
     output.mkdir(parents=True, exist_ok=True)
     pool = {}
+    raw_arrays = set()
     stats = dict(geometry_before=0, geometry_after=0, maps_before=0, maps_after=0)
     for name in sources:
         text = (folder / name).read_text()
         declarations = []
+        if intern_static_pixels:
+            # Give identical formerly file-local raw pixel arrays stable names.
+            # SharedGeometry can then alias them without changing any pixels or
+            # requiring runtime decompression. Definitions stay stage-local on
+            # the first pass; a later link selects only duplicate global data.
+            arrays = re.compile(r'^static const u32 (\w+)\[[^\]]*\]=\{(.*?)\n\};', re.M|re.S)
+            for match in list(arrays.finditer(text)):
+                old,body=match.groups()
+                words=values(re.sub(r'(0x[0-9a-fA-F]+|[0-9]+)(?:UL|U|L)\b',r'\1',body))
+                raw=struct.pack('>'+str(len(words))+'I',*words)
+                label='rtStaticPixels_'+hashlib.sha256(raw).hexdigest()
+                definition=('extern const u32 '+label+'[];' if label in raw_arrays else
+                            'const u32 '+label+'[]={'+body+'\n};')
+                raw_arrays.add(label)
+                text=text.replace(match[0],definition)
+                text=re.sub(r'\b'+re.escape(old)+r'\b',label,text)
         # Enemy rendering exclusively consumes packed geometry. Players and
         # stage objects still use the general renderer, so retain those records.
         packed_enemy = bool(re.fullmatch(r'(?:area\d\d_)?(?:enemy_b\d_g\d+|high\d+)_poses.c', name))
@@ -99,11 +117,12 @@ def compact_stage(folder, sources, output):
                 raise ValueError('Block index overflow')
             stats['maps_after'] += len(blocks) * 32
             # The final descriptor field is the optional block dictionary.
-            descriptor = re.compile(r'(const RT_DisplayStage \w+=\{patterns,\{plane0,plane1\},palettes,\d+,\d+,\d+,\{\d+,\d+\},\d+,\d+)(?:,0)?\};')
-            text, count = descriptor.subn(r'\1,rtMapBlocks};', text)
+            descriptor = re.compile(r'(const RT_DisplayStage \w+=\{(?:patterns|rtStaticPixels_\w+),\{plane0,plane1\},palettes,\d+,\d+,\d+,\{\d+,\d+\},\d+,\d+)(?:,0)?\};')
+            block_symbol=('rtSharedMap_'+hashlib.sha256(struct.pack('>'+str(len(blocks)*16)+'H',*(v for b in blocks for v in b))).hexdigest()) if intern_static_pixels else 'rtMapBlocks'
+            text, count = descriptor.subn(r'\1,'+block_symbol+'};', text)
             if count != 1:
                 raise ValueError('Unrecognized display descriptor')
-            declarations.append('static const u16 rtMapBlocks[]=' + initializer([v for b in blocks for v in b]) + ';')
+            declarations.append(('const' if intern_static_pixels else 'static const')+' u16 '+block_symbol+'[]=' + initializer([v for b in blocks for v in b]) + ';')
         # Insert after includes, before any descriptors referring to interned data.
         at = max((m.end() for m in re.finditer(r'^#include[^\n]*\n', text, re.M)), default=0)
         text = text[:at] + '\n'.join(dict.fromkeys(declarations)) + '\n' + text[at:]

@@ -18,13 +18,17 @@ bool RT_beginGameOverPanelUpload(RT_GameOverPanelUpload *s,
  if(!readBytes(a,scene,16,limit) || !readBytes(b,prepared,16,limit))return FALSE;
  if(memcmp(a,"RTGC",4) || word(a+4)!=1 || word(a+6)!=36 || word(a+8)!=28 ||
     word(a+12)!=2 || word(a+14) || !word(a+10) || length!=4176+(u32)word(a+10)*32 ||
-    memcmp(b,"RTPC",4) || word(b+4)!=1 || word(b+6)!=336 || word(b+8)!=90 ||
+    memcmp(b,"RTPC",4) || (word(b+4)!=1 && word(b+4)!=2) || word(b+6)!=336 || word(b+8)!=90 ||
     (((u32)word(b+12)<<16)|word(b+14))!=length)return FALSE;
- count=word(b+10);records=16+length+336UL*90*2;
+ bool sharedLookup=word(b+4)==2;
+ count=word(b+10);records=sharedLookup?16+90*2:16+length+336UL*90*2;
  if(!count || count>128 || size!=records+(u32)count*68)return FALSE;
- for(offset=0;offset<length;offset+=128){
+ for(offset=0;!sharedLookup && offset<length;offset+=128){
   u16 n=length-offset<128?length-offset:128;
   if(!readBytes(a,scene+offset,n,limit) || !readBytes(b,prepared+16+offset,n,limit) || memcmp(a,b,n))return FALSE;
+ }
+ if(sharedLookup)for(i=0;i<90;i++){
+  if(!readBytes(a,prepared+16+i*2,2,limit) || word(a)>=count)return FALSE;
  }
  /* Validate all headers before changing state. */
  for(i=0;i<count;i++){
@@ -36,7 +40,8 @@ bool RT_beginGameOverPanelUpload(RT_GameOverPanelUpload *s,
   s->entries[i*2]=word(a)==65535?65535:256+i*2+(word(a)<<13);
   s->entries[i*2+1]=word(a)==65535?65535:(257+i*2+(word(a+2)<<13))|0x8000;
  }
- s->scene=scene;s->prepared=prepared;s->romBytes=limit;s->lookup=16+length;
+ s->scene=scene;s->prepared=prepared;s->romBytes=limit;s->lookup=sharedLookup?16:16+length;
+ s->sharedLookup=sharedLookup;
  s->records=records;s->count=count;s->index=65535;s->ready=FALSE;
  memset(s->cells,254,sizeof s->cells);s->valid=TRUE;return TRUE;
 }
@@ -105,7 +110,7 @@ RT_CompositePanelResult RT_queueGameOverCompositePanelRange(
    a[run]=b[run]=65535;
    if(panel[index*2+1]){
    u16 glyph=(panel[index*2+1]==228?45:0)+(panel[index*2]==255?44:panel[index*2]);
-   if(!readBytes(bytes,s->prepared+s->lookup+((u32)index*90+glyph)*2,2,s->romBytes))return RT_COMPOSITE_PANEL_INVALID;
+   if(!readBytes(bytes,s->prepared+s->lookup+((s->sharedLookup?0:(u32)index*90)+glyph)*2,2,s->romBytes))return RT_COMPOSITE_PANEL_INVALID;
    entry=word(bytes);if(entry>=s->count)return RT_COMPOSITE_PANEL_INVALID;
    a[run]=s->entries[entry*2];b[run]=s->entries[entry*2+1];
   }

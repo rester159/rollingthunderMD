@@ -1,0 +1,23 @@
+{
+  "rom_sha256": "41eb83ddbd2eaeccd2a6641a273f79713ed6c9e58062f97696899ef673805c1c",
+  "original_script_bytes": 38,
+  "complete_loops": 2,
+  "phases": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "all_38_script_commands": true,
+  "initial_walk_fire_timing": true,
+  "saves_and_records_unchanged": true,
+  "start_and_back_phases": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "held_start_no_pause": true,
+  "home_idle_unchanged": true,
+  "reset_to_mode_selection": true
+}

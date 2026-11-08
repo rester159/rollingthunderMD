@@ -1,0 +1,34 @@
+[
+  {
+    "stage": 0,
+    "case": "campaign_1p",
+    "before_refreshes": 901,
+    "after_refreshes": 901,
+    "before_presentations": 899,
+    "after_presentations": 899
+  },
+  {
+    "stage": 0,
+    "case": "campaign_2p",
+    "before_refreshes": 902,
+    "after_refreshes": 902,
+    "before_presentations": 875,
+    "after_presentations": 874
+  },
+  {
+    "stage": 1,
+    "case": "campaign_1p",
+    "before_refreshes": 900,
+    "after_refreshes": 900,
+    "before_presentations": 898,
+    "after_presentations": 898
+  },
+  {
+    "stage": 1,
+    "case": "campaign_2p",
+    "before_refreshes": 914,
+    "after_refreshes": 915,
+    "before_presentations": 781,
+    "after_presentations": 782
+  }
+]

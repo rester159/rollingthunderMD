@@ -3,7 +3,7 @@
 /* Pose assigned to each slot by the planner. RT_spriteSubmit publishes the
  * same pointer into slot.pose once its upload is queued. */
 static const RT_SpritePose *planned[RT_SPRITE_ARENA_BLOCKS];
-static inline u8 hashPose(const RT_SpritePose *pose){return ((u32)pose>>2)&31;}
+static inline u8 hashPose(const RT_SpritePose *pose){return ((u32)pose->patterns>>2)&31;}
 u8 RT_spriteArenaInitialize(RT_SpriteArena *a,u16 first,u8 blocks)
 {
     if(!a || !blocks || blocks>RT_SPRITE_ARENA_BLOCKS || first>=1536 ||
@@ -20,7 +20,7 @@ u8 RT_spriteArenaInitialize(RT_SpriteArena *a,u16 first,u8 blocks)
 static u8 lookup(const RT_SpriteArena *a,const RT_SpritePose *pose)
 {
     u8 s=a->heads[hashPose(pose)];
-    while(s!=NONE && planned[s]!=pose)s=a->chain[s];
+    while(s!=NONE && !RT_spritePixelsMatch(planned[s],pose))s=a->chain[s];
     return s;
 }
 /* Drop a slot's range, residency and hash entry. */
@@ -45,6 +45,11 @@ static void assign(RT_SpriteArena *a,u8 slot,const RT_SpritePose *pose,u8 start,
     planned[slot]=pose;
     u8 h=hashPose(pose);a->chain[slot]=a->heads[h];a->heads[h]=slot;
 }
+#ifdef __m68k__
+/* Keep the allocator's temporary arrays and register pressure out of the
+ * per-frame actor traversal. Planning still sees the complete visible set. */
+__attribute__((noinline))
+#endif
 u8 RT_spriteArenaPlan(RT_SpriteArena *a,const RT_SpritePose *const *poses,u8 count,u8 *slots)
 {
     if(!a || !a->blocks || a->blocks>RT_SPRITE_ARENA_BLOCKS || count>80 ||
@@ -59,11 +64,11 @@ u8 RT_spriteArenaPlan(RT_SpriteArena *a,const RT_SpritePose *const *poses,u8 cou
     for(u8 i=0;i<count;i++){
         const RT_SpritePose *pose=poses[i];
         u8 s=a->hints[i];
-        if(s==NONE || planned[s]!=pose){
+        if(s==NONE || !RT_spritePixelsMatch(planned[s],pose)){
             if(!pose || !pose->patterns || !pose->tileCount || pose->tileCount>64)return 0;
             s=lookup(a,pose);
             if(s==NONE){
-                u8 j=0;for(;j<freshCount;j++)if(fresh[j]==pose)break;
+                u8 j=0;for(;j<freshCount;j++)if(RT_spritePixelsMatch(fresh[j],pose))break;
                 if(j==freshCount){
                     u8 size=(pose->tileCount+15)>>4;
                     if(unique==RT_SPRITE_ARENA_BLOCKS || need+size>a->blocks)return 0;
@@ -120,13 +125,13 @@ compact:
         u8 total=0,first=0,keep[RT_SPRITE_ARENA_BLOCKS];
         for(u8 i=0;i<count;i++){
             const RT_SpritePose *pose=poses[i];
-            u8 j=0;for(;j<total;j++)if(set[j]==pose)break;
+            u8 j=0;for(;j<total;j++)if(RT_spritePixelsMatch(set[j],pose))break;
             if(j==total){set[j]=pose;sizes[j]=(pose->tileCount+15)>>4;total++;}
         }
         for(u8 s=0;s<RT_SPRITE_ARENA_BLOCKS;s++)keep[s]=NONE;
         for(u8 j=0;j<total;j++){
             u8 s=lookup(a,set[j]);
-            if(s!=NONE && a->slots[s].pose==set[j] &&
+            if(s!=NONE && RT_spritePixelsMatch(a->slots[s].pose,set[j]) &&
                a->slots[s].firstTile==a->firstTile+(u16)first*16)keep[s]=j;
             first+=sizes[j];
         }

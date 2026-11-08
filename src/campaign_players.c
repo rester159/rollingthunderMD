@@ -1,4 +1,5 @@
 #include "rt_campaign_scene.h"
+#include "rt_attract.h"
 static void sharedCamera(RT_CampaignScene *scene)
 {
     s16 low=0,high=0;u8 count=0;
@@ -47,12 +48,17 @@ u8 RT_campaignPlayersStep(RT_CampaignScene *scene,const u16 pads[2],
              RT_agentHasFatalAnimation(agent,scene->players.combat+p)))){
             agent->shotRequest=0;continue;
         }
+        if(rtArcadeAttract==RT_ATTRACT_DEMO){
+            result->steps[p]=RT_attractAgentStep(agent,scene->players.combat+p,
+                scene->stage,&scene->camera,&anchors,result->sounds+p);
+        }else{
         u8 direction=buttons&BUTTON_UP?3:buttons&BUTTON_DOWN?4:
             buttons&BUTTON_RIGHT?1:buttons&BUTTON_LEFT?2:0;
-        u8 input=RT_agentInput(agent,direction,!!(pressed&BUTTON_A),
-            !!(pressed&BUTTON_B),!!(buttons&BUTTON_B));
+        u8 input=RT_agentInput(agent,direction,!!(pressed&RT_jumpButtons(p)),
+            !!(pressed&RT_fireButtons(p)),!!(buttons&RT_fireButtons(p)));
         result->steps[p]=RT_sceneStepAgent(agent,scene->players.combat+p,input,
             scene->stage,&scene->camera,&anchors,count==2,result->sounds+p);
+        }
         if(result->steps[p]==RT_HOME_AGENT_INVALID)return 0;
         if(RT_projectilesRequest(&scene->projectiles,agent,p,result->weapons+p))result->shots|=1<<p;
     }

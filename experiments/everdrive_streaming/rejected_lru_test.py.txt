@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""Exercise production arena eviction/compaction against a simulated tile store."""
+from pathlib import Path
+import subprocess,tempfile
+root=Path(__file__).resolve().parents[1]
+with tempfile.TemporaryDirectory() as tmp:
+ p=Path(tmp)
+ (p/'rt_sprite_arena.h').write_bytes((root/'inc/rt_sprite_arena.h').read_bytes())
+ (p/'rt_rom_layout.h').write_text('#define RT_PACKED_PATTERNS 1\n')
+ (p/'rt_sprites.h').write_text('''#include <stdint.h>
+typedef uint8_t u8;typedef uint16_t u16;typedef uintptr_t u32;
+typedef struct {const u32 *patterns;const void *pieces;u16 tileCount;u8 pieceCount,reserved;} RT_SpritePose;
+typedef struct {const RT_SpritePose *pose;u16 firstTile,capacity;} RT_SpriteSlot;
+''')
+ (p/'test.c').write_text('''#include <assert.h>
+#include <stdio.h>
+#include "rt_sprite_arena.h"
+static unsigned state=0x54485254;
+static unsigned randomValue(void){state=state*1664525+1013904223;return state;}
+int main(void){
+ RT_SpriteArena arena;RT_SpritePose poses[128];u32 art[128];unsigned tiles[720];
+ for(unsigned i=0;i<128;i++){art[i]=i+1;poses[i]=(RT_SpritePose){art+i,0,1+(i*17)%64,1,0};}
+ for(unsigned frame=0;frame<200000;frame++){
+  if(frame%997==0){assert(RT_spriteArenaInitialize(&arena,640,45));for(unsigned i=0;i<720;i++)tiles[i]=0;}
+  const RT_SpritePose *wanted[80];u8 slots[80];unsigned count=1+randomValue()%12;
+  for(unsigned i=0;i<count;i++)wanted[i]=poses+((randomValue()>>12)%(frame%3?12:128));
+  assert(RT_spriteArenaPlan(&arena,wanted,count,slots));
+  for(unsigned i=0;i<count;i++){
+   RT_SpriteSlot *slot=arena.slots+slots[i];const RT_SpritePose *pose=wanted[i];
+   assert(slot->capacity>=pose->tileCount && slot->firstTile>=640);
+   unsigned at=slot->firstTile-640;assert(at+slot->capacity<=720);
+   if(slot->pose!=pose){for(unsigned j=0;j<pose->tileCount;j++)tiles[at+j]=*pose->patterns;slot->pose=pose;}
+  }
+  for(unsigned i=0;i<count;i++){
+   RT_SpriteSlot *slot=arena.slots+slots[i];const RT_SpritePose *pose=wanted[i];
+   assert(slot->pose==pose);
+   for(unsigned j=0;j<pose->tileCount;j++)assert(tiles[slot->firstTile-640+j]==*pose->patterns);
+  }
+ }
+ puts("200000 arena plans preserve every visible tile and pinned pose");
+}
+''')
+ subprocess.run(['cc','-std=c99','-O2','-fsanitize=address,undefined','-I'+str(p),str(root/'src/sprite_arena.c'),str(p/'test.c'),'-o',str(p/'test')],check=True)
+ subprocess.run([str(p/'test')],check=True)

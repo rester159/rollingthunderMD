@@ -19,6 +19,13 @@ int main(void)
         RT_FINAL_ENDING_AFTER_VICTORY_SAMPLES,RT_ROM_BYTES,&segmented));
     assert(RT_planSegmentedPcm(RT_HIGH_COLD_ADDRESS,1118805,RT_ROM_BYTES,&segmented));
     assert(RT_planSegmentedPcm(RT_HIGH_WARM_ADDRESS,1118805,RT_ROM_BYTES,&segmented));
+#ifdef RT_STREAMED_PCM
+    /* Compressed span fits even when its decoded sample count would not.
+     * Unknown descriptors and truncated physical storage must still fail. */
+    assert(!RT_planSegmentedPcm(RT_HIGH_WARM_ADDRESS,1118804,RT_ROM_BYTES,&segmented));
+    assert(!RT_planSegmentedPcm(RT_HIGH_WARM_ADDRESS+32768,1118805,RT_ROM_BYTES,&segmented));
+    assert(!RT_planSegmentedPcm(RT_HIGH_WARM_ADDRESS,1118805,RT_HIGH_WARM_ADDRESS&~0x7ffffUL,&segmented));
+#endif
     puts("All four finite PCM clips pass the runtime alignment/span admission checks.");
     return 0;
 }

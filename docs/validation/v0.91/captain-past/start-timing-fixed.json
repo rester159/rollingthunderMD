@@ -1,0 +1,64 @@
+{
+  "rom_sha256": "3ed5cc21fe5fd42fedae1b91142217da1fc81ce6717ea489bb068098ee0b36cd",
+  "opening_rhythm_preserved": true,
+  "starts": [
+    {
+      "restart": 0,
+      "note_frames": [
+        23,
+        31,
+        38,
+        46
+      ],
+      "note_intervals": [
+        8,
+        7,
+        8
+      ],
+      "music_service_intervals": [
+        7,
+        7,
+        7
+      ]
+    },
+    {
+      "restart": 1,
+      "note_frames": [
+        24,
+        32,
+        39,
+        47
+      ],
+      "note_intervals": [
+        8,
+        7,
+        8
+      ],
+      "music_service_intervals": [
+        7,
+        7,
+        7
+      ]
+    },
+    {
+      "restart": 2,
+      "note_frames": [
+        24,
+        31,
+        38,
+        46
+      ],
+      "note_intervals": [
+        7,
+        7,
+        8
+      ],
+      "music_service_intervals": [
+        7,
+        7,
+        7
+      ]
+    }
+  ],
+  "scope": "Main BGM 1 startup/restart key-on timing; no analog audio or timbre claim."
+}

@@ -1,0 +1,56 @@
+{
+  "rom_sha256": "3ed5cc21fe5fd42fedae1b91142217da1fc81ce6717ea489bb068098ee0b36cd",
+  "core_sha256": "435c60c17c7a7c8f2a92f6449141960ac6b6e8292fad796da6d9b823615787ad",
+  "sample_rate": 44100.0,
+  "refresh_rate": 59.92274340431231,
+  "psg_muted": false,
+  "additional_capture_refreshes": 1200,
+  "initial_attack_included": true,
+  "tracks": [
+    {
+      "track": 1,
+      "restart": 0,
+      "stereo_samples": 939069,
+      "peak": 26445,
+      "clipped_channel_samples": 0,
+      "music_services": 1260,
+      "steady_music_services": 1207,
+      "pending_music_services": 0,
+      "rms": 1859.790194852296
+    },
+    {
+      "track": 6,
+      "restart": 0,
+      "stereo_samples": 939070,
+      "peak": 9355,
+      "clipped_channel_samples": 0,
+      "music_services": 1243,
+      "steady_music_services": 1189,
+      "pending_music_services": 0,
+      "rms": 2072.7516026525673
+    },
+    {
+      "track": 7,
+      "restart": 0,
+      "stereo_samples": 939069,
+      "peak": 32707,
+      "clipped_channel_samples": 0,
+      "music_services": 1254,
+      "steady_music_services": 1200,
+      "pending_music_services": 0,
+      "rms": 2648.9590056250945
+    },
+    {
+      "track": 10,
+      "restart": 0,
+      "stereo_samples": 939069,
+      "peak": 10834,
+      "clipped_channel_samples": 0,
+      "music_services": 1246,
+      "steady_music_services": 1193,
+      "pending_music_services": 0,
+      "rms": 2437.0939723148626
+    }
+  ],
+  "limits": "Emulator digital output only; not analog-console or arcade-fidelity validation."
+}

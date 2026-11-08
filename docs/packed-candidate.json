@@ -1,0 +1,988 @@
+{
+  "status": "software_validated_7_mib_candidate",
+  "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+  "rom_bytes": 7340032,
+  "used_bytes": 7337646,
+  "capacity_bytes": 7340032,
+  "headroom_bytes": 2386,
+  "fixed_span": 848728,
+  "cartridge_profile": "standard",
+  "full_production_build_reproduced_candidate": true,
+  "graphics": {
+    "codec": "canonical_palette_byte_lz_fast",
+    "poses": 11270,
+    "canonical_streams": 5275,
+    "stream_bytes": 3484270,
+    "descriptor_bytes": 56490,
+    "padding_bytes": 580,
+    "compressed_overlap_bytes": 651,
+    "fixed_spare_bytes": 66183,
+    "descriptor_stride": 6,
+    "color_count_in_address": true,
+    "palette_bytes": 31560,
+    "physical": 3853376,
+    "palette_cpu": 3241022,
+    "descriptor_cpu": 3272582
+  },
+  "shared_metadata": {
+    "physical": 3460948,
+    "cpu": 2936660,
+    "size": 392412,
+    "geometry_bytes": 134340,
+    "pose_tables": 16,
+    "packed_pose_tables": 15,
+    "raw_tables": 17,
+    "pixel_bank_offsets_preserved": false
+  },
+  "verified_art": {
+    "poses": 33720,
+    "packed_geometry": 29790,
+    "background_map_cells": 808960
+  },
+  "native_graphics": {
+    "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+    "core_sha256": "ffcbd73fef683e1b36aa179320baa036c7d3cd6fa420e7f83c05bc8fda2db2d1",
+    "production_decoder_matches_diagnostic": true,
+    "compressed_native_exact": 9415,
+    "raw_exact": 1855,
+    "total_exact": 11270,
+    "native_master_cycles": {
+      "min": 25256,
+      "median": 202398,
+      "max": 464660
+    },
+    "physical_hardware_tested": false,
+    "scope": "Every final linked compressed pose with its actual shared palette prefix; isolated native decoding with output canaries and preserved registers. Raw poses checked byte-for-byte."
+  },
+  "native_core_parity": {
+    "format": "fast",
+    "fixtures": 5,
+    "exact_native_results_and_cycles": true,
+    "cores": [
+      {
+        "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+        "master_cycles": [
+          212408,
+          128674,
+          11830,
+          134428,
+          378560
+        ]
+      },
+      {
+        "core_sha256": "ffcbd73fef683e1b36aa179320baa036c7d3cd6fa420e7f83c05bc8fda2db2d1",
+        "master_cycles": [
+          212408,
+          128674,
+          11830,
+          134428,
+          378560
+        ]
+      }
+    ]
+  },
+  "streamed_audio": {
+    "victory": {
+      "samples": 76755,
+      "sha256": "8a800de7f2921d1c775e83fe03b462756f883379f56ab9940cc95b1750c18c7c",
+      "packed_bytes": 53106,
+      "delta": true
+    },
+    "ending": {
+      "samples": 584641,
+      "sha256": "2edc66bb661ff61992a637edc16b9823aec47b365e8c075804b3f84e7e85af70",
+      "packed_bytes": 307395,
+      "delta": true
+    },
+    "high_cold": {
+      "samples": 1118805,
+      "sha256": "5f5623f8e2b6efd302218388f9e5c3b3aeb885533d6df30b10e8518dd15f3076",
+      "packed_bytes": 291340,
+      "delta": false
+    },
+    "high_warm": {
+      "samples": 1118805,
+      "sha256": "2c8a655c1e42b81f7152654151f66bc4442933b50314cddbe7ebb4023d989e4d",
+      "packed_bytes": 282450,
+      "delta": false
+    }
+  },
+  "verified_audio_samples": 2899006,
+  "audio_runtime": [
+    {
+      "clip": "victory",
+      "scene": true,
+      "transition": "start",
+      "scene_steps": 122,
+      "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+      "expected_samples": 76755,
+      "dac_writes": 76756,
+      "setup_silence_writes": 0,
+      "samples_exact": true,
+      "first_mismatch": null,
+      "cadence_master_cycles": {
+        "3405": 76755
+      },
+      "cadence_exact": true,
+      "frames": 303,
+      "counters": {},
+      "physical_hardware_tested": false,
+      "physical_mapping_restored": true,
+      "idempotent_stop": true
+    },
+    {
+      "clip": "ending",
+      "scene": true,
+      "transition": "start",
+      "scene_steps": 1087,
+      "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+      "expected_samples": 584641,
+      "dac_writes": 584642,
+      "setup_silence_writes": 0,
+      "samples_exact": true,
+      "first_mismatch": null,
+      "cadence_master_cycles": {
+        "3405": 584641
+      },
+      "cadence_exact": true,
+      "frames": 2233,
+      "counters": {},
+      "physical_hardware_tested": false,
+      "physical_mapping_restored": true,
+      "idempotent_stop": true
+    },
+    {
+      "clip": "high_cold",
+      "scene": true,
+      "transition": "start",
+      "scene_steps": 0,
+      "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+      "expected_samples": 1118805,
+      "dac_writes": 1118806,
+      "setup_silence_writes": 0,
+      "samples_exact": true,
+      "first_mismatch": null,
+      "cadence_master_cycles": {
+        "3405": 1118805
+      },
+      "cadence_exact": true,
+      "frames": 4285,
+      "counters": {},
+      "physical_hardware_tested": false,
+      "physical_mapping_restored": true,
+      "idempotent_stop": true
+    },
+    {
+      "clip": "high_warm",
+      "scene": false,
+      "transition": "start",
+      "scene_steps": 0,
+      "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+      "expected_samples": 1118805,
+      "dac_writes": 1118806,
+      "setup_silence_writes": 0,
+      "samples_exact": true,
+      "first_mismatch": null,
+      "cadence_master_cycles": {
+        "3405": 1118805
+      },
+      "cadence_exact": true,
+      "frames": 4263,
+      "counters": {},
+      "physical_hardware_tested": false,
+      "physical_mapping_restored": true,
+      "idempotent_stop": true
+    },
+    {
+      "clip": "high_cold",
+      "scene": false,
+      "transition": "rearm",
+      "scene_steps": 0,
+      "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+      "expected_samples": 1118805,
+      "dac_writes": 1118806,
+      "setup_silence_writes": 0,
+      "samples_exact": true,
+      "first_mismatch": null,
+      "cadence_master_cycles": {
+        "3405": 1118805
+      },
+      "cadence_exact": true,
+      "frames": 4556,
+      "counters": {},
+      "physical_hardware_tested": false,
+      "physical_mapping_restored": true,
+      "idempotent_stop": true
+    },
+    {
+      "clip": "high_warm",
+      "scene": false,
+      "transition": "replace",
+      "scene_steps": 0,
+      "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+      "expected_samples": 1118805,
+      "dac_writes": 1118806,
+      "setup_silence_writes": 3,
+      "samples_exact": true,
+      "first_mismatch": null,
+      "cadence_master_cycles": {
+        "3405": 1118805
+      },
+      "cadence_exact": true,
+      "frames": 4283,
+      "counters": {},
+      "physical_hardware_tested": false,
+      "physical_mapping_restored": true,
+      "idempotent_stop": true
+    }
+  ],
+  "scenes": {
+    "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+    "cases": [
+      {
+        "stage": 0,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "80a5428918c7e99fa05503ad2ea205079260abb681151fd4907b123f252996c6",
+        "high_score_frame_sha256": "088334235ead5ba82429d2544d9b383506f14e9e493bf1e8238b58bfd2c64209",
+        "fault": 0,
+        "finite_pcm_complete_and_restored": true
+      },
+      {
+        "stage": 1,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "de87c99483fb22112b9d95d2e1cc7a455ee0c827f156afee927a476416bb0748",
+        "high_score_frame_sha256": "732fd11b1cf77f8df3d5e60c406847686e34cba2f236008dc348b6e7958afcc1",
+        "fault": 0
+      },
+      {
+        "stage": 2,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "07072400b326879fc3e85d01afa5122aba79f827ca7716bcd1115d40dd902b90",
+        "high_score_frame_sha256": "a07627e99e0ed9287c9c02b3a8058df7aa6d35814312a21b0e566058976b6f61",
+        "fault": 0
+      },
+      {
+        "stage": 3,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "3b66307c656b4291508e1e1b2ef96ba3a291dd5116b3dd676602494b0522c859",
+        "high_score_frame_sha256": "90dc6afa5e043c19cdd82a3a2bc76a906a14e2b0b14241bc704b36929197de30",
+        "fault": 0
+      },
+      {
+        "stage": 4,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "6eea6a9f4d585d4625de11f422dd4d961182ef24394c80b032989a65e342ba76",
+        "high_score_frame_sha256": "64229b703d52cde2005014e6e7104df0a094dd67fcc43dc40d9d5651d3e649d1",
+        "fault": 0
+      },
+      {
+        "stage": 5,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "44a7ec0db5cfdb2aa419474f5ae2c9c1d93f0b9d29cd54167f593fdb84668f3f",
+        "high_score_frame_sha256": "1fee9dce0e286766a44079901f9c617411b3351cb6113ef63a151301d3d2ef7e",
+        "fault": 0
+      },
+      {
+        "stage": 6,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "de87c99483fb22112b9d95d2e1cc7a455ee0c827f156afee927a476416bb0748",
+        "high_score_frame_sha256": "abf410f4c4e2ac11bb1e9b892d700687e26cfedfac877eb134dbc6c9a4d7d1f0",
+        "fault": 0
+      },
+      {
+        "stage": 7,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "831f9413c779fe40fdb9e48bb089800e6e36302cdf68eb3fca6dadf6dc3aa041",
+        "high_score_frame_sha256": "cb1c12e7ac395f952d27ae34344c5b90b7a8681878d3acd7bbabebe20b3c4a41",
+        "fault": 0
+      },
+      {
+        "stage": 8,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "f7f71d0785a6694ae0bcbd05765612a0a300638bacd85ac3e2c7a0cefb67ca3e",
+        "high_score_frame_sha256": "df5aaa3ff6a6956b1c4a571a1d2008e22842fc1e6e879cf394c2b9d90abbc629",
+        "fault": 0
+      },
+      {
+        "stage": 9,
+        "stage_entry_pass": true,
+        "high_score_entry_pass": true,
+        "stage_frame_sha256": "b15ded157aa8790fb0abdc3f5c25ebf5ebecf0f25b71523ea77a0edcc6ec4cf8",
+        "high_score_frame_sha256": "046fb7805f1b119f3f811dc86acfb74112faca2df61d5f2f12f74826e425f0bf",
+        "fault": 0
+      }
+    ],
+    "extended_ssf_software_model": false,
+    "physical_hardware_tested": false,
+    "scope": "Diagnostic CPU-register calls in an unmodified ROM; all stage loaders and high-score entry, not full campaign playthroughs."
+  },
+  "scene_images_exact_against_baseline": 20,
+  "soft_resets": {
+    "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+    "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+    "cases": [
+      {
+        "case": "arcade",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "campaign_1p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "campaign_2p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "survival_1p",
+        "soft_resets": 6,
+        "passed": true
+      },
+      {
+        "case": "survival_2p",
+        "soft_resets": 6,
+        "passed": true
+      }
+    ],
+    "scope": "Real libretro soft resets; controller menu changes; diagnostic RAM-seeded scores/initials; no savestates or ROM changes."
+  },
+  "cold_save": {
+    "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+    "extended_ssf_software_model": false,
+    "physical_hardware_tested": false,
+    "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+    "cold_restore_pass": true,
+    "corrupt_slot_fallback_pass": true,
+    "scope": "Three fresh core processes; controller settings, RAM-seeded score and initials saved through P2 pause; emulator/model battery RAM, no savestates."
+  },
+  "boot": {
+    "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+    "rom_bytes": 7340032,
+    "header_system": "SEGA MEGA DRIVE ",
+    "rom_range": [
+      0,
+      7340031
+    ],
+    "ram_range": [
+      16711680,
+      16777215
+    ],
+    "sram_header": "5241f820002000010020ffff",
+    "checksum_valid": true,
+    "exceeds_16_mib": false,
+    "last_nonzero_end": 7337646,
+    "cores": {
+      "picodrive": {
+        "sha256": "0646e8d7896e27ee65073851bbd1daf713fb95fb63b7684103ed008518e84512",
+        "file": "picodrive_libretro.dylib"
+      },
+      "gx": {
+        "sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+        "file": "genesis_plus_gx_libretro.dylib"
+      }
+    },
+    "cases": [
+      {
+        "engine": "picodrive",
+        "region_header": "U",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 691,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "picodrive",
+        "region_header": "E",
+        "video_region": "PAL",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 694,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "picodrive",
+        "region_header": "J",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 691,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "U",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "U",
+        "video_region": "NTSC",
+        "dirty_launch": true,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "E",
+        "video_region": "PAL",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 693,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "E",
+        "video_region": "PAL",
+        "dirty_launch": true,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 693,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "J",
+        "video_region": "NTSC",
+        "dirty_launch": false,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      },
+      {
+        "engine": "gx",
+        "region_header": "J",
+        "video_region": "NTSC",
+        "dirty_launch": true,
+        "boot_pass": true,
+        "menu_vblank_progress": 120,
+        "after_boot": {
+          "state": 0,
+          "fault": 0,
+          "refreshes": 0,
+          "vblanks": 689,
+          "updates": 0,
+          "save_available": 1,
+          "int_callback": "00030726"
+        },
+        "coop_pause_reset_restart_pass": true,
+        "passed": true
+      }
+    ],
+    "scope": "Emulator probes and metadata only; no physical hardware certification. U/E/J use temporary header variants; GX dirty launch seeds RAM/I/O. Gameplay coverage is opening Campaign 2P, P2 pause/resume, reset/restart."
+  },
+  "performance": [
+    {
+      "workload": "campaign_1p",
+      "accepted": {
+        "rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+        "case": "campaign_1p",
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "counters": {
+          "rtAppUpdates": 1735,
+          "rtAppPresentations": 1735,
+          "rtAppFullPresentations": 1291,
+          "rtAppReusedPresentations": 444,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.75886616944444,
+        "presentations_per_second": 57.75886616944444,
+        "stalled_refreshes": 65,
+        "longest_stall_refreshes": 20,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance."
+      },
+      "candidate": {
+        "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+        "case": "campaign_1p",
+        "agent": 0,
+        "input_pattern": "opening",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 261,
+          "rtAppPresentations": 260,
+          "rtAppFullPresentations": 259,
+          "rtAppReusedPresentations": 1,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 0,
+        "counters": {
+          "rtAppUpdates": 1736,
+          "rtAppPresentations": 1736,
+          "rtAppFullPresentations": 1466,
+          "rtAppReusedPresentations": 270,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.79215658222222,
+        "presentations_per_second": 57.79215658222222,
+        "stalled_refreshes": 64,
+        "longest_stall_refreshes": 20,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {
+          "rtPackedBufferHighWater": 1890,
+          "rtPackedBufferFailures": 0
+        }
+      }
+    },
+    {
+      "workload": "campaign_2p",
+      "accepted": {
+        "rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+        "case": "campaign_2p",
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "counters": {
+          "rtAppUpdates": 1737,
+          "rtAppPresentations": 1737,
+          "rtAppFullPresentations": 1454,
+          "rtAppReusedPresentations": 283,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.825446995,
+        "presentations_per_second": 57.825446995,
+        "stalled_refreshes": 63,
+        "longest_stall_refreshes": 20,
+        "compact_refreshes": 1111,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance."
+      },
+      "candidate": {
+        "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+        "case": "campaign_2p",
+        "agent": 0,
+        "input_pattern": "opening",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 261,
+          "rtAppPresentations": 260,
+          "rtAppFullPresentations": 66,
+          "rtAppReusedPresentations": 194,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 0,
+        "counters": {
+          "rtAppUpdates": 1737,
+          "rtAppPresentations": 1737,
+          "rtAppFullPresentations": 1458,
+          "rtAppReusedPresentations": 279,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.825446995,
+        "presentations_per_second": 57.825446995,
+        "stalled_refreshes": 63,
+        "longest_stall_refreshes": 20,
+        "compact_refreshes": 1111,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {
+          "rtPackedBufferHighWater": 0,
+          "rtPackedBufferFailures": 0
+        }
+      }
+    },
+    {
+      "workload": "survival_2p",
+      "accepted": {
+        "rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+        "case": "survival_2p",
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "counters": {
+          "rtAppUpdates": 1502,
+          "rtAppPresentations": 1403,
+          "rtAppFullPresentations": 450,
+          "rtAppReusedPresentations": 953,
+          "rtAppSkippedPresentations": 100
+        },
+        "simulation_updates_per_second": 50.00219999222222,
+        "presentations_per_second": 46.70644912722222,
+        "stalled_refreshes": 338,
+        "longest_stall_refreshes": 220,
+        "compact_refreshes": 1788,
+        "final_state": 0,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance."
+      },
+      "candidate": {
+        "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+        "case": "survival_2p",
+        "agent": 0,
+        "input_pattern": "opening",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 255,
+          "rtAppPresentations": 254,
+          "rtAppFullPresentations": 65,
+          "rtAppReusedPresentations": 189,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 0,
+        "counters": {
+          "rtAppUpdates": 1502,
+          "rtAppPresentations": 1395,
+          "rtAppFullPresentations": 463,
+          "rtAppReusedPresentations": 932,
+          "rtAppSkippedPresentations": 108
+        },
+        "simulation_updates_per_second": 50.00219999222222,
+        "presentations_per_second": 46.440125824999996,
+        "stalled_refreshes": 345,
+        "longest_stall_refreshes": 220,
+        "compact_refreshes": 1787,
+        "final_state": 0,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {
+          "rtPackedBufferHighWater": 0,
+          "rtPackedBufferFailures": 0
+        }
+      }
+    },
+    {
+      "workload": "leila",
+      "accepted": {
+        "rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+        "case": "campaign_1p",
+        "agent": 1,
+        "input_pattern": "opening",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "counters": {
+          "rtAppUpdates": 1736,
+          "rtAppPresentations": 1736,
+          "rtAppFullPresentations": 1471,
+          "rtAppReusedPresentations": 265,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.79215658222222,
+        "presentations_per_second": 57.79215658222222,
+        "stalled_refreshes": 64,
+        "longest_stall_refreshes": 20,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {}
+      },
+      "candidate": {
+        "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+        "case": "campaign_1p",
+        "agent": 1,
+        "input_pattern": "opening",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 261,
+          "rtAppPresentations": 260,
+          "rtAppFullPresentations": 260,
+          "rtAppReusedPresentations": 0,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 0,
+        "counters": {
+          "rtAppUpdates": 1736,
+          "rtAppPresentations": 1736,
+          "rtAppFullPresentations": 1465,
+          "rtAppReusedPresentations": 271,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.79215658222222,
+        "presentations_per_second": 57.79215658222222,
+        "stalled_refreshes": 64,
+        "longest_stall_refreshes": 20,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {
+          "rtPackedBufferHighWater": 1890,
+          "rtPackedBufferFailures": 0
+        }
+      }
+    },
+    {
+      "workload": "jump",
+      "accepted": {
+        "rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+        "case": "campaign_1p",
+        "agent": 0,
+        "input_pattern": "jump",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 261,
+          "rtAppPresentations": 260,
+          "rtAppFullPresentations": 259,
+          "rtAppReusedPresentations": 1,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 0,
+        "counters": {
+          "rtAppUpdates": 1733,
+          "rtAppPresentations": 1733,
+          "rtAppFullPresentations": 1316,
+          "rtAppReusedPresentations": 417,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.692285343888884,
+        "presentations_per_second": 57.692285343888884,
+        "stalled_refreshes": 67,
+        "longest_stall_refreshes": 21,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {}
+      },
+      "candidate": {
+        "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+        "case": "campaign_1p",
+        "agent": 0,
+        "input_pattern": "jump",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 261,
+          "rtAppPresentations": 260,
+          "rtAppFullPresentations": 259,
+          "rtAppReusedPresentations": 1,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 0,
+        "counters": {
+          "rtAppUpdates": 1732,
+          "rtAppPresentations": 1732,
+          "rtAppFullPresentations": 1302,
+          "rtAppReusedPresentations": 430,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.65899493111111,
+        "presentations_per_second": 57.65899493111111,
+        "stalled_refreshes": 68,
+        "longest_stall_refreshes": 21,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {
+          "rtPackedBufferHighWater": 2018,
+          "rtPackedBufferFailures": 0
+        }
+      }
+    },
+    {
+      "workload": "aligned-campaign_1p",
+      "accepted": {
+        "rom_sha256": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+        "case": "campaign_1p",
+        "agent": 0,
+        "input_pattern": "opening",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 512,
+          "rtAppPresentations": 511,
+          "rtAppFullPresentations": 510,
+          "rtAppReusedPresentations": 1,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 512,
+        "counters": {
+          "rtAppUpdates": 1734,
+          "rtAppPresentations": 1734,
+          "rtAppFullPresentations": 1200,
+          "rtAppReusedPresentations": 534,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.725575756666665,
+        "presentations_per_second": 57.725575756666665,
+        "stalled_refreshes": 66,
+        "longest_stall_refreshes": 21,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {}
+      },
+      "candidate": {
+        "rom_sha256": "54468d3329e0bc07e4593d6f21cffb3f2dcf448b1bcdbe354ac3d54d5c535220",
+        "case": "campaign_1p",
+        "agent": 0,
+        "input_pattern": "opening",
+        "extended_ssf_software_model": false,
+        "reserved_os_bank_guard": false,
+        "refreshes": 1800,
+        "seconds": 30.03867830282736,
+        "initial_counters": {
+          "rtAppUpdates": 512,
+          "rtAppPresentations": 511,
+          "rtAppFullPresentations": 510,
+          "rtAppReusedPresentations": 1,
+          "rtAppSkippedPresentations": 0
+        },
+        "aligned_start_update": 512,
+        "counters": {
+          "rtAppUpdates": 1735,
+          "rtAppPresentations": 1735,
+          "rtAppFullPresentations": 1274,
+          "rtAppReusedPresentations": 461,
+          "rtAppSkippedPresentations": 0
+        },
+        "simulation_updates_per_second": 57.75886616944444,
+        "presentations_per_second": 57.75886616944444,
+        "stalled_refreshes": 65,
+        "longest_stall_refreshes": 21,
+        "compact_refreshes": 0,
+        "final_state": 1,
+        "fault": 0,
+        "scope": "One NTSC opening workload with movement/shooting; emulated timing, not host execution speed or full-game performance.",
+        "packed_graphics": {
+          "rtPackedBufferHighWater": 1666,
+          "rtPackedBufferFailures": 0
+        }
+      }
+    }
+  ],
+  "original_accepted_sha256": {
+    "RollingThunderMD.bin": "283f35e272fe3da63d6b16ec46f8b04ed1db46842a1eac85b978c1e2ce449274",
+    "RollingThunderMD-MegaEverDrivePro.bin": "0e1a62c8b159d5449eb8edb977156a54144d6a1bd49d40bb7f32e9dac2bfc2b2"
+  },
+  "original_accepted_roms_unchanged": true,
+  "unit_checks": {
+    "pcm_format": 3,
+    "packed_storage": 4,
+    "passed": true
+  },
+  "physical_hardware_tested": false,
+  "limitations": [
+    "Timing workloads are 1,800 NTSC refreshes, including automatic continue/loading; not whole-game sustained FPS.",
+    "Campaign jumping workload presents one fewer update/frame than the accepted build (1,732 versus 1,733); opening 1P presents one more and opening 2P matches.",
+    "Existing adaptive rendering policies are unchanged; fresh-animation counters are included separately.",
+    "Stage and ending scenes are entered through diagnostic calls, not a full natural campaign playthrough.",
+    "Capacity fit does not establish support for every cartridge mapper/firmware, save backup behavior, or Genesis hardware revision."
+  ]
+}

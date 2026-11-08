@@ -37,7 +37,9 @@ void __wrap__reset_entry(void)
     if(warm)while(GET_VDP_STATUS(VDP_DMABUSY_FLAG));
     /* The prior PCM owner may have replaced window 1. Restore fixed ROM data
      * before copying the .data image; this function executes in window 0. */
+#ifndef RT_LINEAR_ROM
     *(vu8 *)0xa130f3=1;
+#endif
     volatile u8 *dst=&_start;
     while(dst<&_bend)*dst++=0;
     const u8 *src=(const u8 *)&_stext;
@@ -52,6 +54,10 @@ void __wrap__reset_entry(void)
      * below rebuilds heap, DMA, VDP, sound and callbacks after global reset. */
     intCB=defaultInterrupt;
     if(warm)RT_saveResetImport(&saved);
-    __real__reset_entry();
-    while(TRUE);
+    /* The mirror has been imported. Discard this wrapper's temporary stack
+     * before entering the non-returning SDK runtime; otherwise the larger
+     * SRAM snapshot permanently consumes gameplay's reserved stack space. */
+    __asm__ volatile("move.l #0xe1000000,%%sp\n\tjmp (%0)"
+                     : : "a"(__real__reset_entry) : "memory");
+    __builtin_unreachable();
 }

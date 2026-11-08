@@ -1,6 +1,7 @@
 /* Generated fixed-map adapter; see build_fixed_mapper.py. */
 #include "config.h"
 #include "types.h"
+#include "rt_rom_layout.h"
 
 #include "mapper.h"
 
@@ -30,6 +31,10 @@ u16 SYS_getBank(u16 regionIndex)
 
 void SYS_setBank(u16 regionIndex, u16 bankIndex)
 {
+#ifdef RT_LINEAR_ROM
+    /* Every linked pointer is a physical address inside the flat 4 MiB ROM. */
+    (void)regionIndex;(void)bankIndex;
+#else
     // check we are in valid region (region 0 is not switchable)
     if ((regionIndex > 0) && (regionIndex < 8))
     {
@@ -45,6 +50,7 @@ void SYS_setBank(u16 regionIndex, u16 bankIndex)
 #if (LIB_LOG_LEVEL >= LOG_LEVEL_ERROR)
     else
         KLog_U1("Cannot set bank in region #", regionIndex);
+#endif
 #endif
 }
 

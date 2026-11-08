@@ -1,0 +1,58 @@
+[
+  {
+    "name": "frontend-gx",
+    "passed": true
+  },
+  {
+    "name": "frontend-pico",
+    "passed": true
+  },
+  {
+    "name": "doors",
+    "passed": true
+  },
+  {
+    "name": "door-visibility-0",
+    "passed": true
+  },
+  {
+    "name": "door-visibility-1",
+    "passed": true
+  },
+  {
+    "name": "compatibility",
+    "passed": true
+  },
+  {
+    "name": "timing-before-0-campaign_1p",
+    "passed": true
+  },
+  {
+    "name": "timing-before-0-campaign_2p",
+    "passed": true
+  },
+  {
+    "name": "timing-before-1-campaign_1p",
+    "passed": true
+  },
+  {
+    "name": "timing-before-1-campaign_2p",
+    "passed": true
+  },
+  {
+    "name": "timing-after-0-campaign_1p",
+    "passed": true
+  },
+  {
+    "name": "timing-after-0-campaign_2p",
+    "passed": true
+  },
+  {
+    "name": "timing-after-1-campaign_1p",
+    "passed": true
+  },
+  {
+    "name": "timing-after-1-campaign_2p",
+    "passed": true
+  }
+]

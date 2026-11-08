@@ -1,0 +1,51 @@
+{
+  "status": "pass",
+  "arcade_bullet_mask_address": "CPU2 D426",
+  "arcade_wall_table_address": "CPU1 BBC1",
+  "native_checks": [
+    "12288 projectile material cases passed",
+    "8192 real wall-sweep/response cases passed"
+  ],
+  "door_interiors": [
+    {
+      "stage": "0_0",
+      "opaque_black_cells": 96
+    },
+    {
+      "stage": "0_1",
+      "opaque_black_cells": 96
+    },
+    {
+      "stage": "0_2",
+      "opaque_black_cells": 32
+    },
+    {
+      "stage": "0_3",
+      "opaque_black_cells": 32
+    },
+    {
+      "stage": "0_4",
+      "opaque_black_cells": 96
+    },
+    {
+      "stage": "1_0",
+      "opaque_black_cells": 96
+    },
+    {
+      "stage": "1_1",
+      "opaque_black_cells": 96
+    },
+    {
+      "stage": "1_2",
+      "opaque_black_cells": 32
+    },
+    {
+      "stage": "1_3",
+      "opaque_black_cells": 96
+    },
+    {
+      "stage": "1_4",
+      "opaque_black_cells": 96
+    }
+  ]
+}

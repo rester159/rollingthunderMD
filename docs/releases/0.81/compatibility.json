@@ -1,0 +1,579 @@
+{
+  "rom_sha256": "54eba2215c07860b6644426bf82d97fcbea3070dbe893e0edfab3fbedca9156d",
+  "rom_bytes": 4194304,
+  "header_system": "SEGA MEGA DRIVE ",
+  "rom_range": [
+    0,
+    4194303
+  ],
+  "ram_range": [
+    16711680,
+    16777215
+  ],
+  "sram_header": "5241f820002000010020ffff",
+  "checksum_valid": true,
+  "exceeds_16_mib": false,
+  "last_nonzero_end": 4079063,
+  "cores": {
+    "picodrive": {
+      "sha256": "0646e8d7896e27ee65073851bbd1daf713fb95fb63b7684103ed008518e84512",
+      "file": "picodrive_libretro.dylib"
+    },
+    "gx": {
+      "sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+      "file": "genesis_plus_gx_libretro.dylib"
+    }
+  },
+  "cases": [
+    {
+      "engine": "picodrive",
+      "region_header": "U",
+      "video_region": "NTSC",
+      "dirty_launch": false,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 690,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [],
+      "data_init_checks": [],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "picodrive",
+      "region_header": "E",
+      "video_region": "PAL",
+      "dirty_launch": false,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 694,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [],
+      "data_init_checks": [],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "picodrive",
+      "region_header": "J",
+      "video_region": "NTSC",
+      "dirty_launch": false,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 690,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [],
+      "data_init_checks": [],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "gx",
+      "region_header": "U",
+      "video_region": "NTSC",
+      "dirty_launch": false,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 689,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [
+        {
+          "frame": 20,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 1601,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        }
+      ],
+      "data_init_checks": [
+        {
+          "bytes": 88,
+          "exact": true
+        }
+      ],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "gx",
+      "region_header": "U",
+      "video_region": "NTSC",
+      "dirty_launch": true,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 689,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [
+        {
+          "frame": 20,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 1601,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        }
+      ],
+      "data_init_checks": [
+        {
+          "bytes": 88,
+          "exact": true
+        }
+      ],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "gx",
+      "region_header": "E",
+      "video_region": "PAL",
+      "dirty_launch": false,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 692,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [
+        {
+          "frame": 16,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 1598,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        }
+      ],
+      "data_init_checks": [
+        {
+          "bytes": 88,
+          "exact": true
+        }
+      ],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "gx",
+      "region_header": "E",
+      "video_region": "PAL",
+      "dirty_launch": true,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 692,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [
+        {
+          "frame": 16,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 28,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 1598,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        }
+      ],
+      "data_init_checks": [
+        {
+          "bytes": 88,
+          "exact": true
+        }
+      ],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "gx",
+      "region_header": "J",
+      "video_region": "NTSC",
+      "dirty_launch": false,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 689,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [
+        {
+          "frame": 20,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 1601,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        }
+      ],
+      "data_init_checks": [
+        {
+          "bytes": 88,
+          "exact": true
+        }
+      ],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    },
+    {
+      "engine": "gx",
+      "region_header": "J",
+      "video_region": "NTSC",
+      "dirty_launch": true,
+      "boot_pass": true,
+      "menu_vblank_progress": 120,
+      "after_boot": {
+        "state": 0,
+        "fault": 0,
+        "refreshes": 0,
+        "vblanks": 689,
+        "updates": 0,
+        "save_available": 1,
+        "int_callback": "0002b612"
+      },
+      "mapper_writes": [
+        {
+          "frame": 20,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 0
+        },
+        {
+          "frame": 31,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 1,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 32,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        },
+        {
+          "frame": 1601,
+          "address": "0xa130f1",
+          "value": 0,
+          "bank0_before": 0,
+          "bank0_after": 0,
+          "int_callback": "0002b612",
+          "save_available": 1
+        }
+      ],
+      "data_init_checks": [
+        {
+          "bytes": 88,
+          "exact": true
+        }
+      ],
+      "coop_pause_reset_restart_pass": true,
+      "passed": true
+    }
+  ],
+  "scope": "Emulator probes and metadata only; no physical hardware certification. U/E/J use temporary header variants; GX dirty launch seeds RAM/I/O. Gameplay coverage is opening Campaign 2P, P2 pause/resume, reset/restart."
+}

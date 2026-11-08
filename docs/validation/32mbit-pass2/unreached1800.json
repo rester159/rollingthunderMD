@@ -1,0 +1,186 @@
+{
+  "before": [
+    {
+      "name": "1-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "1-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "2-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "2-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "4-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "4-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_1p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_1p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "6-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "6-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "7-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "7-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_1p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_1p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    }
+  ],
+  "after": [
+    {
+      "name": "1-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "1-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "2-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "2-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "4-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "4-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_1p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_1p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "5-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "6-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "6-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "7-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "7-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_1p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_1p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_2p-0",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    },
+    {
+      "name": "9-campaign_2p-1",
+      "passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/Users/rester159/genesis ports/rolling thunder/tests/measure_rendering.py\", line 72, in <module>\n    if a.updates:assert delta['rtAppUpdates']>=a.updates, 'Simulation update target was not reached'\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Simulation update target was not reached\n"
+    }
+  ]
+}

@@ -18,9 +18,11 @@ static void sceneVInt(void)
 }
 static void scenePublish(void)
 {
- RT_CompletionScene *s=owner;if(!s || !s->pending)return;
+ RT_CompletionScene *s=owner;if(!s || !s->pending){RT_releaseStageTransitionRasterIO();return;}
  s->pending=0;
- if(!RT_sceneArtPublish(&s->lowArt,&s->batch)){s->fault=6;return;}
+ u8 published=RT_sceneArtPublish(&s->lowArt,&s->batch);
+ RT_releaseStageTransitionRasterIO();
+ if(!published){s->fault=6;return;}
  s->publicationLine=GET_VCOUNTER;
  if(!GET_VDP_STATUS(VDP_VBLANK_FLAG))s->latePublications++;
  s->lastRefresh=vtimer;
@@ -126,7 +128,16 @@ u8 RT_completionSceneStepIO(RT_CompletionScene *s,
   if(endIO)endIO();
  }
  if(s->fault)return 0;
- if(RT_getStageTransitionRasterStats()->fault){s->fault=7;return 0;}
+ if(RT_getStageTransitionRasterStats()->fault){
+  /* Only the interactive title installs this decorator. Its sound-driver
+   * loads and menu redraws can cross a palette deadline; the next VInt
+   * restores the complete palette sequence. Do not permanently freeze the
+   * menu for that transient miss. Ordinary cutscenes retain strict checks. */
+  if(rtCompletionSatDecorate){
+   extern volatile u32 rtTitleMenuRasterRecoveries;
+   if(RT_acknowledgeStageTransitionRasterFault())rtTitleMenuRasterRecoveries++;
+  }else{s->fault=7;return 0;}
+ }
  s->frames++;
  RT_TransitionResult result=RT_transitionFramePresented(&s->clock);
  if(result==RT_TRANSITION_INVALID){s->fault=8;return 0;}

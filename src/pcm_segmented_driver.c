@@ -1,3 +1,6 @@
+#include <genesis.h>
+#include "rt_rom_layout.h"
+#ifndef RT_STREAMED_PCM
 #include "rt_segmented_pcm.h"
 #include "rt_z80_bus_policy.h"
 extern const u8 pcm_rom_z80[4096];
@@ -84,3 +87,5 @@ bool RT_stopSegmentedPcm(void)
  Z80_unloadDriver();SYS_setBank(1,previousBank);active=FALSE;
  SYS_enableInts();return TRUE;
 }
+
+#endif

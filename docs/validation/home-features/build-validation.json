@@ -1,0 +1,16 @@
+{
+  "rom_sha256": "c08a333de4045cd7ed3966409f3322a9d59aa27ea5ba06dae7da7f585cffde55",
+  "rom_bytes": 4194304,
+  "payload_used_bytes": 4189406,
+  "full_normal_build": true,
+  "release_sha256_unchanged": "54eba2215c07860b6644426bf82d97fcbea3070dbe893e0edfab3fbedca9156d",
+  "physical_hardware_tested": false,
+  "host_checks": [
+    "SRAM journals and interrupted writes",
+    "three checkpoint slots and dead co-op partner preservation",
+    "21 achievement conditions and SFX request",
+    "950 exact HUD glyph variants",
+    "20000 sprite priority/linker batches",
+    "HUD ammo and exhaustive decimal digits"
+  ]
+}

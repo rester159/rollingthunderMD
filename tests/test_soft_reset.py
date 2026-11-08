@@ -111,21 +111,31 @@ class Machine:
         assert self.read('highRecords', 35) == records
         assert self.sram() == before, 'Reset rewrote the committed save'
 
-    def start(self, case):
+    def start(self, case, agent=0):
         if case == 'arcade':
             self.press(3)
+            if 'rtHomeSaveSlot' in self.symbols:
+                self.press(3)  # Arcade > Start.
+            if 'rtArcadeAttract' in self.symbols and self.number('rtArcadeAttract'):
+                self.press(3)  # Start from the Arcade attract screen.
         else:
             self.press(5); self.press(3)  # Home
             if case.startswith('survival'):
                 self.press(5)
             self.press(3)  # agents
+            if 'rtHomeSaveSlot' in self.symbols and not case.startswith('survival'):
+                self.press(3)  # Save slot.
+                if self.number('page') == 13:
+                    self.press(3)  # Confirm replacing an existing slot.
             if case.endswith('2p'):
                 self.press(3, 1)
+            if agent:self.press(7)
             self.press(3)
         self.run(180)
         assert self.number('rtAppState', 2) == 1, 'Game did not restart'
         assert self.number('rtSession', offset=0) == int(case != 'arcade')
         assert self.number('rtSession', offset=1) == int(case.endswith('2p'))
+        assert self.number('rtSession', offset=2) == agent, 'Selected player did not start'
         assert self.number('rtSession', offset=5) == int(case.startswith('survival'))
         before = self.number('rtAppUpdates', 4)
         self.run(30)
