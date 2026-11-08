@@ -1,0 +1,7 @@
+{
+  "case": "door",
+  "rom_sha256": "b50e548c41972be76daab4278bdafb6a71d77d990b7c0be7334a47cd7320805c",
+  "scope": "October 19/20 feedback fixtures through production stage/VDP/gameplay paths.\n\nRAM places actors near authored geometry; vault, crouch, fire, wall response and\nopening animation then use production code. These are not full playthroughs.\n",
+  "opaque_black_interior_pixels": 2048,
+  "green_stage_backdrop_retained": true
+}

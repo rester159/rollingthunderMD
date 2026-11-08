@@ -162,7 +162,7 @@ static void loadFooterFont(const RT_SceneBackground *b)
 }
 void RT_titleMenuFooter(void)
 {
- const char *credit="PORTED BY RESTER159, 2026",*version="v0.91 BETA";
+ const char *credit="PORTED BY RESTER159, 2026",*version="v0.92 BETA";
  for(u16 x=2;*credit;x++,credit++)VDP_setTileMapXY(BG_A,
   TILE_ATTR_FULL(footerPalette,TRUE,FALSE,FALSE,FOOTER_FONT+*credit-32),x,27);
  for(u16 x=28;*version;x++,version++)VDP_setTileMapXY(BG_A,
