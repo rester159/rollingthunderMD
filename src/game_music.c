@@ -69,6 +69,13 @@ u8 RT_gameMusicTrackFor(u8 story,u8 area)
 
 void RT_gameMusicPrepare(void){ensureDriver();}
 
+void RT_gameMusicRestart(void)
+{
+    /* Force a full reinstall even when the current driver still looks owned. */
+    active=0;loaded=0;
+    ensureDriver();
+}
+
 void RT_gameMusicStart(u8 track)
 {
     ensureDriver();
