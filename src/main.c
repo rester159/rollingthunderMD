@@ -605,6 +605,14 @@ static u8 stepHighEntry(const u16 pads[2])
     return publishHighPanel();
 }
 
+/* Safety net before a new game from the menu or attract: reinstall the
+ * level-music driver with the display blank, so a driver that went silent
+ * earlier cannot carry that silence into play. */
+static void restartGameMusic(void)
+{
+    if(finalMusic.active)return;
+    VDP_setEnable(FALSE);RT_gameMusicRestart();
+}
 static u8 start(void){
     if(finalMusic.active)return 0;
     finalAdmission=(RT_EndingAdmission){0};finalEnding=(RT_CampaignEnding){0};
@@ -736,7 +744,7 @@ int main(bool hardReset){
                 endHud();endAttractLoad();RT_titleMenuEnd();RT_completionSceneEnd(&completion);
                 releaseAttractInput();rtArcadeAttract=RT_ATTRACT_OFF;
                 if(edge&BUTTON_B)menu();
-                else if(!start()){rtAppFault=100;continue;}
+                else{restartGameMusic();if(!start()){rtAppFault=100;continue;}}
                 pausePrevious[0]=pads[0];pausePrevious[1]=pads[1];continue;
             }
             if(rtAppState==APP_ATTRACT){
@@ -775,7 +783,7 @@ int main(bool hardReset){
             u32 settings=menuSaveState();
             if(RT_stepModeSelect(pads[0],pads[1])){saveProgress();RT_titleMenuEnd();
                 if(rtSession.mode==RT_MODE_ARCADE){if(!beginAttract())rtAppFault=103;}
-                else start();}
+                else{restartGameMusic();start();}}
             else if(settings!=menuSaveState())saveProgress();
             if(rtAppState==APP_MENU){RT_drawModeSelect();if(!RT_titleMenuActive())SYS_doVBlankProcess();}
             continue;

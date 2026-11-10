@@ -2,6 +2,7 @@
 #ifdef __m68k__
 #include "rt_rom_layout.h"
 #include "rt_title_menu.h"
+#include "rt_z80_bus_policy.h"
 #endif
 #define SLOT_SIZE 64
 #define PAYLOAD 10
@@ -68,6 +69,25 @@ static void leave(bool bus){SRAM_disable();if(!bus)Z80_releaseBus();SYS_enableIn
 static u8 readByte(u16 offset){return SRAM_readByte(offset);}
 static void writeByte(u16 offset,u8 value){SRAM_writeByte(offset,value);}
 #endif
+/* Around every SRAM write: park a cartridge-reading music driver in its
+ * RAM-only loop before the mapper leaves ROM mode, and let it continue only
+ * after ROM mode is restored. Other drivers keep the plain bus hold. */
+static u8 parkBegin(void)
+{
+#ifdef __m68k__
+    return RT_z80DmaGuardBegin();
+#else
+    return 0;
+#endif
+}
+static void parkEnd(u8 token)
+{
+#ifdef __m68k__
+    RT_z80DmaGuardEnd(token);
+#else
+    (void)token;
+#endif
+}
 static void readSlot(u8 slot,u8 *p){for(u8 i=0;i<SLOT_SIZE;i++)p[i]=readByte(slot*SLOT_SIZE+i);}
 bool RT_saveLoad(u8 records[35],u32 *best,u8 *credits,u8 *psgMuted,u8 *controls)
 {
@@ -105,10 +125,11 @@ bool RT_saveStore(const u8 records[35],u32 best,u8 credits,u8 psgMuted,u8 contro
      * Unchanged saves return above without waiting or touching SRAM. */
     if(RT_titleMenuActive())VDP_waitVBlank(TRUE);
 #endif
+    u8 park=parkBegin();
     bool bus=enter();
     writeByte(base,0); /* invalidate first; commit magic last */
     for(u8 i=1;i<SLOT_SIZE;i++)writeByte(base+i,data[i]);
-    writeByte(base,data[0]);leave(bus);
+    writeByte(base,data[0]);leave(bus);parkEnd(park);
     /* CRC and commit marker are checked on the next cold boot. Do not read
      * back through a window that an SSF emulator may now map directly to ROM. */
     /* Publish the inactive mirror with the same commit-last discipline.
@@ -168,9 +189,10 @@ bool RT_saveExtraWrite(u8 slot,const u8 payload[48])
     if(RT_titleMenuActive())VDP_waitVBlank(TRUE);
 #endif
     u16 base=256+slot*128+target*64;
+    u8 park=parkBegin();
     bool bus=enter();writeByte(base,0);
     for(u8 i=1;i<64;i++)writeByte(base+i,data[i]);
-    writeByte(base,data[0]);leave(bus);
+    writeByte(base,data[0]);leave(bus);parkEnd(park);
     extras[slot][target][0]=0;
     __asm__ volatile("" ::: "memory");
     memcpy(extras[slot][target]+1,data+1,63);
