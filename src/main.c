@@ -70,7 +70,7 @@ static RT_DisplayStream terrainStream;
 volatile u16 rtAppState,rtAppFault;
 volatile u32 rtAppUpdates,rtAppPresentations,rtAppRefreshes;
 volatile u32 rtAppSkippedPresentations,rtAppMaxUpdateLag;
-static RT_ArcadeSession arcade;
+static RT_ArcadeSession arcade,homeRestart;
 static RT_CampaignScore score;
 static RT_CampaignBonus bonus;
 typedef struct {
@@ -625,6 +625,7 @@ static u8 start(void){
     if(!resume)RT_homeCheckpoint(&scene,&score);
     if(rtArcadeAttract==RT_ATTRACT_DEMO)RT_attractDemoInitialize(&scene);
     if(rtSession.mode==RT_MODE_ARCADE && !RT_arcadeSessionInitialize(&arcade,&scene,(rtArcadeDips&RT_DIP_LIVES)?1:0)){rtAppFault=4;return 0;}
+    if(rtSession.mode==RT_MODE_HOME && !survival)RT_restartPointBegin(&homeRestart,&scene);
     if(!video()){rtAppFault=1;notice("NATIVE BUILD ERROR","STAGE INITIALIZATION",APP_UNFINISHED);return 0;}
     transitionSelector=1;transitionEffect=0;rtAppBonusEvents=0;
     tick=0;rtAppState=APP_PLAY;
@@ -827,6 +828,7 @@ int main(bool hardReset){
             RT_homeCheckpoint(&scene,&score);
             if(!video()){notice("DEVELOPMENT BUILD","AREA ART NOT LINKED",APP_UNFINISHED);continue;}
             tick=0;rtAppState=APP_PLAY;
+            if(rtSession.mode==RT_MODE_HOME && !survival)RT_restartPointBegin(&homeRestart,&scene);
             if(rtSession.mode==RT_MODE_ARCADE){
                 arcade.story=scene.stage->story;arcade.area=scene.stage->area;
                 arcade.checkpoint=0;arcade.previousWindow=scene.objectWindow;
@@ -863,10 +865,15 @@ int main(bool hardReset){
                 /* Reload the current area's authored entrance and preserve
                  * which player paid. Other dead slot costs a separate credit
                  * on the next survivor-respawn pass. */
+                /* A paid Home continue restarts at the arcade's own mid-area
+                 * restart point once it has been reached (source A592 selects
+                 * area-header word $7C over $7A when $CF is set). */
+                u8 restart=!survival && RT_restartPointFor(&homeRestart,story,area);
                 if(survival?RT_survivalSceneContinue(&scene,&survivalWorld,mask,pads):
-                   RT_campaignSceneInitialize(&scene,&selection,story,area,0,enemySet,credits)){
+                   RT_campaignSceneInitialize(&scene,&selection,story,area,restart,enemySet,credits)){
                     rtAppFault=2;notice("NATIVE BUILD ERROR","CONTINUE INITIALIZATION",APP_UNFINISHED);
                 }else{
+                    if(!survival)homeRestart.previousWindow=scene.objectWindow;
                     for(u8 p=0;p<scene.players.home.players;p++){
                         if(mask&(1<<p))scene.players.combat[p].invincibleTicks=180;
                         else {scene.players.combat[p].health=0;scene.players.combat[p].removed=1;}
@@ -1008,6 +1015,7 @@ int main(bool hardReset){
         if(state==RT_CAMPAIGN_GAME_OVER){endHud();RT_beginHomeGameOver();rtAppState=APP_MENU;continue;}
         if(!update.updated)continue;
         if(rtSession.mode==RT_MODE_ARCADE)RT_arcadeObserveWindow(&arcade,&scene);
+        else if(!survival)RT_arcadeObserveWindow(&homeRestart,&scene);
         rtAppUpdates++;
         if(!updateHud()){rtAppFault=60;notice("NATIVE BUILD ERROR","HUD VALUES",APP_UNFINISHED);continue;}
         if(!(survival?RT_survivalViewQueue(&view,&survivalDisplay,&scene.camera,&update.objects):
