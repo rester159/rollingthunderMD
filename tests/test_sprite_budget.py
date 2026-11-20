@@ -4,11 +4,13 @@
 The HUD reserves 22 of the 80 SAT links. With many visible enemies plus shots,
 RT_campaignSpritesQueue used to fail the whole frame once the next enemy or
 shot did not fit, ending the game on the "UNFINISHED GRAPHICS / PREPARE FAILED"
-screen. This fixture uses controller input only (no RAM writes; real damage and
-deaths, Start to continue): a seeded walker that mostly holds right and also
-backs off, fires, crouch-fires, tries doors and jumps between floors. The
-default Survival 1P seed 4 reached fault 34 at frame 2243 on v0.92. The fixed build must stay in gameplay or reach an ordinary game over,
-and records how many actors the SAT budget left out of a frame.
+screen. A seeded walker mostly holds right and also backs off, fires,
+crouch-fires, tries doors and jumps between floors. Players are held
+invincible (the only RAM write) so the enemy crowd builds up: since v0.93's
+body-contact damage, unprotected input-only routes die before a crowd forms.
+v0.92 also reached fault 34 input-only (Survival 1P seed 4, frame 2243). The
+fixed build must stay in gameplay and records how many actors the SAT budget
+left out of a frame.
 """
 import argparse,hashlib,json,random,struct
 from pathlib import Path
@@ -35,6 +37,7 @@ for f in range(a.frames):
   elif r<0.95:plan=[{UP,JUMP,RIGHT}]*6+[{RIGHT}]*20
   else:plan=[{DOWN,FIRE}]*4+[{DOWN}]*rng.randint(5,30)
  held=plan.pop(0);m.buttons={(q,k) for q in range(players) for k in held}
+ for q in range(players):m.patch('scene',b'\xff\xff',104+10*q)  # invincibleTicks
  if m.number('rtAppState',2)!=1 and f%20<3:m.buttons|={(q,3) for q in range(players)}  # continue
  m.core.retro_run()
  fault=m.number('rtAppFault',2)
@@ -45,6 +48,6 @@ if 'rtSpriteBudgetDrops' in m.symbols:
 drops=m.number('rtSpriteBudgetDrops',4) if 'rtSpriteBudgetDrops' in m.symbols else None
 r=dict(rom_sha256=hashlib.sha256(a.rom.read_bytes()).hexdigest(),case=a.case,seed=a.seed,
  frames=f+1,ended=end,budget_drops=drops,survival_retirements=m.number('rtAppSurvivalRetirements',4),
- limits='Controller input only; one seeded route, not a full playthrough.')
+ limits='Controller input with players held invincible; one seeded route, not a full playthrough.')
 a.output.write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r))
 m.core.retro_unload_game();m.core.retro_deinit()

@@ -7,10 +7,10 @@ flags, so a driver/timer start failure is total silence. This test checks:
 
 1. In gameplay the driver's HEART byte ($1F0B) advances ~60 Hz and the
    watchdog never fires on a healthy start (no false reloads).
-2. A cold start with a dead Z80 driver is recovered. Two simulated failures:
-   - 'park': PROTECT stuck high, so the driver parks in RAM-only playback;
-   - 'halt': the Z80 is jumped into an endless HALT-free loop (its program
-     overwritten), as if it never reached its main loop.
+2. A park held by the 68000 (PROTECT high, as the title raster's long
+   RAM-only reservation does) never triggers a reload.
+3. A dead Z80 driver is recovered: 'halt' jumps the Z80 into an endless
+   loop (its program overwritten), as if it never reached its main loop.
    The watchdog must reload the driver within ~1.5 s and music must resume.
 Uses the diagnostic GX core's Z80 RAM export; not an analog/hardware test.
 """
@@ -49,7 +49,18 @@ try:
     assert m.number('rtGameMusicWatchdogReloads', 2) == 0, 'false watchdog reload'
     assert ram[STATOUT] == 1, 'music not sounding'
     rows['healthy'] = dict(heartbeats_per_120_frames=rate, reloads=0)
-    for case in ('park', 'halt'):
+    # A park held by the 68000 (PROTECT) legitimately stops music ticks, as
+    # the title raster's reservation does: it must never trigger a reload.
+    before = m.number('rtGameMusicWatchdogReloads', 2)
+    ram[PROTECT] = 1
+    m.run(120)
+    assert m.number('rtGameMusicWatchdogReloads', 2) == before, 'reload during a 68000-held park'
+    ram[PROTECT] = 0
+    m.run(30)
+    rate = heart_rate(120)
+    assert 100 <= rate <= 140, ('heartbeat after held park', rate)
+    rows['held_park'] = dict(reloads=0, heartbeats_after=rate)
+    for case in ('halt',):
         before = m.number('rtGameMusicWatchdogReloads', 2)
         if case == 'park':
             ram[PROTECT] = 1

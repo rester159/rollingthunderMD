@@ -28,7 +28,11 @@ def shot(name):
 r=dict(rom_sha256=hashlib.sha256(a.rom.read_bytes()).hexdigest(),case=a.case)
 if a.case=='area1':
  m.start('arcade');m.run(150);m.patch('scene',b'\0\0',124)
- m.buttons={(0,7)};m.run(390);m.buttons=set();m.run(1);shot('area1-windows')
+ # Invincible walk: body contact (v0.93) would otherwise stop the route at
+ # the first guard, short of the window openings.
+ m.buttons={(0,7)}
+ for _ in range(390):m.patch('scene',b'\xff\xff',104);m.run(1)
+ m.buttons=set();m.run(1);shot('area1-windows')
  f=frame[0].astype(int);top=f[16:120]
  black=(top.sum(2)<24)
  # Largest all-black 48x40 block among the upper-floor window openings.
