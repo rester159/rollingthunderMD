@@ -101,6 +101,21 @@ void RT_spritesInitializeHud(const RT_SpriteCommand *prefix)
 #endif
 }
 
+/* A HUD block's width changed: rewrite only the prefix geometry in both
+ * publication buffers, keeping their links into the actor list. */
+void RT_spritesUpdateHudPrefix(const RT_SpriteCommand *prefix)
+{
+#ifdef __m68k__
+    RT_SpriteCommand *second=(RT_SpriteCommand*)(void*)vdpSpriteCache;
+#else
+    RT_SpriteCommand *second=sdkCache;
+#endif
+    for(u8 i=0;i<4;i++){
+        RT_SpriteCommand *a=published+i,*b=second+i;
+        a->y=b->y=prefix[i].y;a->size=b->size=prefix[i].size;
+        a->attribute=b->attribute=prefix[i].attribute;a->x=b->x=prefix[i].x;
+    }
+}
 void RT_spritesBegin(RT_SpriteBatch *batch)
 {
     if(!batch)return;

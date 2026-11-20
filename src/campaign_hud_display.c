@@ -64,6 +64,45 @@ static u8 renderBlock(RT_CampaignHudDisplay *d,const RT_CampaignHud *hud,u8 bloc
     }
     return DMA_transfer(method,DMA_VRAM,patterns,blockTile(block)*32,height*4*16,2);
 }
+/* Top blocks are 32x24 sprites, but the VDP spends sprite pixels per line on
+ * blank cells too. Nine full blocks used 288 of H40's 320 pixels on lines
+ * 0-23, so a ceiling fan beside the score lost one of its two pieces. Narrow
+ * each block to its inked columns (hide it when blank); tiles are column-major,
+ * so trimming the left edge only advances the first tile. */
+static u8 topBlockSprite(RT_CampaignHudDisplay *d,const RT_CampaignHud *hud,u8 block,RT_SpriteCommand *out)
+{
+    u8 first=4,last=0;
+    for(u8 x=0;x<4;x++)for(u8 y=0;y<3;y++){
+        RT_HudCell cell=hud->cells[y*36+block*4+x];
+        u8 group=groupIndex(cell.group);
+        if(group==255)return 0;
+        u16 attr=d->art->attributes[group][cell.glyph];if(attr==65535)return 0;
+        if(!inkPens[group])continue;
+        const u32 *source=d->art->patterns+(attr&2047)*8;
+        u32 any=0;for(u8 r=0;r<8;r++)any|=source[r];
+        if(!any)continue;
+        if(x<first)first=x;
+        if(x>last)last=x;
+    }
+    if(first==4){out->y=0;out->size=0;out->attribute=0;out->x=128;return 1;}
+    out->y=128;out->size=((last-first)<<2)|2;
+    out->attribute=0x8000|(palettes[0]<<13)|(blockTile(block)+first*3);
+    out->x=(u16)(144+block*32+first*8);
+    return 1;
+}
+static u8 topSprites(RT_CampaignHudDisplay *d,const RT_CampaignHud *hud,u8 *changed)
+{
+    *changed=0;
+    for(u8 block=0;block<9;block++){
+        RT_SpriteCommand next=hudSprites[block];
+        if(!topBlockSprite(d,hud,block,&next))return 0;
+        if(next.y!=hudSprites[block].y||next.size!=hudSprites[block].size||
+           next.attribute!=hudSprites[block].attribute||next.x!=hudSprites[block].x){
+            hudSprites[block]=next;*changed|=block<4?1:2;
+        }
+    }
+    return 1;
+}
 static u8 bottomSprites(RT_CampaignHudDisplay *d,const RT_CampaignHud *hud)
 {
     u8 pens[36];
@@ -115,8 +154,7 @@ u8 RT_campaignHudDisplayBegin(RT_CampaignHudDisplay *d,const RT_CampaignHudArt *
     d->art=art;d->firstTile=first;d->ready=0;
     memcpy(d->previous.cells,art->initial,sizeof d->previous);
     for(u8 block=0;block<18;block++){
-        if(block<9)hudSprites[block]=(RT_SpriteCommand){128,14,0,
-            0x8000|(palettes[0]<<13)|blockTile(block),(u16)(144+block*32)};
+        if(block<9&&!topBlockSprite(d,&d->previous,block,hudSprites+block))return 0;
         if(!renderBlock(d,&d->previous,block,CPU))return 0;
     }
     if(!bottomSprites(d,&d->previous)||!uploadTail(CPU))return 0;
@@ -155,7 +193,13 @@ u8 RT_campaignHudDisplayQueueRows(RT_CampaignHudDisplay *d,const RT_CampaignHud 
             d->previous.cells[index]=cell;
         }
     }
-    if(recolor&&(!bottomSprites(d,hud)||!uploadTail(DMA_QUEUE_COPY)))return 0;
+    u8 changed=0;
+    if((dirtyRows&7)&&!topSprites(d,&d->previous,&changed))return 0;
+    if(changed&1){
+        extern void RT_spritesUpdateHudPrefix(const RT_SpriteCommand*);
+        RT_spritesUpdateHudPrefix(hudSprites);
+    }
+    if((recolor&&!bottomSprites(d,hud))||((recolor||(changed&2))&&!uploadTail(DMA_QUEUE_COPY)))return 0;
     return 1;
 }
 void RT_campaignHudDisplayEnd(RT_CampaignHudDisplay *d)
