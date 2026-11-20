@@ -22,7 +22,7 @@ def clear_enemies():
  m.patch('scene',b'\0',5196+39*36+48)
 def enter(stage,cx,cy):
  write(syms['rtWorldStages']+stage*24+12,struct.pack('>hh',cx,cy))
- enter_campaign_stage(m,a.rom,a.symbols,stage)
+ enter_campaign_stage(m,a.rom,a.symbols,stage,before_resume=lambda:m.patch('scene',b'\xff\xff',104))
  m.patch('scene',b'\xff\xff',104)
 m.start('campaign_1p')
 if a.case=='platform':

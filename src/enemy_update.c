@@ -9,8 +9,18 @@ RT_EnemyResult RT_enemyUpdateReady(RT_Enemy *e,const RT_EnemyUpdateContext *c,
 {
     event->sound=event->command=0;
     u8 state=e->state.action&0xfc,selector=0,object=255,shot=0;
-    if(c->perception)RT_enemyPerceivePrepared(e,c->perception);
-    else RT_enemyPerceiveReady(e,c->target);
+    RT_EnemyPerceptionTarget local;const RT_EnemyPerceptionTarget *perception=c->perception;
+    if(!perception){RT_enemyPreparePerception(c->target,&local);perception=&local;}
+    RT_enemyPerceivePrepared(e,perception);
+    /* CPU2 B298 runs 962A's body contact before the state handler; a
+     * resulting 78 entry is serviced by this same update, as B2B2 is. */
+    if((e->state.decisions&0x40) && c->targets && c->targets->combat && c->targets->agents &&
+       c->target>=c->targets->agents && c->target<c->targets->agents+c->targets->players &&
+       RT_enemyBodyContact(e,perception,c->targets->combat+(c->target-c->targets->agents))){
+        RT_EnemyRecoilLinks links={0};RT_enemyThrownLinks(e,c->projectiles,&links);
+        if(!RT_enemyRecoilEnter(e,0x78,c->decisionCounter,&links))return RT_ENEMY_UNAVAILABLE;
+        state=0x78;
+    }
     RT_EnemyResult result;
     switch(state){
     case 0:case 0x6c:case 0x70:case 0x74:

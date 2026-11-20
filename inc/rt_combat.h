@@ -24,6 +24,13 @@ u8 RT_enemyPerceiveGeometryPrepared(RT_Enemy *enemy,const RT_EnemyPerceptionTarg
 u8 RT_highEnemyPerceivePrepared(RT_Enemy *enemy,const RT_EnemyPerceptionTarget *target,
     RT_AgentCombat *combat,u8 *command);
 u8 RT_enemyPerceivePrepared(RT_Enemy *enemy,const RT_EnemyPerceptionTarget *target);
+/* CPU2 962A body contact for ordinary (low) families, after the shared
+ * geometry above: decision bit 0x40 means the hitboxes overlap on the same
+ * floor. Damages the selected player (record13 gate) or returns actor
+ * selector 0x78 while that player is already reacting. Invincibility is the
+ * Home-mode extension. Returns zero when the actor keeps its state. */
+u8 RT_enemyBodyContact(RT_Enemy *enemy,const RT_EnemyPerceptionTarget *target,
+    RT_AgentCombat *combat);
 /* Ready entry requires non-null target and a live enemy. */
 u8 RT_enemyPerceiveReady(RT_Enemy *enemy,const RT_Agent *player);
 u8 RT_enemyPerceive(RT_Enemy *enemy,const RT_Agent *player);

@@ -38,6 +38,24 @@ void RT_agentDamageTick(const RT_Agent *agent,const RT_WorldCamera *camera,
     if(combat->priorityDamage){combat->priorityDamage--;combat->health--;}
     else if(combat->damagePending){combat->damagePending--;combat->health--;}
 }
+u8 RT_enemyBodyContact(RT_Enemy *enemy,const RT_EnemyPerceptionTarget *target,
+    RT_AgentCombat *combat)
+{
+    if(!enemy || !target || !combat || !(enemy->state.decisions&0x40))return 0;
+    /* 9664..966D: non-contact player or actor poses only drop decision bit0. */
+    if(((target->flags|enemy->state.flags)&0x80) || combat->invincibleTicks ||
+       combat->hidden || combat->removed || !combat->health){
+        enemy->state.decisions&=0xfe;return 0;
+    }
+    /* 966F/96AF: a player already in a contact reaction pushes the actor. */
+    if(combat->counterattack)return 0x78;
+    /* 9673..969A: half a life bar; record13 receives the actor decisions. */
+    combat->damagePending+=0x20;
+    if((u8)(combat->damagePending+combat->priorityDamage)>=combat->health)
+        combat->reaction=RT_REACTION_CLOSE_FATAL;
+    else{combat->counterattack=enemy->state.decisions;combat->reaction=RT_REACTION_CLOSE_HURT;}
+    return 0;
+}
 u8 RT_enemyCloseHitPlayers(const RT_Enemy *enemy,RT_PlayerTargets *targets)
 {
     if(!enemy || !targets || !targets->agents || !targets->combat || targets->players>2)return 0;

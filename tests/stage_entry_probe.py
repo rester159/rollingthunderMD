@@ -8,7 +8,7 @@ import ctypes as C
 import struct
 
 
-def enter_campaign_stage(machine, rom_path, symbols_path, stage, refresh_phase=None):
+def enter_campaign_stage(machine, rom_path, symbols_path, stage, refresh_phase=None, before_resume=None):
     assert 0 <= stage < 10
     m=machine
     symbols={v[2].split('.lto_priv')[0]:int(v[0],16)
@@ -49,5 +49,6 @@ def enter_campaign_stage(machine, rom_path, symbols_path, stage, refresh_phase=N
         m.patch('vtimer',refresh.to_bytes(4,'big'))
         m.patch('lastRefresh',refresh.to_bytes(4,'big'))
         m.patch('pacer',(refresh-1).to_bytes(4,'big')+b'\0')
+    if before_resume:before_resume()
     m.run(1)
     assert m.number('rtAppState',2)==1

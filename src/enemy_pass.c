@@ -59,6 +59,8 @@ u8 RT_enemiesUpdateWithHigh(RT_EnemyPool *pool,const RT_EnemyPassContext *c,RT_E
             if(result==RT_ENEMY_UNAVAILABLE)return 0;
             out->type10Deaths+=event.deaths;
             if(result==RT_ENEMY_REMOVED){pool->count--;out->removed++;a->hidden=1;}
+            /* B298 also runs 962A for type10; its 78 entry keeps the state. */
+            else if(!a->hidden)RT_enemyBodyContact(e,&perception,c->players.combat+out->targetPlayer);
             if(event.sound || event.command){
                 if(out->eventCount>=RT_ENEMY_PASS_EVENT_CAPACITY)return 0;
                 RT_EnemyPassEvent *record=out->events+out->eventCount++;
@@ -113,6 +115,16 @@ u8 RT_enemiesUpdateWithHigh(RT_EnemyPool *pool,const RT_EnemyPassContext *c,RT_E
 #endif
             if(result==RT_ENEMY_SELECT)out->doorTransitions++;
             if(a->hidden)out->visible--;
+            else if(result!=RT_ENEMY_UNAVAILABLE && (state==0x58 || state==0x5c) &&
+                RT_enemyBodyContact(e,&perception,c->players.combat+out->targetPlayer)){
+                RT_EnemyRecoilLinks links={0};
+                if(e->parent<RT_NATIVE_STAGE_CAPACITY && c->objects->objects[e->parent].kind<3){
+                    links.door=c->objects->objects+e->parent;
+                    links.doorOwnsEnemy=pool->doorChildren[e->parent]==i+1;
+                }
+                u8 prior=a->action&0xfc;
+                if((prior!=0x5c || links.door) && !RT_enemyRecoilEnter(e,0x78,c->decisionCounter,&links))return 0;
+            }
         }else{
             probes.enemy=e;update.accelerationY=e->definition->accelerationY;
             update.coopAttackPhase=c->coopAttackPhases?c->coopAttackPhases+i:0;
