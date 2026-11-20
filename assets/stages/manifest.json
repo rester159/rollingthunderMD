@@ -26,7 +26,7 @@
       "world_payload.c"
     ],
     "bytes": 1542384,
-    "sha256": "0f64934b5939443031e4d3275f1e85af7b70e2cc751178f5fc66b924a81cef8f"
+    "sha256": "8847ec692ed563b3696c82dd1ad10803359f828c28b0752167ca3bac7c402731"
   },
   {
     "stage": 1,
@@ -194,7 +194,7 @@
       "world_payload.c"
     ],
     "bytes": 1988132,
-    "sha256": "c6077dbdd0fe9911e86dfd8c8d10a3bdb049f85b4a3efd411f84091bd03f6a6a"
+    "sha256": "075a5b671d7cbabb4ecf378438c242086b9155b6661e7958ca0971f55e80caf6"
   },
   {
     "stage": 6,

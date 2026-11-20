@@ -1,0 +1,10 @@
+{
+  "rom_sha256": "f94dc7b2a9c98dcbb469824962c119d321bf65c3acfeaa73005fffcd44b10452",
+  "case": "arcade",
+  "maboo_shown": 1,
+  "state_sequence": [
+    1,
+    9,
+    11
+  ]
+}
