@@ -1,0 +1,11 @@
+{
+  "rom_sha256": "5016396a3a4fa46aeae50fdbcc35b612d97de17bcbbf4fba0c02edde2a746498",
+  "case": "survival_2p",
+  "frames": 12000,
+  "retirements": 32,
+  "first_chunk": 64,
+  "checkpoint_changes": 158,
+  "longest_edge_hold": 0,
+  "deaths": 0,
+  "limits": "Seeds the anchor latch and invincibility and clears enemies; input is scripted, not a full human playthrough."
+}

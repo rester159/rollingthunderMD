@@ -1,0 +1,9 @@
+{
+  "rom_sha256": "5016396a3a4fa46aeae50fdbcc35b612d97de17bcbbf4fba0c02edde2a746498",
+  "case": "walk",
+  "first_close_frame": 67,
+  "player_hurt_frame": 70,
+  "guard_recoil_frame": 71,
+  "health_after": 32,
+  "limits": "Area 1 opening guard, 1P Campaign, production input and update path only."
+}
