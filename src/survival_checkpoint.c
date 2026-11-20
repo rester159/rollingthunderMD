@@ -16,8 +16,14 @@ u8 RT_survivalCheckpointCapture(RT_CampaignScene *scene,RT_SurvivalWorld *world)
     for(u8 p=0;p<scene->players.home.players;p++){
         const RT_Agent *a=scene->players.agents+p;
         const RT_AgentCombat *c=scene->players.combat+p;
+        /* anchorIndex is a latch of the last door/climb used, not "in a door
+         * now": it stays set after the player walks away. Testing it here
+         * stopped every later capture once any door or ladder was used, which
+         * froze retirement and walled the camera at cameraMaxX until a death
+         * reset the agent. Door and climb states are already excluded by the
+         * action, hidden and layer tests. */
         if(!c->health || c->removed || c->hidden || c->reaction || c->damagePending ||
-           (a->action!=RT_AGENT_IDLE && a->action!=RT_AGENT_WALK) || a->anchorIndex ||
+           (a->action!=RT_AGENT_IDLE && a->action!=RT_AGENT_WALK) ||
            a->body.layer>6 || (a->body.layer&1) || (a->body.y&127) || a->body.x<=minimum)continue;
         s32 localX=a->body.x-(s32)scene->camera.x*16;
         s32 localY=a->body.y-(s32)scene->camera.y*16;
