@@ -28,9 +28,14 @@ u8 RT_enemyPerceivePrepared(RT_Enemy *enemy,const RT_EnemyPerceptionTarget *targ
  * geometry above: decision bit 0x40 means the hitboxes overlap on the same
  * floor. Damages the selected player (record13 gate) or returns actor
  * selector 0x78 while that player is already reacting. Invincibility is the
- * Home-mode extension. Returns zero when the actor keeps its state. */
+ * Home-mode extension. Returns 0x78 for actor recoil, 1 after damaging the
+ * player, zero when nothing touched. */
 u8 RT_enemyBodyContact(RT_Enemy *enemy,const RT_EnemyPerceptionTarget *target,
     RT_AgentCombat *combat);
+/* Selected player first (arcade order); in co-op the other live player is
+ * then tested, at most one contact per actor update. Same results. */
+u8 RT_enemyBodyContactPlayers(RT_Enemy *enemy,const RT_EnemyPerceptionTarget *target,
+    u8 targetPlayer,RT_PlayerTargets *players);
 /* Ready entry requires non-null target and a live enemy. */
 u8 RT_enemyPerceiveReady(RT_Enemy *enemy,const RT_Agent *player);
 u8 RT_enemyPerceive(RT_Enemy *enemy,const RT_Agent *player);

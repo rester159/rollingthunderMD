@@ -15,17 +15,22 @@ a=p.parse_args()
 for stage in map(int,a.stages.split(',')):
     m=Machine(a);m.start(a.mode)
     if stage:enter_campaign_stage(m,a.rom,a.symbols,stage)
-    hurts=recoils=0;last=0
+    players=2 if a.mode.endswith('2p') else 1
+    hurts=[0,0];recoils=0;last=[0,0]
     for f in range(a.frames):
-        m.patch('scene',b'\x40',111);m.patch('scene',b'\0',107)
-        m.buttons={(0,7)} if (f//240)%5!=4 else {(0,6)}
-        if (f//60)%4==2:m.buttons.add((0,5))
-        if f%90<2:m.buttons.add((0,0))
-        if f%150<4:m.buttons.add((0,4))
+        for q in range(players):m.patch('scene',b'\x40',111+10*q);m.patch('scene',b'\0',107+10*q)
+        m.buttons=set()
+        for q in range(players):
+            g=(f+37*q)
+            m.buttons.add((q,7) if (g//240)%5!=4 else (q,6))
+            if (g//60)%4==2:m.buttons.add((q,5))
+            if g%90<2:m.buttons.add((q,0))
+            if g%150<4:m.buttons.add((q,4))
         m.run(1)
-        c=m.number('scene',1,109)
-        if c and not last:hurts+=1
-        last=c
+        for q in range(players):
+            c=m.number('scene',1,109+10*q)
+            if c and not last[q]:hurts[q]+=1
+            last[q]=c
         for i in range(39):
             e=m.read('scene',16,5196+i*36)
             if e[8]!=0xff and (e[9]&0xfc)==0x78 and e[11]==0:recoils+=1

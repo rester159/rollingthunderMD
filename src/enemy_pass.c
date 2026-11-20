@@ -60,7 +60,7 @@ u8 RT_enemiesUpdateWithHigh(RT_EnemyPool *pool,const RT_EnemyPassContext *c,RT_E
             out->type10Deaths+=event.deaths;
             if(result==RT_ENEMY_REMOVED){pool->count--;out->removed++;a->hidden=1;}
             /* B298 also runs 962A for type10; its 78 entry keeps the state. */
-            else if(!a->hidden)RT_enemyBodyContact(e,&perception,c->players.combat+out->targetPlayer);
+            else if(!a->hidden)RT_enemyBodyContactPlayers(e,&perception,out->targetPlayer,&players);
             if(event.sound || event.command){
                 if(out->eventCount>=RT_ENEMY_PASS_EVENT_CAPACITY)return 0;
                 RT_EnemyPassEvent *record=out->events+out->eventCount++;
@@ -116,7 +116,7 @@ u8 RT_enemiesUpdateWithHigh(RT_EnemyPool *pool,const RT_EnemyPassContext *c,RT_E
             if(result==RT_ENEMY_SELECT)out->doorTransitions++;
             if(a->hidden)out->visible--;
             else if(result!=RT_ENEMY_UNAVAILABLE && (state==0x58 || state==0x5c) &&
-                RT_enemyBodyContact(e,&perception,c->players.combat+out->targetPlayer)){
+                RT_enemyBodyContactPlayers(e,&perception,out->targetPlayer,&players)==0x78){
                 RT_EnemyRecoilLinks links={0};
                 if(e->parent<RT_NATIVE_STAGE_CAPACITY && c->objects->objects[e->parent].kind<3){
                     links.door=c->objects->objects+e->parent;

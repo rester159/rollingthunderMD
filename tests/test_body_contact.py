@@ -12,22 +12,28 @@ into the first Area 1 Masker is knocked back as soon as the bodies overlap.
 Hold Right from the Area 1 start without firing. The first guard must hurt
 the player within 20 updates of the bodies meeting, then recoil; v0.92 let
 the player walk straight through it. Not a playthrough; no RAM is seeded.
+
+Case 'walk-p2' (Home co-op extension): in 2P Campaign, Player 1 stands still
+while Player 2 walks right into the same guard. The guard targets Player 1,
+so the native rule also tests the other live player and must hurt Player 2
+(and not Player 1); v0.92 and the first 1P-only fix let Player 2 through.
 """
 import argparse,hashlib,json,struct
 from pathlib import Path
 from test_soft_reset import Machine
 p=argparse.ArgumentParser(description=__doc__)
 for n in ('rom','symbols','core','output'):p.add_argument('--'+n,type=Path,required=True)
-p.add_argument('--case',choices=('walk',),default='walk')
-a=p.parse_args();m=Machine(a);m.start('campaign_1p')
+p.add_argument('--case',choices=('walk','walk-p2'),default='walk')
+a=p.parse_args();m=Machine(a);m.start('campaign_2p' if a.case=='walk-p2' else 'campaign_1p')
+who=1 if a.case=='walk-p2' else 0
 # Target-compiler offsets: scene.players.agents=20 (body.x at +0), combat=104
-# (counterattack +5, health +7), enemies=5196 stride 36 (kind +8, action +9).
-m.buttons={(0,7)}
+# (counterattack +5, health +7), stride 42/10; enemies=5196 stride 36.
+m.buttons={(who,7)}
 hurt=recoil=None;contact=None
 for frame in range(400):
     m.run(1)
-    px,py=struct.unpack('>ii',m.read('scene',8,20))
-    health=m.number('scene',1,111);counter=m.number('scene',1,109)
+    px,py=struct.unpack('>ii',m.read('scene',8,20+42*who))
+    health=m.number('scene',1,111+10*who);counter=m.number('scene',1,109+10*who)
     for i in range(39):
         e=m.read('scene',36,5196+i*36)
         if e[8]==0xff:continue
@@ -40,9 +46,10 @@ assert contact is not None,'No guard reached the player'
 assert hurt is not None and hurt-contact<=20,('Player passed through the guard without contact damage',contact,hurt)
 assert recoil is not None,'Touching guard did not recoil while the player reacted'
 assert m.number('rtAppFault',2)==0
+if who:assert m.number('scene',1,111)==64 and not m.number('scene',1,109),'Player 1 was hit instead'
 r=dict(rom_sha256=hashlib.sha256(a.rom.read_bytes()).hexdigest(),case=a.case,
        first_close_frame=contact,player_hurt_frame=hurt,guard_recoil_frame=recoil,
-       health_after=m.number('scene',1,111),
-       limits='Area 1 opening guard, 1P Campaign, production input and update path only.')
+       health_after=m.number('scene',1,111+10*who),
+       limits='Area 1 opening guard, '+('2P' if who else '1P')+' Campaign, production input and update path only.')
 a.output.write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r))
 m.core.retro_unload_game();m.core.retro_deinit()
