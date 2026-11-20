@@ -27,6 +27,8 @@ BANKHI      EQU $1F05           ; bit 8
 BANKOK      EQU $1F06           ; $5A once BANKLO/HI are valid
 STATOUT     EQU $1F08           ; 1 while a track is sounding
 ALIVE       EQU $1F09           ; service counter (word)
+HEART       EQU $1F0B           ; +1 per 60 Hz clock tick, playing or idle:
+                                ; proves the main loop and YM timers run
 VBANKLO     EQU $1F0C           ; voice blob address >> 15, low 8 bits
 VBANKHI     EQU $1F0D           ; bit 8
 SFXRING     EQU $1F10           ; 16 sound bytes posted by the 68000
@@ -227,7 +229,14 @@ in_lane
             LD      DE, MAP
             LD      BC, 8
             LDIR
-            CALL    reset
+            ; Do not rely on the YM2612 power-on/reset state: models and
+            ; FPGA consoles differ. Stop both timers and clear their flags,
+            ; clear the test register, then program the periods before
+            ; 'reset' (which enables the timers) can start them.
+            LD      DE, $2730       ; timers stopped, flags cleared
+            CALL    ymw0
+            LD      DE, $2100       ; LSI test register: normal operation
+            CALL    ymw0
             ; Timer A = 1014 (5326.7 Hz DAC clock)
             LD      D, $24
             LD      E, 253
@@ -238,6 +247,7 @@ in_lane
             LD      D, $26          ; Timer B = 255 (300.4 us)
             LD      E, 255
             CALL    ymw0
+            CALL    reset
             LD      D, $27
             LD      E, $7F          ; ch3 special, load+enable A and B, clear flags
             CALL    ymw0
@@ -271,6 +281,8 @@ ml_psg
             JP      Z, main_loop
             DEC     A
             LD      (TICKDUE), A
+            LD      HL, HEART       ; 68000 watchdog heartbeat
+            INC     (HL)
             LD      A, (ACTIVE)
             OR      A
             JR      Z, ml_out

@@ -17,12 +17,17 @@ extern const u8 rtMusicZ80Blob[],rtVoiceZ80Blob[];
 #define MB_BANKHI 0x1F05
 #define MB_BANKOK 0x1F06
 #define MB_STATUS 0x1F08
+#define MB_HEART  0x1F0B
 #define MB_VBANKLO 0x1F0C
 #define MB_VBANKHI 0x1F0D
 #define MB_SFXRING 0x1F10
 #define MB_SFXWR  0x1F20
 
 static u32 generation;
+static u32 heartCheckedAt;
+static u8 heartSeen,heartStalls;
+/* Diagnostic: driver reloads forced by the heartbeat watchdog. */
+__attribute__((externally_visible)) volatile u16 rtGameMusicWatchdogReloads;
 static u8 loaded,active,psgMuted,sequence,sfxWrite;
 volatile u8 rtGameMusicTrack;
 
@@ -50,6 +55,7 @@ static void ensureDriver(void)
     Z80_releaseBus();
     SYS_enableInts();
     sequence=sfxWrite=0;loaded=1;
+    heartSeen=0;heartStalls=0;heartCheckedAt=vtimer;
 }
 
 static void post(u8 track)
@@ -109,7 +115,26 @@ void RT_gameMusicSetPsgMuted(u8 muted)
 }
 u8 RT_gameMusicPsgMuted(void){return psgMuted;}
 
-void RT_gameMusicPoll(void){}
+/* Watchdog. Everything the driver does is clocked by YM2612 timer flags,
+ * and its main loop bumps HEART once per 60 Hz tick whether or not music
+ * plays. If HEART stands still for three checks 16 frames apart (~0.8 s,
+ * normally ~48 ticks), the driver or the chip's timers never came up
+ * after power-on: reload it (resetting Z80 and YM2612) and resume. */
+void RT_gameMusicPoll(void)
+{
+    if(!owns() || (u32)(vtimer-heartCheckedAt)<16)return;
+    heartCheckedAt=vtimer;
+    SYS_disableInts();
+    bool taken=Z80_getAndRequestBus(TRUE);
+    u8 heart=*mailbox(MB_HEART);
+    if(!taken)Z80_releaseBus();
+    SYS_enableInts();
+    if(heart!=heartSeen){heartSeen=heart;heartStalls=0;return;}
+    if(++heartStalls<3)return;
+    rtGameMusicWatchdogReloads++;
+    loaded=0;ensureDriver();
+    if(active)post(rtGameMusicTrack);
+}
 
 void RT_gameSoundPost(const u8 *bytes,u8 count)
 {

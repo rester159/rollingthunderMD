@@ -9,7 +9,8 @@ void RT_gameMusicPrepare(void);
 void RT_gameMusicStart(u8 track);
 void RT_gameMusicStop(void);
 u8 RT_gameMusicActive(void);
-/* No-op: the Z80 clocks itself. Kept for menu callers. */
+/* Driver watchdog: call once per frame from menu/gameplay loops. Reloads
+ * the Z80 driver if its heartbeat (YM timers + main loop) stops. */
 void RT_gameMusicPoll(void);
 /* Sound-test diagnostic: silence the three PSG-routed parts. */
 void RT_gameMusicSetPsgMuted(u8 muted);

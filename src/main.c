@@ -727,6 +727,9 @@ int main(bool hardReset){
             if(!advanceFinalEnding()){rtAppFault=96;notice("ENDING ERROR","SEQUENCE",APP_UNFINISHED);}
             continue;
         }
+        /* Z80 driver watchdog for menu, attract and gameplay; throttled to
+         * one heartbeat read per 16 frames, inert while PCM owns the Z80. */
+        RT_gameMusicPoll();
         u16 pads[2]={JOY_readJoypad(JOY_1),JOY_readJoypad(JOY_2)};
         if(rtArcadeAttract){
             /* Preserve brief Start/Back presses sampled during bank/video loads. */
