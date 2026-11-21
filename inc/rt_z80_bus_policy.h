@@ -14,6 +14,10 @@ bool RT_z80NeedsMainBusHold(void);
 /* Around a VDP DMA: returns a token for RT_z80DmaGuardEnd. */
 u8 RT_z80DmaGuardBegin(void);
 void RT_z80DmaGuardEnd(u8 token);
+/* TRUE while any 68000 guard owns the music driver's PROTECT park. */
+bool RT_z80ProtectHeld(void);
+/* Lowers a PROTECT flag that no 68000 guard owns (main loop only). */
+void RT_z80ClearStaleProtect(void);
 /* Changes on every actual sound-driver installation, including custom loads.
    Compare ownership inside the existing driver-load critical section. */
 u32 RT_z80DriverGeneration(void);

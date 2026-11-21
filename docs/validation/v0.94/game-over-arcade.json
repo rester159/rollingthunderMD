@@ -1,0 +1,7 @@
+{
+  "rom_sha256": "8fab3b0f4b8e1186f0f6cbbaec32659b2ac739996a9c8088a99df1d68916c4df",
+  "case": "arcade",
+  "terminal_flow": true,
+  "restart_after_reset": true,
+  "limits": "Seeds health/removed/credits; does not simulate damage animation or an entire playthrough."
+}

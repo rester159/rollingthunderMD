@@ -22,7 +22,6 @@ extern const u8 rtMusicZ80Blob[],rtVoiceZ80Blob[];
 #define MB_VBANKHI 0x1F0D
 #define MB_SFXRING 0x1F10
 #define MB_SFXWR  0x1F20
-#define MB_PROTECT 0x1F30
 
 static u32 generation;
 static u32 heartCheckedAt;
@@ -123,7 +122,7 @@ u8 RT_gameMusicPsgMuted(void){return psgMuted;}
  * after power-on: reload it (resetting Z80 and YM2612) and resume.
  * A park requested by the 68000 (PROTECT, e.g. the title raster's long
  * RAM-only reservation) legitimately withholds music ticks: never judge
- * the driver while it is held there. A driver whose timers never run
+ * the driver while a 68000 guard owns it. A driver whose timers never run
  * cannot acknowledge PROTECT, so the DMA guard clears the flag and halts
  * it instead; that failure stays visible to this check. */
 void RT_gameMusicPoll(void)
@@ -132,9 +131,13 @@ void RT_gameMusicPoll(void)
     heartCheckedAt=vtimer;
     SYS_disableInts();
     bool taken=Z80_getAndRequestBus(TRUE);
-    u8 heart=*mailbox(MB_HEART),held=*mailbox(MB_PROTECT);
+    u8 heart=*mailbox(MB_HEART);
     if(!taken)Z80_releaseBus();
     SYS_enableInts();
+    /* Judge the park by its 68000 owners, not the Z80 flag: a flag nobody
+     * owns is stale and is lowered here so the driver resumes. */
+    RT_z80ClearStaleProtect();
+    u8 held=RT_z80ProtectHeld();
     if(held || heart!=heartSeen){heartSeen=heart;heartStalls=0;return;}
     if(++heartStalls<3)return;
     rtGameMusicWatchdogReloads++;

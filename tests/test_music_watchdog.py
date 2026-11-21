@@ -7,8 +7,9 @@ flags, so a driver/timer start failure is total silence. This test checks:
 
 1. In gameplay the driver's HEART byte ($1F0B) advances ~60 Hz and the
    watchdog never fires on a healthy start (no false reloads).
-2. A park held by the 68000 (PROTECT high, as the title raster's long
-   RAM-only reservation does) never triggers a reload.
+2. A stale park (PROTECT high in Z80 RAM, no 68000 guard owning it, as a
+   leaked title-raster reservation left it) is lowered by the watchdog and
+   music resumes, without a reload.
 3. A dead Z80 driver is recovered: 'halt' jumps the Z80 into an endless
    loop (its program overwritten), as if it never reached its main loop.
    The watchdog must reload the driver within ~1.5 s and music must resume.
@@ -49,17 +50,26 @@ try:
     assert m.number('rtGameMusicWatchdogReloads', 2) == 0, 'false watchdog reload'
     assert ram[STATOUT] == 1, 'music not sounding'
     rows['healthy'] = dict(heartbeats_per_120_frames=rate, reloads=0)
-    # A park held by the 68000 (PROTECT) legitimately stops music ticks, as
-    # the title raster's reservation does: it must never trigger a reload.
+    # A stale park: PROTECT raised in Z80 RAM with no 68000 guard owning it,
+    # as a leaked raster reservation left it on hardware (v0.93 Model 3 /
+    # Japanese MD1 silence). The driver would stay parked forever. The
+    # next DMA guard to finish (or, outside DMA, the watchdog) must lower the
+    # flag, with no reload, and music must resume.
     before = m.number('rtGameMusicWatchdogReloads', 2)
     ram[PROTECT] = 1
-    m.run(120)
-    assert m.number('rtGameMusicWatchdogReloads', 2) == before, 'reload during a 68000-held park'
-    ram[PROTECT] = 0
+    cleared = None
+    for frame in range(60):
+        m.run(1)
+        if ram[PROTECT] == 0:
+            cleared = frame
+            break
+    assert cleared is not None, 'stale PROTECT never cleared: driver stays parked'
+    assert m.number('rtGameMusicWatchdogReloads', 2) == before, 'reload for a stale park'
     m.run(30)
     rate = heart_rate(120)
-    assert 100 <= rate <= 140, ('heartbeat after held park', rate)
-    rows['held_park'] = dict(reloads=0, heartbeats_after=rate)
+    assert 100 <= rate <= 140, ('heartbeat after stale park', rate)
+    assert ram[STATOUT] == 1, 'music not sounding after stale park'
+    rows['stale_park'] = dict(cleared_after_frames=cleared, reloads=0, heartbeats_after=rate)
     for case in ('halt',):
         before = m.number('rtGameMusicWatchdogReloads', 2)
         if case == 'park':

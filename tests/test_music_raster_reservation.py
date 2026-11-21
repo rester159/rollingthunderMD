@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""A real DMA call must preserve an already-owned Z80 RAM-playback window."""
+"""A real DMA call must preserve an already-owned Z80 RAM-playback window.
+
+Ownership is counted on the 68000 (protectOwners): the outer owner is
+injected there and in Z80 RAM, exactly as RT_z80DmaGuardBegin leaves them.
+A Z80 flag without a 68000 owner is stale and is lowered (see
+test_music_watchdog.py)."""
 import argparse
 import ctypes as C
 import hashlib
@@ -41,12 +46,16 @@ def flush():
 
 # Inject only the outer owner's request. The actual Z80 code acknowledges it;
 # the real 68000 DMA function performs its normal guard acquisition/release.
+owners = next(k for k in symbols if k == "protectOwners")
+m.patch(owners, b"\1")
 ram[0x1F30] = 1
 m.run(2)
 assert ram[0x1F31] == 1
 for _ in range(3):
     flush()
     assert ram[0x1F30] == ram[0x1F31] == 1, "Nested DMA released the raster reservation"
+assert m.number(owners) == 1, "Nested DMA changed the outer owner count"
+m.patch(owners, b"\0")
 ram[0x1F30] = 0
 m.run(2)
 assert ram[0x1F31] == 0

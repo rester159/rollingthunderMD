@@ -36,6 +36,9 @@ static HINTERRUPT_CALLBACK transitionRasterInterrupt(void)
             /* Short preparation ticks tolerate a delayed/coalesced IRQ.
              * Let the main loop run between preparing audio and the split. */
             VDP_setHIntCounter(3);
+            /* A late first IRQ can land here while the footer's reservation
+             * is still carried: release it, never overwrite its token. */
+            RT_z80DmaGuardEnd(runtime.audioGuard);
             runtime.audioGuard=RT_z80DmaGuardBegin();
             if(runtime.audioGuard==1)rtTransitionRasterBusHolds++;
             runtime.bodyPrepared=TRUE;
@@ -58,6 +61,7 @@ static HINTERRUPT_CALLBACK transitionRasterInterrupt(void)
             /* Audio can finish a ROM refill before the actual split. Four
              * line preparation ticks do not depend on IRQ entry latency. */
             VDP_setHIntCounter(3);
+            RT_z80DmaGuardEnd(runtime.audioGuard);
             runtime.audioGuard=RT_z80DmaGuardBegin();
             if(runtime.audioGuard==1)rtTransitionRasterBusHolds++;
             runtime.footerPrepared=TRUE;

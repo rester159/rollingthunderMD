@@ -1,18 +1,17 @@
-Rolling Thunder MD v0.93 Beta — current build
+Rolling Thunder MD v0.94 Beta — current build
 
-ROM: dist/Rolling_Thunder_MD_v0.93_Beta.bin
+ROM: dist/Rolling_Thunder_MD_v0.94_Beta.bin
 Size: 4,194,304 bytes (4 MiB / 32 Mbit)
-SHA-256: 5016396a3a4fa46aeae50fdbcc35b612d97de17bcbbf4fba0c02edde2a746498
-Build metadata and matching symbols: dist/v0.93-beta/
-Release notes: docs/RELEASE_0_93.md
-Dev update: docs/DEVLOG_0_93.md
-Current-ROM validation: docs/validation/v0.93/
+SHA-256: 8fab3b0f4b8e1186f0f6cbbaec32659b2ac739996a9c8088a99df1d68916c4df
+Build metadata and matching symbols: dist/v0.94-beta/
+Release notes: docs/RELEASE_0_94.md
+Dev update: docs/DEVLOG_0_94.md
+Current-ROM validation: docs/validation/v0.94/
 
-Adds arcade body contact with ordinary enemies (both co-op players), fixes the
-Survival invisible wall and the crowded-scene UNFINISHED GRAPHICS stop, restores
-Maboo's game-over laugh, blackens Stage 1 windows, draws full ceiling fans,
-restarts Home continues at the arcade's mid-area points, and hardens Z80 music
-driver start-up with a heartbeat watchdog.
+Fixes a leaked Z80 PROTECT reservation that could park the music driver for
+good (silence on some consoles, varying by mode, until reset): PROTECT
+ownership is now counted on the 68000, the title raster never overwrites a held
+guard, and the watchdog lowers an unowned flag. Gameplay unchanged from v0.93.
 All ten campaign areas, both characters, 2P, Survival and SRAM saves retained.
 
 ROMs and owner-supplied audio/boot assets remain excluded from Git.
