@@ -1,0 +1,7 @@
+{
+  "rom_sha256": "5016396a3a4fa46aeae50fdbcc35b612d97de17bcbbf4fba0c02edde2a746498",
+  "case": "campaign_1p",
+  "terminal_flow": true,
+  "restart_after_reset": true,
+  "limits": "Seeds health/removed/credits; does not simulate damage animation or an entire playthrough."
+}

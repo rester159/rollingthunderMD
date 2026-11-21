@@ -70,7 +70,7 @@ static RT_DisplayStream terrainStream;
 volatile u16 rtAppState,rtAppFault;
 volatile u32 rtAppUpdates,rtAppPresentations,rtAppRefreshes;
 volatile u32 rtAppSkippedPresentations,rtAppMaxUpdateLag;
-static RT_ArcadeSession arcade;
+static RT_ArcadeSession arcade,homeRestart;
 static RT_CampaignScore score;
 static RT_CampaignBonus bonus;
 typedef struct {
@@ -188,7 +188,9 @@ volatile u16 rtHighStarted,rtHighDone,rtHighPlayer,rtHighPhase,rtHighMusicReques
 volatile u32 rtHighSteps;
 static u8 beginHighEntry(void);
 static void endHighClock(void);
-enum {APP_MENU,APP_PLAY,APP_CONTINUE,APP_UNFINISHED,APP_READY,APP_BONUS,APP_TRANSITION,APP_FINAL_WAIT,APP_ENDING,APP_HIGH_ENTRY,APP_ATTRACT};
+enum {RT_MABOO_THEN_ATTRACT,RT_MABOO_THEN_HOME_MENU};
+static u8 beginGameOverMaboo(u8 next);
+enum {APP_MENU,APP_PLAY,APP_CONTINUE,APP_UNFINISHED,APP_READY,APP_BONUS,APP_TRANSITION,APP_FINAL_WAIT,APP_ENDING,APP_HIGH_ENTRY,APP_ATTRACT,APP_MABOO};
 
 /* Campaign publication owner. Once armed, the DMA queue and display descriptor
  * are immutable until finishPipeline; only the next logical update overlaps. */
@@ -552,7 +554,8 @@ static u8 chooseHighPlayer(void)
         if(!publishHighPanel())return 0;beginHighClock();return 1;
     }
     rtHighDone=1;
-    if(rtSession.mode==RT_MODE_ARCADE)return beginAttract();
+    if(rtSession.mode==RT_MODE_ARCADE)
+        return rtFinalEntryReady?beginAttract():beginGameOverMaboo(RT_MABOO_THEN_ATTRACT);
     menu();return 1;
 }
 static u8 beginHighEntry(void)
@@ -625,6 +628,7 @@ static u8 start(void){
     if(!resume)RT_homeCheckpoint(&scene,&score);
     if(rtArcadeAttract==RT_ATTRACT_DEMO)RT_attractDemoInitialize(&scene);
     if(rtSession.mode==RT_MODE_ARCADE && !RT_arcadeSessionInitialize(&arcade,&scene,(rtArcadeDips&RT_DIP_LIVES)?1:0)){rtAppFault=4;return 0;}
+    if(rtSession.mode==RT_MODE_HOME && !survival)RT_restartPointBegin(&homeRestart,&scene);
     if(!video()){rtAppFault=1;notice("NATIVE BUILD ERROR","STAGE INITIALIZATION",APP_UNFINISHED);return 0;}
     transitionSelector=1;transitionEffect=0;rtAppBonusEvents=0;
     tick=0;rtAppState=APP_PLAY;
@@ -695,6 +699,35 @@ static u8 stepAttract(void)
     }
     return 0;
 }
+/* Arcade game over: after any score entry, Maboo laughs on the Geldra
+ * monitor before the continue/attract screens (FBNeo rev. 3 reference: face
+ * visible ~200 refreshes; the MCU receives 63701X byte 67, bank 2 clip 7,
+ * two refreshes after the portrait appears). Home shows the same scene
+ * before its GAME OVER page. Reuses the attract portrait scene (selector 5). */
+static u8 mabooNext;
+static u32 mabooStarted;
+volatile u32 rtGameOverMabooShown;
+static u8 beginGameOverMaboo(u8 next)
+{
+    endHighClock();RT_gameMusicStop();
+    /* Load the sample driver before the scene's raster owns VInt; posting
+     * the laugh afterwards only writes the mailbox. */
+    RT_gameMusicPrepare();
+    VDP_setEnable(FALSE);DMA_flushQueue();
+    if(!RT_stageBankSelect(RT_COMPLETION_PAGE) || !RT_completionEndingBegin(&completion,5))return 0;
+    mabooNext=next;mabooStarted=vtimer;rtAppState=APP_MABOO;rtGameOverMabooShown++;
+    static const u8 laugh=0x67;
+    RT_gameSoundPost(&laugh,1);
+    return 1;
+}
+static u8 stepGameOverMaboo(void)
+{
+    u16 rate=SYS_isPAL()?50:60;
+    if(vtimer-mabooStarted<(200UL*rate)/60)return RT_completionSceneStep(&completion)==1;
+    RT_completionSceneEnd(&completion);RT_gameMusicStop();
+    if(mabooNext==RT_MABOO_THEN_ATTRACT)return beginAttract();
+    RT_beginHomeGameOver();rtAppState=APP_MENU;return 1;
+}
 int main(bool hardReset){
     (void)hardReset;rtAppUpdates=rtAppPresentations=rtAppRefreshes=0;rtAppFault=0;
     rtAppSkippedPresentations=rtAppMaxUpdateLag=0;
@@ -727,6 +760,9 @@ int main(bool hardReset){
             if(!advanceFinalEnding()){rtAppFault=96;notice("ENDING ERROR","SEQUENCE",APP_UNFINISHED);}
             continue;
         }
+        /* Z80 driver watchdog for menu, attract and gameplay; throttled to
+         * one heartbeat read per 16 frames, inert while PCM owns the Z80. */
+        RT_gameMusicPoll();
         u16 pads[2]={JOY_readJoypad(JOY_1),JOY_readJoypad(JOY_2)};
         if(rtArcadeAttract){
             /* Preserve brief Start/Back presses sampled during bank/video loads. */
@@ -768,6 +804,10 @@ int main(bool hardReset){
         }
         if(rtAppPaused){
             u32 now=vtimer;while(vtimer==now){__asm__ volatile("nop");}
+            continue;
+        }
+        if(rtAppState==APP_MABOO){
+            if(!stepGameOverMaboo()){rtAppFault=105;notice("GAME OVER ERROR","SCENE",APP_UNFINISHED);}
             continue;
         }
         if(rtAppState==APP_HIGH_ENTRY){if(!stepHighEntry(pads)){rtAppFault=97;notice("HIGH SCORE ERROR","ENTRY",APP_UNFINISHED);}continue;}
@@ -824,6 +864,7 @@ int main(bool hardReset){
             RT_homeCheckpoint(&scene,&score);
             if(!video()){notice("DEVELOPMENT BUILD","AREA ART NOT LINKED",APP_UNFINISHED);continue;}
             tick=0;rtAppState=APP_PLAY;
+            if(rtSession.mode==RT_MODE_HOME && !survival)RT_restartPointBegin(&homeRestart,&scene);
             if(rtSession.mode==RT_MODE_ARCADE){
                 arcade.story=scene.stage->story;arcade.area=scene.stage->area;
                 arcade.checkpoint=0;arcade.previousWindow=scene.objectWindow;
@@ -849,7 +890,10 @@ int main(bool hardReset){
                 u8 dead=(1<<scene.players.home.players)-1;
                 mask=RT_homeRespawnAgent(&scene.players.home,scene.players.agents,
                     scene.players.combat,0,dead,1)?1:0;
-                if(!mask){RT_beginHomeGameOver();rtAppState=APP_MENU;continue;}
+                if(!mask){
+                    if(!beginGameOverMaboo(RT_MABOO_THEN_HOME_MENU)){RT_completionSceneEnd(&completion);RT_beginHomeGameOver();rtAppState=APP_MENU;}
+                    continue;
+                }
             }else mask=RT_homeResolveDeaths(&scene.players.home,scene.players.agents,
                 scene.players.combat,(pads[0]&BUTTON_START?1:0)|(pads[1]&BUTTON_START?2:0));
             if(mask){
@@ -860,10 +904,15 @@ int main(bool hardReset){
                 /* Reload the current area's authored entrance and preserve
                  * which player paid. Other dead slot costs a separate credit
                  * on the next survivor-respawn pass. */
+                /* A paid Home continue restarts at the arcade's own mid-area
+                 * restart point once it has been reached (source A592 selects
+                 * area-header word $7C over $7A when $CF is set). */
+                u8 restart=!survival && RT_restartPointFor(&homeRestart,story,area);
                 if(survival?RT_survivalSceneContinue(&scene,&survivalWorld,mask,pads):
-                   RT_campaignSceneInitialize(&scene,&selection,story,area,0,enemySet,credits)){
+                   RT_campaignSceneInitialize(&scene,&selection,story,area,restart,enemySet,credits)){
                     rtAppFault=2;notice("NATIVE BUILD ERROR","CONTINUE INITIALIZATION",APP_UNFINISHED);
                 }else{
+                    if(!survival)homeRestart.previousWindow=scene.objectWindow;
                     for(u8 p=0;p<scene.players.home.players;p++){
                         if(mask&(1<<p))scene.players.combat[p].invincibleTicks=180;
                         else {scene.players.combat[p].health=0;scene.players.combat[p].removed=1;}
@@ -1002,9 +1051,14 @@ int main(bool hardReset){
             scene.players.home.previousStart=(pads[0]&BUTTON_START?1:0)|(pads[1]&BUTTON_START?2:0);
             scene.players.home.continueWaiting=1;continue;
         }
-        if(state==RT_CAMPAIGN_GAME_OVER){endHud();RT_beginHomeGameOver();rtAppState=APP_MENU;continue;}
+        if(state==RT_CAMPAIGN_GAME_OVER){
+            endHud();
+            if(!beginGameOverMaboo(RT_MABOO_THEN_HOME_MENU)){RT_completionSceneEnd(&completion);RT_beginHomeGameOver();rtAppState=APP_MENU;}
+            continue;
+        }
         if(!update.updated)continue;
         if(rtSession.mode==RT_MODE_ARCADE)RT_arcadeObserveWindow(&arcade,&scene);
+        else if(!survival)RT_arcadeObserveWindow(&homeRestart,&scene);
         rtAppUpdates++;
         if(!updateHud()){rtAppFault=60;notice("NATIVE BUILD ERROR","HUD VALUES",APP_UNFINISHED);continue;}
         if(!(survival?RT_survivalViewQueue(&view,&survivalDisplay,&scene.camera,&update.objects):

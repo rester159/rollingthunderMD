@@ -6,6 +6,16 @@ u8 RT_arcadeSessionInitialize(RT_ArcadeSession *s,const RT_CampaignScene *scene,
     s->reserves=setting?4:2;s->checkpoint=0;
     s->story=scene->stage->story;s->area=scene->stage->area;s->previousWindow=scene->objectWindow;return 1;
 }
+u8 RT_restartPointBegin(RT_ArcadeSession *s,const RT_CampaignScene *scene)
+{
+    if(!s || !scene || !scene->ready || !scene->stage)return 0;
+    s->checkpoint=0;s->story=scene->stage->story;s->area=scene->stage->area;
+    s->previousWindow=scene->objectWindow;return 1;
+}
+u8 RT_restartPointFor(const RT_ArcadeSession *s,u8 story,u8 area)
+{
+    return s && s->checkpoint && s->story==story && s->area==area;
+}
 void RT_arcadeObserveWindow(RT_ArcadeSession *s,const RT_CampaignScene *scene)
 {
     if(!s || !scene || !scene->ready || !scene->stage || scene->stage->story!=s->story || scene->stage->area!=s->area)return;

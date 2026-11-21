@@ -1,0 +1,19 @@
+{
+  "rom_sha256": "5016396a3a4fa46aeae50fdbcc35b612d97de17bcbbf4fba0c02edde2a746498",
+  "heartbeat_watchdog": true,
+  "cases": {
+    "healthy": {
+      "heartbeats_per_120_frames": 119,
+      "reloads": 0
+    },
+    "held_park": {
+      "reloads": 0,
+      "heartbeats_after": 119
+    },
+    "halt": {
+      "reload_after_frames": 58,
+      "heartbeats_after": 119
+    }
+  },
+  "scope": "Emulated driver stalls in Z80 RAM; not a physical-console test."
+}

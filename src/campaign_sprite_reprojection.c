@@ -29,6 +29,15 @@ static u8 heldPlayers[2],heldEnemies[RT_ENEMY_CAPACITY];
 static u8 heldObjects[RT_NATIVE_STAGE_CAPACITY],heldProjectiles[RT_PROJECTILE_CAPACITY];
 u32 rtSpriteBirthEpoch;
 static u32 heldBirthEpoch;
+/* SAT budget. The HUD reserves 22 of the VDP's 80 sprite links, so crowded
+ * scenes (many visible enemies plus shots) can need more pieces than remain.
+ * Shots are lethal and small, so their pieces are reserved first. An enemy
+ * that would overflow is left out of this frame's SAT instead of aborting the
+ * whole frame; the enemy draw order then rotates so a crowd flickers instead
+ * of one actor staying invisible. rtSpriteBudgetDrops counts omitted actors
+ * (diagnostic only). */
+static u8 enemyRotation;
+__attribute__((externally_visible)) volatile u32 rtSpriteBudgetDrops;
 typedef struct {u16 pose;u8 kind,color;} GraphicKey;
 static GraphicKey graphicKeys[RT_ENEMY_CAPACITY];
 static const RT_PackedSpritePose *graphics[RT_ENEMY_CAPACITY];
@@ -135,7 +144,7 @@ u8 RT_campaignSpritesQueue(RT_CampaignSprites *s,const RT_CampaignScene *scene,R
 retryDetail:
     ; /* Retry planning before any shared arena uploads or held enemy groups. */
     u8 enemyCount=0,shotCount=0,planned=0,remaining=scene->enemies.count;
-    u16 piecesNeeded=batch->count;
+    u16 piecesNeeded=batch->count,shotPieces=0;
     const RT_Enemy *e=scene->enemies.slots;
     for(u8 i=0;remaining && i<RT_ENEMY_CAPACITY;i++,e++){
         if(e->state.kind==RT_ENEMY_FREE)continue;
@@ -156,9 +165,10 @@ retryDetail:
     for(u8 i=0;remaining && i<RT_PROJECTILE_CAPACITY;i++,shot++){
         if(!shot->kind)continue;
         remaining--;shots[shotCount++]=i;
-        if(shot->kind<RT_PROJECTILE_NEW_THROW_DOWN){if(shot->pose>=g->bulletPoseCount)return fail(s,4);piecesNeeded+=g->bullets[shot->pose].pieceCount;continue;}
+        if(shot->kind<RT_PROJECTILE_NEW_THROW_DOWN){if(shot->pose>=g->bulletPoseCount)return fail(s,4);piecesNeeded+=g->bullets[shot->pose].pieceCount;shotPieces+=g->bullets[shot->pose].pieceCount;continue;}
         if(shot->pose<g->throwFirstPose || shot->pose-g->throwFirstPose>=g->throwPoseCount)return fail(s,4);
         piecesNeeded+=g->throws[shot->pose-g->throwFirstPose].pieceCount;
+        shotPieces+=g->throws[shot->pose-g->throwFirstPose].pieceCount;
         throwIndices[i]=planned;poses[planned++]=g->throws+shot->pose-g->throwFirstPose;
     }
     if(remaining)return fail(s,4);
@@ -219,12 +229,16 @@ retryDetail:
         if(!RT_spriteSubmitStage(batch,tile,&instance,camera))return fail(s,2);
         hold(pose,0,tile,2,stageObjects[n],a->kind,0);heldObjects[stageObjects[n]]=1;
     }
-    for(u8 n=0;n<enemyCount;n++){
+    u8 dropped=0,first=enemyCount?enemyRotation%enemyCount:0;
+    for(u8 k=0;k<enemyCount;k++){
+        u8 n=first+k;if(n>=enemyCount)n-=enemyCount;
         u8 i=enemies[n];e=scene->enemies.slots+i;
         RT_SpriteSlot *slot=enemySlots[n]<10?RT_coopResidentSlot(enemySlots[n]):
             s->arena.slots+slots[enemySlots[n]-10];
         const RT_PackedSpritePose *graphic=graphics[n];
         if(batch->failed)return fail(s,3);
+        u16 room=80-batch->reserved-batch->count;
+        if(graphic->pose->pieceCount+(shotPieces<room?shotPieces:room)>room){dropped++;continue;}
         if(!submitPacked(batch,slot,graphic->pose,graphic->pieces,
             (u16)((e->state.x>>4)-camera->x),(u16)(((e->state.y+15)>>4)-camera->y),
             !!(e->state.action&2),e->state.attributes>>5))return fail(s,3);
@@ -233,6 +247,10 @@ retryDetail:
     for(u8 n=0;n<shotCount;n++){
         u8 i=shots[n];shot=scene->projectiles.slots+i;
         RT_SpriteInstance instance={NULL,shot->x>>4,(shot->y+15)>>4,0,shot->layer,1,RT_SPRITE_POOL_ACTOR};
+        const RT_SpritePose *shotPose=shot->kind>=RT_PROJECTILE_NEW_THROW_DOWN?
+            poses[throwIndices[i]]:g->bullets+shot->pose;
+        if(batch->failed)return fail(s,4);
+        if(shotPose->pieceCount>80-batch->reserved-batch->count){dropped++;continue;}
         if(shot->kind>=RT_PROJECTILE_NEW_THROW_DOWN){
             u8 index=throwIndices[i];instance.pose=poses[index];
             RT_SpriteSlot *slot=s->arena.slots+slots[index];
@@ -245,6 +263,7 @@ retryDetail:
         }
         heldProjectiles[i]=1;
     }
+    if(dropped){enemyRotation++;rtSpriteBudgetDrops+=dropped;}
     if(!RT_spritesQueue(batch))return fail(s,5);
     heldBirthEpoch=rtSpriteBirthEpoch;heldReady=1;
     if(!RT_spritesDeferred())view->display.queuedBytes+=batch->queuedBytes;

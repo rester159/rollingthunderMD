@@ -13,5 +13,11 @@ void RT_arcadeObserveWindow(RT_ArcadeSession *session,const RT_CampaignScene *sc
 /* Called once per completed life. Zero means game over, without underflow.
  * Caller reconstructs scene at checkpoint and runs the source128-refresh ready
  * wait. Score, stage transitions and continue purchase are separate owners. */
+/* Home Campaign reuses the arcade's authored restart point: Begin at each
+ * area entry, observe with RT_arcadeObserveWindow after every update. Only
+ * story/area/checkpoint/previousWindow are used; reserves stay untouched.
+ * RestartPointFor returns the checkpoint index (0 or 1) for that area. */
+u8 RT_restartPointBegin(RT_ArcadeSession *session,const RT_CampaignScene *scene);
+u8 RT_restartPointFor(const RT_ArcadeSession *session,u8 story,u8 area);
 u8 RT_arcadeClaimRestart(RT_ArcadeSession *session);
 #endif

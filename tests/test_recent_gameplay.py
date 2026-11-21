@@ -22,19 +22,27 @@ def clear_enemies():
  m.patch('scene',b'\0',5196+39*36+48)
 def enter(stage,cx,cy):
  write(syms['rtWorldStages']+stage*24+12,struct.pack('>hh',cx,cy))
- enter_campaign_stage(m,a.rom,a.symbols,stage)
+ enter_campaign_stage(m,a.rom,a.symbols,stage,before_resume=lambda:m.patch('scene',b'\xff\xff',104))
  m.patch('scene',b'\xff\xff',104)
 m.start('campaign_1p')
 if a.case=='platform':
  enter(1,1600,0)
  m.patch('scene',struct.pack('>ii',1808*16,224*16),20);m.patch('scene',b'\4',36)
- m.buttons={(0,4),(0,1)};m.run(6);m.buttons.clear();m.run(100)
+ # Keep the area empty from the start: a one-off forced clear while actors
+ # are mid-reaction (v0.93 body contact) strands links no real play creates.
+ clear_enemies();m.patch('scene',bytes(49*18+2),6768)
+ m.buttons={(0,4),(0,1)}
+ for _ in range(6):clear_enemies();m.run(1)
+ m.buttons.clear()
+ for _ in range(100):clear_enemies();m.run(1)
  assert m.number('scene',4,24)==127*16 and m.number('scene',1,36)==2,'Vault did not reproduce the platform boundary'
  clear_enemies();m.patch('scene',bytes(49*18+2),6768)
- m.buttons={(0,5)};m.run(30);m.buttons.add((0,0))
+ m.buttons={(0,5)}
+ for _ in range(30):clear_enemies();m.run(1)
+ m.buttons.add((0,0))
  shots=[]
  for frame in range(22):
-  m.run(1)
+  clear_enemies();m.run(1)
   s=struct.unpack('>iih8B',m.read('scene',18,6768))
   if s[3] in (1,3,5):shots.append((s[0],s[3]))
  assert shots and all(kind!=5 for x,kind in shots),('Invisible platform wall',shots)
