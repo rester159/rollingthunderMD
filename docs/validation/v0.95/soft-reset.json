@@ -1,0 +1,32 @@
+{
+  "rom_sha256": "a97d6bea955515dd7cf3085b751fa860c9794f5ebe5a5d772effe031e2f3f90f",
+  "core_sha256": "88314cd8554a3cc5eebf00a4139e6f0dee9ea579dcb2321a0959579f1902fa09",
+  "cases": [
+    {
+      "case": "arcade",
+      "soft_resets": 6,
+      "passed": true
+    },
+    {
+      "case": "campaign_1p",
+      "soft_resets": 6,
+      "passed": true
+    },
+    {
+      "case": "campaign_2p",
+      "soft_resets": 6,
+      "passed": true
+    },
+    {
+      "case": "survival_1p",
+      "soft_resets": 6,
+      "passed": true
+    },
+    {
+      "case": "survival_2p",
+      "soft_resets": 6,
+      "passed": true
+    }
+  ],
+  "scope": "Real libretro soft resets; controller menu changes; diagnostic RAM-seeded scores/initials; no savestates or ROM changes."
+}
