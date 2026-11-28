@@ -1,0 +1,16 @@
+{
+  "rom_sha256": "8fab3b0f4b8e1186f0f6cbbaec32659b2ac739996a9c8088a99df1d68916c4df",
+  "selector": 1,
+  "states": [
+    1,
+    5,
+    6
+  ],
+  "transition_tracks": [
+    5
+  ],
+  "audio_samples": 575511,
+  "nonzero_samples": 767530,
+  "next_area": true,
+  "limits": "Seeded exit walk at first area, selected transition; waveform audibility check, not arcade waveform equivalence or full playthrough."
+}

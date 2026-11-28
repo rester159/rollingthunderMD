@@ -66,15 +66,46 @@ void RT_setZ80RomDriver(bool enabled)
  * longer, and it never falls below ~80% of the previous wait. */
 #define RT_PROTECT_POLL_GAP_LOOPS 35
 #define RT_PROTECT_POLL_TRIES     160
+/* PROTECT ownership lives on the 68000. Guards nest (VInt DMA inside a raster
+ * reservation, HInt inside a main-loop DMA), and only the last owner to end
+ * clears the Z80 flag. Inferring ownership from the Z80 flag itself let one
+ * leaked reservation turn every later guard into a "nested" one that never
+ * cleared it: the driver then stayed parked, silent, for good. */
+static volatile u8 protectOwners;
+/* Diagnostic: PROTECT found set in Z80 RAM with no 68000 owner, cleared. */
+__attribute__((externally_visible)) volatile u16 rtZ80StaleProtectClears;
+
+static inline u16 maskInts(void)
+{
+    u16 sr;
+    __asm__ volatile ("move.w %%sr,%0\n\tor.w #0x0700,%%sr" : "=d" (sr) : : "cc", "memory");
+    return sr;
+}
+static inline void restoreInts(u16 sr)
+{
+    __asm__ volatile ("move.w %0,%%sr" : : "d" (sr) : "cc", "memory");
+}
+/* Caller has interrupts masked. Drops one owner; the last one lowers PROTECT. */
+static void protectRelease(void)
+{
+    if (!protectOwners) return;
+    if (--protectOwners) return;
+    bool taken = Z80_getAndRequestBus(TRUE);
+    *(vu8*)(Z80_RAM + RT_PROTECT_FLAG) = 0;
+    if (!taken) Z80_releaseBus();
+}
+
 u8 RT_z80DmaGuardBegin(void)
 {
     if (Z80_isBusTaken()) return 0;
     if (romDriver && currentDriver == Z80_DRIVER_CUSTOM)
     {
         vu8 *flag = (vu8*)(Z80_RAM + RT_PROTECT_FLAG), *ack = (vu8*)(Z80_RAM + RT_PROTECT_ACK);
+        u16 sr = maskInts();
+        protectOwners++;
         Z80_requestBus(TRUE);
-        u8 alreadyProtected = *flag;
         *flag = 1; Z80_releaseBus();
+        restoreInts(sr);
         for (u16 tries = 0; tries < RT_PROTECT_POLL_TRIES; tries++)
         {
             /* Give the Z80 about one sample period before looking. */
@@ -82,15 +113,15 @@ u8 RT_z80DmaGuardBegin(void)
             __asm__ volatile ("1:\tnop\n\tdbra %0,1b" : "+d" (n));
             Z80_requestBus(TRUE);
             u8 parked = *ack;
-            /* A raster window can already own this RAM-only park. Nested
-             * DMA must not release that reservation when its transfer ends. */
-            if (parked) { Z80_releaseBus(); return alreadyProtected ? 3 : 2; }
+            if (parked) { Z80_releaseBus(); return 2; }
             Z80_releaseBus();
         }
         /* Driver unresponsive: fall back to halting it. */
         rtZ80ProtectFallbacks++;
+        sr = maskInts();
+        protectRelease();
         Z80_requestBus(TRUE);
-        if (!alreadyProtected) *flag = 0;
+        restoreInts(sr);
         return 1;
     }
     if (!RT_z80NeedsMainBusHold()) return 0;
@@ -103,10 +134,30 @@ void RT_z80DmaGuardEnd(u8 token)
     if (token == 1) Z80_releaseBus();
     else if (token == 2)
     {
-        Z80_requestBus(TRUE);
-        *(vu8*)(Z80_RAM + RT_PROTECT_FLAG) = 0;
-        Z80_releaseBus();
+        u16 sr = maskInts();
+        protectRelease();
+        restoreInts(sr);
     }
+}
+
+bool RT_z80ProtectHeld(void)
+{
+    return protectOwners != 0;
+}
+
+/* Main-loop check, bus not held by the caller: a raised PROTECT with no
+ * 68000 owner can only be stale. Lower it so the driver leaves its park. */
+void RT_z80ClearStaleProtect(void)
+{
+    u16 sr = maskInts();
+    if (!protectOwners && romDriver && currentDriver == Z80_DRIVER_CUSTOM)
+    {
+        bool taken = Z80_getAndRequestBus(TRUE);
+        vu8 *flag = (vu8*)(Z80_RAM + RT_PROTECT_FLAG);
+        if (*flag) { *flag = 0; rtZ80StaleProtectClears++; }
+        if (!taken) Z80_releaseBus();
+    }
+    restoreInts(sr);
 }
 
 bool RT_z80NeedsMainBusHold(void)
@@ -323,6 +374,7 @@ NO_INLINE void Z80_loadDriverInternal(const u8 *drv, u16 size)
     romDriver = FALSE;
     SYS_disableInts();
     driverGeneration++;
+    protectOwners = 0;
     Z80_requestBus(TRUE);
 
     // start by removing the Z80 vint task

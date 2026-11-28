@@ -1,0 +1,26 @@
+{
+  "rom_sha256": "8fab3b0f4b8e1186f0f6cbbaec32659b2ac739996a9c8088a99df1d68916c4df",
+  "core_sha256": "ffcbd73fef683e1b36aa179320baa036c7d3cd6fa420e7f83c05bc8fda2db2d1",
+  "region": "NTSC",
+  "selector": 1,
+  "visible_line_cram_writes": {
+    "title": 60400,
+    "sound": 161300,
+    "loading": 23550,
+    "transition": 39000
+  },
+  "minimum_clock": 352,
+  "maximum_clock": 820,
+  "last_body_palette_line": 152,
+  "first_footer_palette_line": 212,
+  "last_footer_palette_line": 212,
+  "active_pixel_start_clock": 860,
+  "active_cram_writes": 0,
+  "measurement": "FIFO consumption slots, not just CPU port-write timestamps",
+  "sound_actions": 40,
+  "sound_raster_recoveries": 0,
+  "raster_audio_bus_holds": 0,
+  "complete_lower_palette_checks": 5184,
+  "transition_returned_to_gameplay": true,
+  "physical_hardware_tested": false
+}

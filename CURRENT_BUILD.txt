@@ -1,18 +1,15 @@
-Rolling Thunder MD v0.93 Beta — current build
+Rolling Thunder MD v0.95 Beta — current build
 
-ROM: dist/Rolling_Thunder_MD_v0.93_Beta.bin
+ROM: dist/Rolling_Thunder_MD_v0.95_Beta.bin
 Size: 4,194,304 bytes (4 MiB / 32 Mbit)
-SHA-256: 5016396a3a4fa46aeae50fdbcc35b612d97de17bcbbf4fba0c02edde2a746498
-Build metadata and matching symbols: dist/v0.93-beta/
-Release notes: docs/RELEASE_0_93.md
-Dev update: docs/DEVLOG_0_93.md
-Current-ROM validation: docs/validation/v0.93/
+SHA-256: a97d6bea955515dd7cf3085b751fa860c9794f5ebe5a5d772effe031e2f3f90f
+Build metadata and matching symbols: dist/v0.95-beta/
+Release notes: docs/RELEASE_0_95.md
+Dev update: docs/DEVLOG_0_95.md
+Current-ROM validation: docs/validation/v0.95/
 
-Adds arcade body contact with ordinary enemies (both co-op players), fixes the
-Survival invisible wall and the crowded-scene UNFINISHED GRAPHICS stop, restores
-Maboo's game-over laugh, blackens Stage 1 windows, draws full ceiling fans,
-restarts Home continues at the arcade's mid-area points, and hardens Z80 music
-driver start-up with a heartbeat watchdog.
+Carries the v0.94 Z80 PROTECT reservation fix on main. v0.95 changes the
+on-screen version label; gameplay and sound code are unchanged from v0.94.
 All ten campaign areas, both characters, 2P, Survival and SRAM saves retained.
 
 ROMs and owner-supplied audio/boot assets remain excluded from Git.
